@@ -1,0 +1,86 @@
+{
+  "navigation": {
+    "home": "Главная",
+    "articles": "Статьи",
+    "authors": "Авторы",
+    "rubrics": "Рубрики",
+    "search": "Поиск"
+  },
+  "footer": {
+    "quickLinks": "Быстрые ссылки",
+    "about": "О нас",
+    "contact": "Контакты",
+    "copyright": "© {year} Мой Блог. Все права защищены.",
+    "findWhatYouNeed": "Найдите то, что вам нужно",
+    "designedWithLove": "Дизайн с любовью",
+    "visitKuKraft": "Visit KuKraft",
+    "clickForSurprise": "Нажмите для сюрприза!",
+    "poweredBy": "При поддержке воображения и щепотки магии ✨"
+  },
+  "common": {
+    "readMore": "Читать далее",
+    "loadMore": "Загрузить еще",
+    "published": "Опубликовано",
+    "by": "Автор",
+    "editorial": "Редакция",
+    "tableOfContents": "В этой статье:",
+    "loading": "Загрузка..."
+  },
+  "search": {
+    "placeholder": "Поиск статей...",
+    "noResults": "Результатов не найдено",
+    "results": "Результаты поиска",
+    "resultsFor": "Результаты для \"{query}\"",
+    "pageTitle": "Поиск | Мой блог",
+    "pageDescription": "Найдите статьи и контент в нашем блоге{query}.",
+    "relatedTo": "связанные с",
+    "submit": "Искать",
+    "minCharacters": "Минимум 3 знака"
+  },
+  "sorting": {
+    "sortOrder": "Порядок сортировки",
+    "newest": "Сначала новые",
+    "oldest": "Сначала старые"
+  },
+  "filter": {
+    "reset": "Сброс"
+  },
+  "categories": {
+    "allCategories": "Все категории",
+    "selectCategory": "Выберите категорию"
+  },
+  "sections": {
+    "home": {
+      "welcomeTitle": "Добро пожаловать в наш журнал",
+      "welcomeDescription": "Откройте для себя последние тенденции, истории и идеи",
+      "featuredArticles": "Избранные статьи",
+      "noFeaturedArticles": "Избранные статьи отсутствуют",
+      "exploreRubrics": "Исследуйте наши рубрики",
+      "viewAllRubrics": "Посмотреть все рубрики"
+    },
+    "articles": {
+      "featuredArticles": "Избранные статьи",
+      "noFeaturedArticles": "Нет доступных избранных статей",
+      "allArticles": "Все статьи",
+      "latestArticles": "Последние статьи"
+    },
+    "authors": {
+      "pageTitle": "Наши авторы | Мой блог",
+      "pageDescription": "Познакомьтесь с талантливыми писателями, стоящими за нашими проницательными статьями и историями.",
+      "ourAuthors": "Наши авторы",
+      "noAuthorsFound": "Авторы не найдены.",
+      "moreAuthorsToLoad": "Есть еще авторы для загрузки..."
+    },
+    "author": {
+      "noArticlesFound": "Статьи этого автора не найдены.",
+      "articlesByAuthor": "Статьи автора {author}",
+      "authorProfile": "Профиль автора",
+      "articlesWrittenBy": "Статьи, написанные автором {author}"
+    },
+    "rubrics": {
+      "allRubrics": "Все рубрики",
+      "featuredRubric": "Рубрика в фокусе",
+      "rubricList": "Список рубрик"
+    }
+  }
+}

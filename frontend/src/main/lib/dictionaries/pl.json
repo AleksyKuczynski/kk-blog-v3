@@ -1,0 +1,86 @@
+{
+  "navigation": {
+    "home": "Strona główna",
+    "articles": "Artykuły",
+    "authors": "Autorzy",
+    "rubrics": "Rubryki",
+    "search": "Szukaj"
+  },
+  "footer": {
+    "quickLinks": "Szybkie linki",
+    "about": "O nas",
+    "contact": "Kontakt",
+    "copyright": "© {year} Mój Blog. Wszelkie prawa zastrzeżone.",
+    "findWhatYouNeed": "Znajdź to, czego potrzebujesz",
+    "designedWithLove": "Designed with Love",
+    "visitKuKraft": "Visit KuKraft",
+    "clickForSurprise": "Kliknij, aby zobaczyć niespodziankę!",
+    "poweredBy": "Napędzane wyobraźnią i odrobiną magii ✨"
+  },
+  "common": {
+    "readMore": "Czytaj więcej",
+    "loadMore": "Załaduj więcej",
+    "published": "Opublikowano",
+    "by": "Autor",
+    "editorial": "Redakcyjny",
+    "tableOfContents": "W tym artikule:",
+    "loading": "Ładowanie..."
+  },
+  "search": {
+    "placeholder": "Szukaj artykułów...",
+    "noResults": "Nie znaleziono wyników",
+    "results": "Wyniki wyszukiwania",
+    "resultsFor": "Wyniki dla \"{query}\"",
+    "pageTitle": "Wyszukiwanie | Mój blog",
+    "pageDescription": "Znajdź artykuły i treści w naszym blogu{query}.",
+    "relatedTo": "związane z",
+    "submit": "Submit search",
+    "minCharacters": "Type at least 3 characters"
+  },
+  "sorting": {
+    "sortOrder": "Porządek",
+    "newest": "Od najnowszych",
+    "oldest": "Od najstarzych"
+  },
+  "filter": {
+    "reset": "Reset"
+  },
+  "categories": {
+    "allCategories": "Wszystkie kategorie",
+    "selectCategory": "Wybierz kategorię"
+  },
+  "sections": {
+    "home": {
+      "welcomeTitle": "Witamy w naszym magazynie",
+      "welcomeDescription": "Odkryj najnowsze trendy, historie i spostrzeżenia",
+      "featuredArticles": "Polecane artykuły",
+      "noFeaturedArticles": "Brak dostępnych polecanych artykułów",
+      "exploreRubrics": "Przeglądaj nasze rubryki",
+      "viewAllRubrics": "Zobacz wszystkie rubryki"
+    },
+    "articles": {
+      "featuredArticles": "Polecane artykuły",
+      "noFeaturedArticles": "Brak dostępnych polecanych artykułów",
+      "allArticles": "Wszystkie artykuły",
+      "latestArticles": "Najnowsze artykuły"
+    },
+    "authors": {
+      "pageTitle": "Nasi autorzy | Mój blog",
+      "pageDescription": "Poznaj utalentowanych pisarzy stojących za naszymi wnikliwymi artykułami i historiami.",
+      "ourAuthors": "Nasi autorzy",
+      "noAuthorsFound": "Nie znaleziono autorów.",
+      "moreAuthorsToLoad": "Jest więcej autorów do załadowania..."
+    },
+    "author": {
+      "noArticlesFound": "Nie znaleziono artykułów tego autora.",
+      "articlesByAuthor": "Artykuły autora {author}",
+      "authorProfile": "Profil autora",
+      "articlesWrittenBy": "Artykuły napisane przez {author}"
+    },
+    "rubrics": {
+      "allRubrics": "Wszystkie rubryki",
+      "featuredRubric": "Wyróżniona rubryka",
+      "rubricList": "Lista rubryk"
+    }
+  }
+}

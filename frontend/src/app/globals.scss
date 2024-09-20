@@ -1,0 +1,138 @@
+// src/app/globals.scss
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  // Common variables for all themes
+  --transition-duration: 200ms;
+}
+
+// Theme-specific variables
+[data-theme="default"] {
+  --border-radius: 0.25rem;
+  --content-margin: 1rem;
+  --font-size-base: 1rem;
+  --card-padding: 1rem;
+  --button-padding-x: 1rem;
+  --button-padding-y: 0.5rem;
+}
+
+[data-theme="rounded"] {
+  --border-radius: 1rem;
+  --content-margin: 1.5rem;
+  --font-size-base: 1.1rem;
+  --card-padding: 1.5rem;
+  --button-padding-x: 1.5rem;
+  --button-padding-y: 0.75rem;
+}
+
+[data-theme="sharp"] {
+  --border-radius: 0;
+  --content-margin: 0.5rem;
+  --font-size-base: 0.9rem;
+  --card-padding: 0.75rem;
+  --button-padding-x: 0.75rem;
+  --button-padding-y: 0.25rem;
+}
+
+// Light mode (default)
+:root {
+  --background-light: theme('colors.background.light');
+  --background-dark: theme('colors.background.dark');
+  --text-primary: theme('colors.text.primary');
+  --text-inverted: theme('colors.text.inverted');
+}
+
+// Dark mode
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-light: theme('colors.background.dark');
+    --background-dark: theme('colors.background.light');
+    --text-primary: theme('colors.text.inverted');
+    --text-inverted: theme('colors.text.primary');
+  }
+}
+
+// Apply theme-specific backgrounds
+[data-theme="default"] {
+  background-color: var(--background-light);
+  color: var(--text-primary);
+}
+
+[data-theme="rounded"],
+[data-theme="sharp"] {
+  // These themes use the default light/dark mode settings
+  background-color: var(--background-light);
+  color: var(--text-primary);
+}
+
+// Global styles
+body {
+  @apply min-h-screen flex flex-col;
+}
+
+// Component styles
+@layer components {
+  .theme-sensitive {
+    border-radius: var(--border-radius);
+    margin: var(--content-margin);
+  }
+
+  .theme-sensitive-content {
+    padding: var(--content-margin);
+  }
+
+  .theme-font {
+    font-size: var(--font-size-base);
+  }
+
+  .navbar {
+    @apply bg-primary text-text-inverted;
+  }
+
+  .search-bar {
+    @apply bg-background-light text-text-primary border border-neutral-300 rounded-md;
+  }
+
+  .search-button {
+    @apply bg-accent text-text-inverted rounded-md;
+  }
+
+  .article-card {
+    @apply bg-background-light border border-neutral-200 rounded-lg shadow-md;
+
+    &-promoted {
+      @apply bg-primary-light border-primary;
+    }
+
+    &-advised {
+      @apply bg-secondary-light border-secondary;
+    }
+  }
+
+  .author-card {
+    @apply bg-background-light border border-neutral-200 rounded-lg shadow-md;
+  }
+
+  .footer {
+    @apply bg-neutral-800 text-text-inverted;
+  }
+
+  .carousel {
+    @apply bg-neutral-100;
+  }
+
+  .moodboard {
+    @apply bg-accent-light;
+  }
+
+  .quiz {
+    @apply bg-info-light;
+  }
+
+  .blockquote {
+    @apply border-l-4 border-accent pl-4 italic;
+  }
+}
