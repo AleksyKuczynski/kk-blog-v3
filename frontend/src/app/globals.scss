@@ -4,9 +4,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Ensure scrollbar is always visible */
+html {
+  overflow-y: scroll;
+}
+
 :root {
   // Common variables for all themes
   --transition-duration: 200ms;
+  --scrollbar-width: 0px;
 }
 
 // Theme-specific variables

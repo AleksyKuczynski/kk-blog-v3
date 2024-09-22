@@ -10,15 +10,15 @@ import { usePathname } from 'next/navigation';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { Lang, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
+import { ListboxLanguageSwitcher } from './ListboxLanguageSwitcher';
 
 interface NavigationProps {
   lang: Lang;
   translations: NavigationTranslations;
   searchTranslations: SearchTranslations;
-  initialTheme: string;
 }
 
-export default function Navigation({ lang, translations, searchTranslations, initialTheme }: NavigationProps) {
+export default function Navigation({ lang, translations, searchTranslations }: NavigationProps) {
   const pathname = usePathname();
   const isSearchPage = pathname === `/${lang}/search`;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -58,8 +58,8 @@ export default function Navigation({ lang, translations, searchTranslations, ini
 
         <div className="flex items-center space-x-4">
           {!isSearchPage && <SearchBarWrapper translations={searchTranslations} />}
-          <LanguageSwitcher currentLang={lang} />
-          <ThemeSwitcher initialTheme={initialTheme} />
+          <ListboxLanguageSwitcher currentLang={lang} />
+          <ThemeSwitcher />
         </div>
       </div>
 
@@ -124,7 +124,7 @@ export default function Navigation({ lang, translations, searchTranslations, ini
                       </div>
                     )}
                     <div className="py-2">
-                      <ThemeSwitcher initialTheme={initialTheme} />
+                      <ThemeSwitcher />
                     </div>
                   </div>
                 </MenuItems>

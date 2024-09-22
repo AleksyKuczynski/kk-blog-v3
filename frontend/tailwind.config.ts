@@ -9,9 +9,6 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      aspectRatio: {
-        '11/12': '11 / 12',
-      },
       zIndex: {
         '60': '60',
       },
@@ -71,6 +68,7 @@ const config: Config = {
           900: '#212529',
         },
         background: {
+          accent: '#FFFFFF',
           light: '#EEEEEE',
           dark: '#000000',
         },

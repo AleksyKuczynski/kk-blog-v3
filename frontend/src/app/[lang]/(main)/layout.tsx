@@ -31,10 +31,9 @@ export default async function MainLayout({
           lang={lang} 
           translations={navigationTranslations}
           searchTranslations={searchTranslations}
-          initialTheme={initialTheme}
         />
       </header>
-      <main className="flex-grow mt-16 md:mt-24 container mx-auto px-0 sm:px-4 md:px-6 lg:px-8 max-w-full sm:max-w-7xl pt-4 md:pt-8" role="main">        
+      <main className="flex-grow mt-16 md:mt-24 pt-4 md:pt-8" role="main">        
         {children}
       </main>
       <Footer 

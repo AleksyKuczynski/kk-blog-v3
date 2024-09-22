@@ -13,8 +13,12 @@ interface ArticleListProps {
 
 const listStyles = {
   container: `
-    grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 xl:grid-cols-2
-    px-3 sm:px-0 
+    grid 
+    grid-cols-1 lg:grid-cols-3 xl:grid-cols-2
+    gap-5 
+    container mx-auto 
+    py-12
+    px-4 sm:px-6 2xl:px-8 
     
   `,
   card: {
@@ -30,7 +34,7 @@ async function ArticleListContent({ slugInfos, lang, authorSlug, rubricSlug }: A
   }
 
   return (
-    <div className={listStyles.container}>
+    <div className={`${listStyles.container} container mx-auto`}>
       {slugInfos.map((slugInfo) => (
         <ArticleCard 
           key={slugInfo.slug}

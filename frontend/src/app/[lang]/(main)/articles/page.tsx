@@ -52,7 +52,7 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="">
       <div className="md:hidden">
         <FilterFAB />
       </div>
@@ -68,7 +68,8 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
       </div>
 
       {isDefaultView && (
-        <section aria-label={dict.sections.articles.featuredArticles} className="mb-8 sm:mb-12">
+        <section aria-label={dict.sections.articles.featuredArticles} className="pb-6 lg:pb-12 bg-background-accent dark:bg-neutral-900">
+          <h2 className="uppercase text-3xl sm:text-4xl lg:text-5xl font-bold text-background-light dark:text-background-dark 2xl:mb-4">{dict.sections.articles.featuredArticles}</h2>
           <Suspense fallback={<div>{dict.common.loading}</div>}>
             {heroSlugs.length > 0 ? (
               <HeroArticles heroSlugs={heroSlugs} lang={lang} />
@@ -80,8 +81,10 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
       )}
 
 
-      <section aria-label={dict.sections.articles.allArticles} className="mt-8 sm:mt-12">
-        <h2 className="text-xl sm:text-2xl font-bold text-primary mb-4">{dict.sections.articles.latestArticles}</h2>
+      <section aria-label={dict.sections.articles.allArticles} className="sm:pb-12">
+        {isDefaultView && (
+          <h2 className="uppercase text-3xl sm:text-4xl lg:text-5xl font-bold text-background-accent dark:text-neutral-900 2xl:mb-4">{dict.sections.articles.latestArticles}</h2>
+        )}
         <Suspense fallback={<div>{dict.common.loading}</div>}>
           <ArticleList 
             slugInfos={allSlugs}

@@ -19,7 +19,7 @@
   },
   "common": {
     "readMore": "Читать далее",
-    "loadMore": "Загрузить еще",
+    "loadMore": "Все статьи",
     "published": "Опубликовано",
     "by": "Автор",
     "editorial": "Редакция",
@@ -62,7 +62,7 @@
       "featuredArticles": "Избранные статьи",
       "noFeaturedArticles": "Нет доступных избранных статей",
       "allArticles": "Все статьи",
-      "latestArticles": "Последние статьи"
+      "latestArticles": "Новые статьи"
     },
     "authors": {
       "pageTitle": "Наши авторы | Мой блог",

@@ -10,14 +10,21 @@ interface HeroArticlesProps {
 }
 
 const heroStyles = {
-  container: 'grid grid-cols-1 lg:grid-cols-3 gap-6',
+  container: `
+    grid 
+    grid-cols-1 xl:grid-cols-2 
+    gap-6 lg:gap-12 xl:gap-8 2xl:gap-12
+    container mx-auto 
+    py-12
+    px-2 sm:px-6 2xl:px-8
+  `,
   promotedCard: {
-    container: 'lg:col-span-2 bg-accent text-white',
+    container: '',
     imageWrapper: 'relative overflow-hidden',
     contentWrapper: 'p-6',
   },
   latestCard: {
-    container: 'bg-secondary',
+    container: 'xl:col-span-2',
     imageWrapper: 'relative overflow-hidden',
     contentWrapper: 'p-4',
   },
@@ -32,7 +39,7 @@ async function HeroArticlesContent({ heroSlugs, lang, rubricSlug }: HeroArticles
 
   return (
     <div className={heroStyles.container}>
-      <div className="lg:col-span-2">
+      <div className='pb-12 sm:pb-0'>
         <ArticleCard 
           slug={promotedSlug} 
           lang={lang} 
@@ -41,7 +48,10 @@ async function HeroArticlesContent({ heroSlugs, lang, rubricSlug }: HeroArticles
           cardStyles={heroStyles.promotedCard}
         />
       </div>
-      <div className="space-y-6">
+      <div className={`
+        grid 
+        lg:max-xl:grid-cols-3 2xl:grd-rows-3 gap-12 sm:gap-6 xl:gap-8 2xl:gap-12
+      `}>
         {latestSlugs.map((slug) => (
           <ArticleCard 
             key={slug} 

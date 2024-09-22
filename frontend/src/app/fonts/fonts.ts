@@ -1,6 +1,6 @@
 // src/app/fonts/fonts.ts
 import localFont from 'next/font/local'
-import { Jost, Literata, Unbounded, Oswald, Bona_Nova, Noto_Serif, PT_Serif, Roboto_Serif, Roboto_Slab } from 'next/font/google';
+import { Jost, Literata, Unbounded, Yeseva_One, Bona_Nova, Noto_Serif, PT_Serif, Roboto_Serif, Roboto_Slab } from 'next/font/google';
 
 export const fontSans = Jost({
   subsets: ['latin', 'cyrillic'],
@@ -16,9 +16,9 @@ export const fontSerif = Literata({
   variable: '--font-serif',
 });
 
-export const fontDisplay = PT_Serif({
+export const fontDisplay = Yeseva_One({
   subsets: ['latin', 'cyrillic'],
-  weight: '700',
+  weight: '400',
   display: 'swap',
   variable: '--font-display',
 });
@@ -30,8 +30,8 @@ export const fontCustom = Unbounded({
   variable: '--font-custom',
 });
 
-export const fontCumbersome = localFont({
-  src: './local/PF-Expo.otf',
-  variable: '--font-cumbersome',
+export const fontCustom__ = localFont({
+  src: './local/Belarus.otf',
+  variable: '--font-custom',
   display: 'swap',
 });

@@ -8,8 +8,8 @@ const baseStyles = {
     overflow-hidden
     bg-background-light 
     dark:bg-neutral-900 
-    transition-shadow
     
+
   `,
 }
 
@@ -19,18 +19,21 @@ export const regularCardStyles: Record<Theme, CardThemeStyles> = {
       ${baseStyles.container}
       shadow-sm
       hover:shadow-md
-      dark:hover:shadow-[0px_5px_15px_5px_rgba(255,255,255,0.2)]
+      dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)]
+      transition-shadow
+      duration-200
       rounded-lg
     `,
     contentWrapper: `
       lg:h-full
-      flex flex-col sm:max-md:grid xl:grid grid-cols-3
+      flex flex-col 
+      sm:max-lg:grid xl:grid grid-cols-3
     `,
     imageWrapper: `
       relative 
-      w-full sm:h-full
+      w-full sm:max-md:h-full xl:h-full
       overflow-hidden 
-      aspect-[11/12]
+      aspect-[12/10] sm:max-lg:aspect-[11/12] xl:aspect-[11/12]
     `,
     content: `
       grow 
@@ -38,59 +41,198 @@ export const regularCardStyles: Record<Theme, CardThemeStyles> = {
       space-y-2 
       flex flex-col 
       col-span-2
+      mb-1
     `,
     title: `
       text-lg lg:text-xl
+      max-sm:font-sans
+      max-sm:font-semibold
       font-display 
-      line-clamp-2
-      sm:line-clamp-3 
+      line-clamp-3 
       mb-2 
       transition-colors
       duration-600
     `,
     date: 'text-xs lg:text-sm text-gray-500',
-    description: 'text-sm lg:text-base line-clamp-3 mb-4 transition-colors duration-600',
-    readMore: 'grow text-xs lg:text-sm font-medium text-secondary hover:text-secondary-dark transition-colors duration-200 flex justify-end items-end',
+    description: `
+      max-sm:hidden
+      text-sm lg:text-base line-clamp-3 mb-4 
+      transition-colors duration-600
+    `,
+    readMore: `
+          hidden
+
+      grow 
+      text-xs lg:text-sm 
+      font-medium text-secondary hover:text-secondary-dark 
+      transition-colors duration-200 
+      flex justify-end items-end
+    `,
     image: '',
-    authorWrapper: 'bg-secondary bg-opacity-80 top-2 left-2 py-1 px-3 rounded-md',
+    authorWrapper: `
+    hidden
+      bg-background-light bg-opacity-80 dark:bg-neutral-900 dark:bg-opacity-50 
+      top-2 left-2 
+      py-1 px-3 
+      rounded-md
+    `,
     authorLink: `
       text-xs 
       sm:text-sm 
       inline-block 
       mr-1 
       last:mr-0 
-      hover:text-white
+      hover:text-primary
       dark:text-white 
-      dark:hover:text-primary
       transition-colors 
       duration-200 
 
     `,
   },
   rounded: {
-    container: 'bg-background-light shadow-md hover:shadow-lg transition-shadow duration-300 rounded-xl',
-    contentWrapper: 'p-6',
-    imageWrapper: 'relative overflow-hidden rounded-t-xl',
-    content: 'mt-6 space-y-3',
-    title: 'text-2xl font-semibold line-clamp-2 mb-2',
-    date: 'text-base text-gray-600 mb-2',
-    description: 'text-base line-clamp-3 mb-4',
-    readMore: 'text-base font-medium text-primary hover:text-primary-dark transition-colors duration-200 flex items-center',
-    image: 'transition-transform duration-300 group-hover:scale-105',
-    authorWrapper: 'bg-white bg-opacity-75 p-3 rounded-b-xl',
-    authorLink: 'text-primary hover:text-primary-dark text-sm sm:text-base inline-block',
+    container: `
+      ${baseStyles.container}
+      shadow-sm
+      hover:shadow-md
+      dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)]
+      transition-shadow
+      duration-200
+      rounded-3xl
+    `,
+    contentWrapper: `
+      lg:h-full
+      flex flex-col 
+      sm:max-lg:grid xl:grid grid-cols-3
+    `,
+    imageWrapper: `
+      relative 
+      w-full sm:max-md:h-full xl:h-full
+      overflow-hidden 
+      aspect-[12/10] sm:max-lg:aspect-[11/12] xl:aspect-[11/12]
+    `,
+    content: `
+      grow 
+      p-4 
+      space-y-2 
+      flex flex-col 
+      col-span-2
+      mb-1
+    `,
+    title: `
+      text-lg lg:text-xl
+      max-sm:font-sans
+      max-sm:font-semibold
+      font-display 
+      line-clamp-3 
+      mb-2 
+    `,
+    date: 'text-xs lg:text-sm text-gray-500',
+    description: `
+      max-sm:hidden
+      text-sm lg:text-base line-clamp-3 mb-4 
+      transition-colors duration-600
+    `,
+    readMore: `
+          hidden
+
+      grow 
+      text-xs lg:text-sm 
+      font-medium text-secondary hover:text-secondary-dark 
+      transition-colors duration-200 
+      flex justify-end items-end
+    `,
+    image: '',
+    authorWrapper: `
+    hidden
+      bg-background-light bg-opacity-80 dark:bg-neutral-900 dark:bg-opacity-50 
+      top-2 left-2 
+      py-1 px-3 
+      rounded-md
+    `,
+    authorLink: `
+      text-xs 
+      sm:text-sm 
+      inline-block 
+      mr-1 
+      last:mr-0 
+      hover:text-primary
+      dark:text-white 
+      transition-colors 
+      duration-200 
+
+    `,
   },
   sharp: {
-    container: 'bg-background-light border border-gray-200 transition-shadow duration-300',
-    contentWrapper: 'p-4',
-    imageWrapper: 'relative overflow-hidden',
-    content: 'mt-4 space-y-2',
-    title: 'text-lg font-bold uppercase line-clamp-2 mb-1',
-    date: 'text-xs text-gray-700 uppercase mb-1',
-    description: 'text-sm line-clamp-3 mb-3',
-    readMore: 'text-xs font-bold text-primary hover:text-primary-dark uppercase transition-colors duration-200 flex items-center',
-    image: 'transition-transform duration-300 group-hover:scale-105',
-    authorWrapper: 'bg-white bg-opacity-75 p-2',
-    authorLink: 'text-primary hover:text-primary-dark text-xs uppercase inline-block',
+    container: `
+      ${baseStyles.container}
+      shadow-sm
+      hover:shadow-md
+      dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)]
+      transition-shadow
+      duration-200
+    `,
+    contentWrapper: `
+      lg:h-full
+      flex flex-col 
+      sm:max-lg:grid xl:grid grid-cols-3
+    `,
+    imageWrapper: `
+      relative 
+      w-full sm:max-md:h-full xl:h-full
+      overflow-hidden 
+      aspect-[12/10] sm:max-lg:aspect-[11/12] xl:aspect-[11/12]
+    `,
+    content: `
+      grow 
+      p-4 
+      space-y-2 
+      flex flex-col 
+      col-span-2
+      mb-1
+    `,
+    title: `
+      text-xl
+      max-sm:font-sans
+      font-bold
+      line-clamp-3 
+      mb-2 
+      transition-colors
+      duration-600
+    `,
+    date: 'text-xs lg:text-sm text-gray-500',
+    description: `
+      max-sm:hidden
+      text-sm lg:text-base line-clamp-3 mb-4 
+      transition-colors duration-600
+    `,
+    readMore: `
+          hidden
+
+      grow 
+      text-xs lg:text-sm 
+      font-medium text-secondary hover:text-secondary-dark 
+      transition-colors duration-200 
+      flex justify-end items-end
+    `,
+    image: '',
+    authorWrapper: `
+    hidden
+      bg-background-light bg-opacity-80 dark:bg-neutral-900 dark:bg-opacity-50 
+      top-2 left-2 
+      py-1 px-3 
+      rounded-md
+    `,
+    authorLink: `
+      text-xs 
+      sm:text-sm 
+      inline-block 
+      mr-1 
+      last:mr-0 
+      hover:text-primary
+      dark:text-white 
+      transition-colors 
+      duration-200 
+
+    `,
   },
 };
