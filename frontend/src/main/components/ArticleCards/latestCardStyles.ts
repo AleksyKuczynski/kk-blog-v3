@@ -88,6 +88,7 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
       flex flex-col
       sm:max-lg:grid xl:grid grid-cols-3
       border
+      dark:border-neutral-800
       rounded-3xl 
       shadow-md
       hover:shadow-lg

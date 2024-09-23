@@ -11,6 +11,7 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { Lang, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
 import { ListboxLanguageSwitcher } from './ListboxLanguageSwitcher';
+import { ListboxThemeSwitcher } from './ListboxThemeSwitcher';
 
 interface NavigationProps {
   lang: Lang;
@@ -59,7 +60,7 @@ export default function Navigation({ lang, translations, searchTranslations }: N
         <div className="flex items-center space-x-4">
           {!isSearchPage && <SearchBarWrapper translations={searchTranslations} />}
           <ListboxLanguageSwitcher currentLang={lang} />
-          <ThemeSwitcher />
+          <ListboxThemeSwitcher />
         </div>
       </div>
 

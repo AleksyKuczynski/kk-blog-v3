@@ -10,7 +10,7 @@ import { fetchHeroSlugs, fetchArticleSlugs } from '@/main/lib/directus/index';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { ArticleSlugInfo } from '@/main/lib/directus/interfaces';
-import FilterFAB from '@/main/components/Main/FilterFAB';
+import { FilterSortGroup } from '@/main/components/Main/FilterSortGroup.tsx';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,20 +52,14 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
   }
 
   return (
-    <div className="">
-      <div className="md:hidden">
-        <FilterFAB />
-      </div>
-
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 space-y-4 sm:space-y-0">
-        <SortingControl currentSort={currentSort} translations={dict.sorting} />
-        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-          <Suspense fallback={<div className="w-full sm:w-48 h-10 bg-gray-200 animate-pulse rounded-lg"></div>}>
-            <CategorySelectorWrapper translations={dict.categories} lang={lang} />
-          </Suspense>
-          <ResetButton resetText={dict.filter.reset} />
-        </div>
-      </div>
+    <div className="space-y-8">
+      <FilterSortGroup
+        currentSort={currentSort}
+        sortingTranslations={dict.sorting}
+        categoryTranslations={dict.categories}
+        resetText={dict.filter.reset}
+        lang={lang}
+      />
 
       {isDefaultView && (
         <section aria-label={dict.sections.articles.featuredArticles} className="pb-6 lg:pb-12 bg-background-accent dark:bg-neutral-900">

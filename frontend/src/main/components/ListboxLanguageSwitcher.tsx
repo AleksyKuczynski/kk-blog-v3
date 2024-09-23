@@ -1,10 +1,15 @@
 // src/main/components/ListboxLanguageSwitcher.tsx
+'use client';
 
-import { Listbox } from '@headlessui/react';
-import Image from 'next/image';
+import React, { createContext, useState, useContext } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { switchLanguage } from '@/main/lib/actions';
-import { Lang } from '../lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/types';
+import { CheckIcon, ChevronDownIcon, LanguageIcon } from './Icons';
+import { CustomButton } from './CustomButton';
+import { useOutsideClick } from '../lib/useOutsideClick';
+import { useTheme } from './ThemeContext';
+import { Dropdown } from './Dropdown';
 
 const languages: { [key in Lang]: string } = {
   en: 'English',
@@ -13,7 +18,21 @@ const languages: { [key in Lang]: string } = {
   ru: 'Русский',
 };
 
-export function ListboxLanguageSwitcher({ currentLang }: { currentLang: Lang }) {
+const languageSwitcherStyles = {
+  dropdownItem: 'flex items-center w-full px-4 py-2 text-sm text-text-primary dark:text-text-inverted hover:bg-secondary hover:text-text-inverted transition-colors duration-200',
+};
+
+interface LanguageSwitcherContextType {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  currentLang: Lang;
+  handleLanguageChange: (newLang: Lang) => Promise<void>;
+}
+
+const LanguageSwitcherContext = createContext<LanguageSwitcherContextType | undefined>(undefined);
+
+function LanguageSwitcherProvider({ children, currentLang }: { children: React.ReactNode; currentLang: Lang }) {
+  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -36,52 +55,111 @@ export function ListboxLanguageSwitcher({ currentLang }: { currentLang: Lang }) 
       await switchLanguage(newLang, newPath);
       router.refresh();
     }
+    setIsOpen(false);
   };
 
   return (
-    <Listbox value={currentLang} onChange={handleLanguageChange}>
-      <div className="relative">
-        <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-          <span className="block truncate">
-            <Image
-              src={`/flags/${currentLang}.svg`}
-              alt={languages[currentLang]}
-              width={20}
-              height={15}
-              className="inline-block mr-2"
-            />
-            {languages[currentLang]}
-          </span>
-        </Listbox.Button>
-        <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-          {Object.entries(languages).map(([lang, name]) => (
-            <Listbox.Option
-              key={lang}
-              value={lang}
-              className={({ active }) =>
-                `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                  active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
-                }`
-              }
-            >
-              {({ selected }) => (
-                <>
-                  <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                    <Image
-                      src={`/flags/${lang}.svg`}
-                      alt={name}
-                      width={20}
-                      height={15}
-                      className="inline-block mr-2"
-                    />
-                    {name}
-                  </span>
-                </>
+    <LanguageSwitcherContext.Provider value={{ isOpen, setIsOpen, currentLang, handleLanguageChange }}>
+      {children}
+    </LanguageSwitcherContext.Provider>
+  );
+}
+
+function useLanguageSwitcher() {
+  const context = useContext(LanguageSwitcherContext);
+  if (context === undefined) {
+    throw new Error('useLanguageSwitcher must be used within a LanguageSwitcherProvider');
+  }
+  return context;
+}
+
+function LanguageSwitcherButton() {
+  const { isOpen, setIsOpen, currentLang } = useLanguageSwitcher();
+
+  return (
+    <CustomButton
+      variant="icon"
+      onClick={() => setIsOpen(!isOpen)}
+      aria-haspopup="listbox"
+      aria-expanded={isOpen}
+      icon={<LanguageIcon className="h-6 w-6" aria-hidden="true" />}
+    >
+      <span className="sr-only">{languages[currentLang]}</span>
+    </CustomButton>
+  );
+}
+
+function LanguageSwitcherOptions() {
+  const { currentLang, handleLanguageChange } = useLanguageSwitcher();
+  const { currentTheme } = useTheme();
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      // Close the dropdown
+    } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const options = Array.from(e.currentTarget.querySelectorAll('button'));
+      const currentIndex = options.findIndex((option) => option === document.activeElement);
+      const nextIndex = e.key === 'ArrowDown' 
+        ? (currentIndex + 1) % options.length 
+        : (currentIndex - 1 + options.length) % options.length;
+      (options[nextIndex] as HTMLElement).focus();
+    }
+  };
+
+  return (
+    <ul
+      className="py-1 text-base focus:outline-none sm:text-sm"
+      role="listbox"
+      onKeyDown={handleKeyDown}
+    >
+      {Object.entries(languages).map(([lang, name]) => (
+        <li key={lang}>
+          <button
+            className={`${languageSwitcherStyles.dropdownItem} ${
+              lang === currentLang ? 'bg-accent text-text-inverted' : ''
+            }`}
+            onClick={() => handleLanguageChange(lang as Lang)}
+            role="option"
+            aria-selected={lang === currentLang}
+          >
+            <span className="flex items-center justify-center w-5 mr-3">
+              {lang === currentLang && (
+                <CheckIcon className="h-4 w-4" aria-hidden="true" />
               )}
-            </Listbox.Option>
-          ))}
-        </Listbox.Options>
-      </div>
-    </Listbox>
+            </span>
+            <span>{name}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function LanguageSwitcherContent() {
+  const { isOpen, setIsOpen } = useLanguageSwitcher();
+  const ref = useOutsideClick<HTMLDivElement>(isOpen, setIsOpen);
+
+  return (
+    <div className="relative" ref={ref}>
+      <CustomButton
+        variant="icon"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        icon={<LanguageIcon className="h-6 w-6" aria-hidden="true" />}
+      />
+      <Dropdown isOpen={isOpen} width="icon" align="right">
+        <LanguageSwitcherOptions />
+      </Dropdown>
+    </div>
+  );
+}
+
+export function ListboxLanguageSwitcher({ currentLang }: { currentLang: Lang }) {
+  return (
+    <LanguageSwitcherProvider currentLang={currentLang}>
+      <LanguageSwitcherContent />
+    </LanguageSwitcherProvider>
   );
 }

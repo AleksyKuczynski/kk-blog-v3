@@ -103,9 +103,11 @@ export const regularCardStyles: Record<Theme, CardThemeStyles> = {
       lg:h-full
       flex flex-col 
       sm:max-lg:grid xl:grid grid-cols-3
+      p-2
     `,
     imageWrapper: `
-      relative 
+      relative
+      rounded-2xl 
       w-full sm:max-md:h-full xl:h-full
       overflow-hidden 
       aspect-[12/10] sm:max-lg:aspect-[11/12] xl:aspect-[11/12]

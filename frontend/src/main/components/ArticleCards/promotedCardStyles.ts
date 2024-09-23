@@ -90,6 +90,7 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
       flex flex-col
       sm:max-xl:grid grid-cols-3 lg:grid-cols-2
       border
+      dark:border-neutral-800
       rounded-3xl 
       shadow-md
       hover:shadow-lg

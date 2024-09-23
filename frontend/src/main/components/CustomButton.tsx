@@ -2,11 +2,10 @@
 'use client';
 
 import React from 'react';
-import { Button } from '@headlessui/react';
 import { useTheme } from '@/main/components/ThemeContext';
 
 interface CustomButtonProps {
-  variant?: 'primary' | 'secondary' | 'accent';
+  variant?: 'primary' | 'secondary' | 'accent' | 'icon';
   size?: 'sm' | 'md' | 'lg';
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
@@ -16,6 +15,25 @@ interface CustomButtonProps {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   type?: 'button' | 'submit' | 'reset';
 }
+
+const buttonStyles = {
+  base: {
+    default: 'font-medium rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 transition-colors duration-200',
+    rounded: 'font-medium rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 transition-colors duration-200',
+    sharp: 'font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 transition-colors duration-200',
+  },
+  size: {
+    sm: 'text-sm px-3 py-1',
+    md: 'text-base px-4 py-2',
+    lg: 'text-lg px-6 py-3',
+  },
+  variant: {
+    primary: 'bg-primary text-text-inverted hover:bg-primary-dark',
+    secondary: 'bg-secondary text-text-inverted hover:bg-secondary-dark',
+    accent: 'bg-accent text-text-inverted hover:bg-accent-dark',
+    icon: 'bg-primary text-text-inverted hover:bg-primary-dark w-10 h-10 p-0 flex items-center justify-center',
+  },
+};
 
 export function CustomButton({
   variant = 'primary',
@@ -31,75 +49,33 @@ export function CustomButton({
 }: CustomButtonProps) {
   const { currentTheme } = useTheme();
 
-  const themeStyles = {
-    base: {
-      default: 'font-medium rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 transition-colors duration-200',
-      rounded: 'font-medium rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 transition-colors duration-200',
-      sharp: 'font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 transition-colors duration-200',
-    },
-    size: {
-      sm: {
-        default: 'text-sm px-3 py-1',
-        rounded: 'text-sm px-4 py-2',
-        sharp: 'text-xs px-2 py-1',
-      },
-      md: {
-        default: 'text-base px-4 py-2',
-        rounded: 'text-base px-6 py-3',
-        sharp: 'text-sm px-3 py-2',
-      },
-      lg: {
-        default: 'text-lg px-6 py-3',
-        rounded: 'text-lg px-8 py-4',
-        sharp: 'text-base px-4 py-3',
-      },
-    },
-    variant: {
-      primary: {
-        default: 'bg-primary text-text-inverted hover:bg-primary-dark',
-        rounded: 'bg-primary text-text-inverted hover:bg-primary-dark',
-        sharp: 'bg-primary text-text-inverted hover:bg-primary-dark',
-      },
-      secondary: {
-        default: 'bg-secondary text-text-inverted hover:bg-secondary-dark',
-        rounded: 'bg-secondary text-text-inverted hover:bg-secondary-dark',
-        sharp: 'bg-secondary text-text-inverted hover:bg-secondary-dark',
-      },
-      accent: {
-        default: 'bg-accent text-text-inverted hover:bg-accent-dark',
-        rounded: 'bg-accent text-text-inverted hover:bg-accent-dark',
-        sharp: 'bg-accent text-text-inverted hover:bg-accent-dark',
-      },
-    },
-    iconOnly: {
-      sm: 'p-1',
-      md: 'p-2',
-      lg: 'p-3',
-    },
-  };
-
-  const baseStyle = themeStyles.base[currentTheme];
-  const sizeStyle = icon && !children ? themeStyles.iconOnly[size] : themeStyles.size[size][currentTheme];
-  const variantStyle = themeStyles.variant[variant][currentTheme];
+  const baseStyle = buttonStyles.base[currentTheme];
+  const sizeStyle = variant === 'icon' ? '' : buttonStyles.size[size];
+  const variantStyle = buttonStyles.variant[variant];
 
   const buttonStyle = `${baseStyle} ${sizeStyle} ${variantStyle} ${className}`;
-
   const disabledStyle = disabled ? 'opacity-50 cursor-not-allowed' : '';
-  const iconOnlyStyle = icon && !children ? 'aspect-square' : '';
+
+  // Apply current text color to the icon
+  const iconWithColor = icon
+    ? React.cloneElement(icon as React.ReactElement, {
+        className: `${(icon as React.ReactElement).props.className || ''} text-current`,
+      })
+    : null;
 
   return (
-    <Button
+    <button
       type={type}
-      className={`${buttonStyle} ${disabledStyle} ${iconOnlyStyle}`}
+      className={`${buttonStyle} ${disabledStyle}`}
       disabled={disabled}
       onClick={onClick}
       {...props}
     >
-      {icon && (iconPosition === 'left' || !children) && (
-        <span className={children ? 'mr-2' : ''}>{icon}</span>
+      {iconWithColor && (iconPosition === 'left' || variant === 'icon') && (
+        <span className={children && variant !== 'icon' ? 'mr-2' : ''}>{iconWithColor}</span>
       )}
-      {children}
-      {icon && iconPosition === 'right' && children && <span className="ml-2">{icon}</span>}
-    </Button>
+      {variant !== 'icon' && children}
+      {iconWithColor && iconPosition === 'right' && variant !== 'icon' && <span className="ml-2">{iconWithColor}</span>}
+    </button>
   );
 }
