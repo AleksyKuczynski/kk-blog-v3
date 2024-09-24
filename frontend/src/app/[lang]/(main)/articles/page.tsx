@@ -1,16 +1,13 @@
 // src/app/[lang]/(main)/articles/page.tsx
 import { Suspense } from 'react';
-import ArticleList from '@/main/components/Main/ArticleList';
-import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
-import SortingControl from '@/main/components/Main/SortingControl';
-import { CategorySelectorWrapper } from '@/main/components/Main/CategorySelectorWrapper';
-import ResetButton from '@/main/components/Main/ResetButton';
-import HeroArticles from '@/main/components/Main/HeroArticles';
-import { fetchHeroSlugs, fetchArticleSlugs } from '@/main/lib/directus/index';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
+import { fetchHeroSlugs, fetchArticleSlugs, fetchAllCategories } from '@/main/lib/directus/index';
 import { ArticleSlugInfo } from '@/main/lib/directus/interfaces';
-import { FilterSortGroup } from '@/main/components/Main/FilterSortGroup.tsx';
+import ArticleList from '@/main/components/Main/ArticleList';
+import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
+import FilterSortGroup from '@/main/components/Main/FilterSortGroup';
+import HeroArticles from '@/main/components/Main/HeroArticles';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,11 +16,11 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
   searchParams: { page?: string, sort?: string, category?: string, search?: string } 
 }) {
   const dict = await getDictionary(lang);
+  const categories = await fetchAllCategories(lang);
   const currentPage = Number(searchParams.page) || 1;
   const currentSort = searchParams.sort || 'desc';
   const currentCategory = searchParams.category || '';
   const currentSearch = searchParams.search || '';
-
   const isDefaultView = currentSort === 'desc' && !currentCategory && !currentSearch;
 
   let heroSlugs: string[] = [];
@@ -55,6 +52,8 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
     <div className="space-y-8">
       <FilterSortGroup
         currentSort={currentSort}
+        currentCategory={currentCategory}
+        categories={categories}
         sortingTranslations={dict.sorting}
         categoryTranslations={dict.categories}
         resetText={dict.filter.reset}
@@ -73,7 +72,6 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
           </Suspense>
         </section>
       )}
-
 
       <section aria-label={dict.sections.articles.allArticles} className="sm:pb-12">
         {isDefaultView && (

@@ -12,7 +12,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'clean-pots-lead.loca.lt',
+        hostname: 'cyan-parrots-pay.loca.lt',
         port: '',
         pathname: '/assets/**',
       },
