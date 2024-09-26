@@ -6,7 +6,7 @@ import { fetchHeroSlugs, fetchArticleSlugs, fetchAllCategories } from '@/main/li
 import { ArticleSlugInfo } from '@/main/lib/directus/interfaces';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
-import FilterSortGroup from '@/main/components/Main/FilterSortGroup';
+import FilterGroup from '@/main/components/Main/FilterGroup';
 import HeroArticles from '@/main/components/Main/HeroArticles';
 
 export const dynamic = 'force-dynamic';
@@ -50,7 +50,7 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
 
   return (
     <div className="space-y-8">
-      <FilterSortGroup
+      <FilterGroup
         currentSort={currentSort}
         currentCategory={currentCategory}
         categories={categories}

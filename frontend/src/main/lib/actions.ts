@@ -20,8 +20,9 @@ export async function getTheme(): Promise<Theme> {
   return theme && ['default', 'rounded', 'sharp'].includes(theme) ? theme : 'default';
 }
 
-export async function setTheme(theme: Theme) {
-  cookies().set('theme', theme, { httpOnly: true, secure: true, sameSite: 'strict' });
+export async function setTheme(theme: Theme): Promise<Theme> {
+  cookies().set('theme', theme)
+  return theme
 }
 
 export async function getSearchSuggestions(query: string, lang: Lang): Promise<SearchProposition[]> {

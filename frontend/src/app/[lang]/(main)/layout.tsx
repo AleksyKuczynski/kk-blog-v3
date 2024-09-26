@@ -1,9 +1,8 @@
 // src/app/[lang]/(main)/layout.tsx
 import { getDictionary } from '@/main/lib/dictionaries';
 import Footer from '@/main/components/Footer';
-import Navigation from '@/main/components/Navigation'
+import Navigation from '@/main/components/Navigation/Navigation'
 import { Lang, Dictionary, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
-import { getTheme } from '@/main/lib/actions';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -19,7 +18,6 @@ export default async function MainLayout({
   params: { lang: Lang }
 }) {
   const dict: Dictionary = await getDictionary(lang);
-  const initialTheme = await getTheme();
 
   const navigationTranslations: NavigationTranslations = dict.navigation;
   const searchTranslations: SearchTranslations = dict.search;

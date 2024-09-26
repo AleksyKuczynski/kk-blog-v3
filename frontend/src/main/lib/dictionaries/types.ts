@@ -90,6 +90,7 @@ export interface RubricsTranslations {
 }
 
 export interface CategoryTranslations {
+  categories: string;
   allCategories: string;
   selectCategory: string;
 }

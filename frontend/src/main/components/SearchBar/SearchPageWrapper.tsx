@@ -2,8 +2,8 @@
 'use client';
 
 import { SearchProvider } from './SearchContext';
-import SearchInput from './SearchInput';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
+import { SearchInput } from './SearchInput';
 
 interface SearchPageWrapperProps {
   initialSearch: string;
@@ -13,7 +13,7 @@ interface SearchPageWrapperProps {
 export default function SearchPageWrapper({ initialSearch, translations }: SearchPageWrapperProps) {
   return (
     <SearchProvider initialSearch={initialSearch} translations={translations}>
-      <SearchInput />
+      <SearchInput isVisible={true} onCollapse={() => {}} />
     </SearchProvider>
   );
 }

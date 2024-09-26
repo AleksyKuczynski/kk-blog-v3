@@ -1,10 +1,11 @@
+// src/main/components/Navigation/MobileThemeSwitcher.tsx
 'use client'
 
-import { setTheme, Theme } from '../lib/actions'
+import { setTheme, Theme } from '../../lib/actions'
 import { useRouter } from 'next/navigation'
-import { useTheme } from './ThemeContext'
+import { useTheme } from '../ThemeContext'
 
-export function ThemeSwitcher() {
+export function MobileThemeSwitcher() {
   const { currentTheme, setCurrentTheme } = useTheme()
   const router = useRouter()
 

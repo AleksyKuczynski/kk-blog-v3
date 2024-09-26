@@ -1,16 +1,11 @@
 // src/main/components/SearchBar/SearchInput.tsx
-import { useState, useRef } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { useDebouncedCallback } from 'use-debounce';
-import { getSearchSuggestions } from '@/main/lib/actions';
-import { SearchProposition } from '@/main/lib/directus/interfaces';
+'use client';
+
 import { SearchIcon } from '@/main/components/Icons';
-import { useSearch } from './SearchContext';
 import { CustomButton } from '../CustomButton';
-import { Lang } from '@/main/lib/dictionaries/types';
 import { useTheme } from '@/main/components/ThemeContext';
-import { useOutsideClick } from '@/main/lib/useOutsideClick';
 import { Dropdown } from '../Dropdown';
+import { useSearch } from '@/main/lib/useSearch';
 
 const truncateText = (text: string | undefined, maxLength: number) => {
   if (!text) return '';
@@ -27,70 +22,28 @@ const searchInputStyles = {
   dropdownItem: 'w-full text-left px-4 py-2 text-sm text-text-primary dark:text-text-inverted hover:bg-secondary hover:text-text-inverted transition duration-300',
 };
 
-export default function SearchInput() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const { searchQuery, setSearchQuery, translations } = useSearch();
-  const [suggestions, setSuggestions] = useState<SearchProposition[]>([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [hasInteracted, setHasInteracted] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
+interface SearchInputProps {
+  isVisible: boolean;
+  onCollapse: () => void;
+}
+
+export function SearchInput({ isVisible, onCollapse }: SearchInputProps) {
   const { currentTheme } = useTheme();
-
-  const ref = useOutsideClick<HTMLDivElement>(showDropdown, setShowDropdown);
-
-  const debouncedFetch = useDebouncedCallback(async (term: string) => {
-    if (term.length >= 3) {
-      const lang = pathname.split('/')[1] as Lang;
-      const results = await getSearchSuggestions(term, lang);
-      setSuggestions(results);
-      setShowDropdown(true);
-    } else {
-      setSuggestions([]);
-      setShowDropdown(term.length > 0);
-    }
-  }, 300);
-
-  const handleSearch = (term: string) => {
-    setSearchQuery(term);
-    setHasInteracted(true);
-    debouncedFetch(term);
-  };
-
-  const handleSelect = (slug: string, rubricSlug: string) => {
-    const lang = pathname.split('/')[1];
-    router.push(`/${lang}/${rubricSlug}/${slug}`);
-    clearSearchBar();
-  };
-
-  const clearSearchBar = () => {
-    setSearchQuery('');
-    setSuggestions([]);
-    setShowDropdown(false);
-    setHasInteracted(false);
-  };
-
-  const handleSearchSubmit = () => {
-    if (searchQuery.trim()) {
-      const lang = pathname.split('/')[1];
-      const encodedQuery = encodeURIComponent(searchQuery.trim());
-      router.push(`/${lang}/search?search=${encodedQuery}`);
-      setShowDropdown(false);
-      setHasInteracted(false);
-    }
-  };
-
-  const handleSearchButtonClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    handleSearchSubmit();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSearchSubmit();
-    }
-  };
+  const {
+    searchQuery,
+    suggestions,
+    showDropdown,
+    hasInteracted,
+    searchInputRef,
+    dropdownRef,
+    translations,
+    handleSearch,
+    handleSelect,
+    handleSearchSubmit,
+    handleKeyDown,
+    handleSuggestionKeyDown,
+    setShowDropdown,
+  } = useSearch(onCollapse);
 
   const getThemeClasses = () => {
     switch (currentTheme) {
@@ -104,7 +57,7 @@ export default function SearchInput() {
   };
 
   return (
-    <div data-search-component className="relative w-full" ref={ref}>
+    <div className={`relative w-full ${isVisible ? 'opacity-100 visible' : 'opacity-0 invisible'} transition-opacity duration-300`}>
       <div className={`relative w-full flex ${getThemeClasses()}`}>
         <input
           ref={searchInputRef}
@@ -118,33 +71,40 @@ export default function SearchInput() {
         />
         <CustomButton
           type="button"
-          variant="accent"
+          color="secondary"
+          content="icon"
+          style="no-border"
           className={`absolute right-0 top-0 h-full ${currentTheme === 'rounded' ? 'rounded-r-full' : ''}`}
           icon={<SearchIcon className="h-5 w-5" />}
-          onClick={handleSearchButtonClick}
-        >
-          {translations.submit}
-        </CustomButton>
+          onClick={handleSearchSubmit}
+        />
       </div>
-      <Dropdown isOpen={showDropdown && hasInteracted} width="search">
-        {searchQuery.length < 3 ? (
-          <p className="px-4 py-2 text-sm text-center text-text-secondary dark:text-neutral-400">{translations.minCharacters}</p>
-        ) : suggestions.length === 0 ? (
-          <p className="px-4 py-2 text-sm text-center text-text-secondary dark:text-neutral-400">{translations.noResults}</p>
-        ) : (
-          <ul className="max-h-60 overflow-auto py-1 text-base focus:outline-none sm:text-sm">
-            {suggestions.map((suggestion) => (
-              <li key={suggestion.slug}>
-                <button
-                  className={searchInputStyles.dropdownItem}
-                  onClick={() => handleSelect(suggestion.slug, suggestion.rubric_slug)}
-                >
-                  {truncateText(suggestion.title, 64)}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+      <Dropdown 
+        isOpen={showDropdown && hasInteracted} 
+        onClose={() => setShowDropdown(false)}
+        width="search"
+      >
+        <div ref={dropdownRef}>
+          {searchQuery.length < 3 ? (
+            <p className="px-4 py-2 text-sm text-center text-text-secondary dark:text-neutral-400">{translations.minCharacters}</p>
+          ) : suggestions.length === 0 ? (
+            <p className="px-4 py-2 text-sm text-center text-text-secondary dark:text-neutral-400">{translations.noResults}</p>
+          ) : (
+            <ul className="max-h-60 overflow-auto py-1 text-base focus:outline-none sm:text-sm">
+              {suggestions.map((suggestion, index) => (
+                <li key={suggestion.slug}>
+                  <button
+                    className={`suggestion-item ${searchInputStyles.dropdownItem}`}
+                    onClick={() => handleSelect(suggestion.slug, suggestion.rubric_slug)}
+                    onKeyDown={(e) => handleSuggestionKeyDown(e, index)}
+                  >
+                    {truncateText(suggestion.title, 64)}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </Dropdown>
     </div>
   );

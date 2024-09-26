@@ -7,7 +7,7 @@ import { fetchAuthorBySlug, fetchRubricBasics, DIRECTUS_URL, fetchArticleSlugs, 
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
 import ArticleList from '@/main/components/Main/ArticleList';
-import Breadcrumbs from '@/main/components/Breadcrumbs';
+import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 
 export default async function AuthorPage({ params, searchParams }: { 

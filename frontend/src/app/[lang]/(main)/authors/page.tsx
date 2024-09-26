@@ -2,7 +2,7 @@
 
 import { fetchAllAuthors, fetchRubricBasics } from '@/main/lib/directus/index';
 import AuthorCard from '@/main/components/Main/AuthorCard';
-import Breadcrumbs from '@/main/components/Breadcrumbs';
+import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { Metadata } from 'next';

@@ -1,15 +1,14 @@
-// src/main/components/ListboxLanguageSwitcher.tsx
+// src/main/components/Navigation/LanguageSwitcher.tsx
 'use client';
 
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { switchLanguage } from '@/main/lib/actions';
 import { Lang } from '@/main/lib/dictionaries/types';
-import { CheckIcon, ChevronDownIcon, LanguageIcon } from './Icons';
-import { CustomButton } from './CustomButton';
-import { useOutsideClick } from '../lib/useOutsideClick';
-import { useTheme } from './ThemeContext';
-import { Dropdown } from './Dropdown';
+import { CheckIcon, LanguageIcon } from '../Icons';
+import { CustomButton } from '../CustomButton';
+import { Dropdown } from '../Dropdown';
+import { useKeyboardNavigation } from '../../lib/hooks';
 
 const languages: { [key in Lang]: string } = {
   en: 'English',
@@ -73,25 +72,8 @@ function useLanguageSwitcher() {
   return context;
 }
 
-function LanguageSwitcherButton() {
-  const { isOpen, setIsOpen, currentLang } = useLanguageSwitcher();
-
-  return (
-    <CustomButton
-      variant="icon"
-      onClick={() => setIsOpen(!isOpen)}
-      aria-haspopup="listbox"
-      aria-expanded={isOpen}
-      icon={<LanguageIcon className="h-6 w-6" aria-hidden="true" />}
-    >
-      <span className="sr-only">{languages[currentLang]}</span>
-    </CustomButton>
-  );
-}
-
 function LanguageSwitcherOptions() {
   const { currentLang, handleLanguageChange } = useLanguageSwitcher();
-  const { currentTheme } = useTheme();
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
@@ -137,26 +119,62 @@ function LanguageSwitcherOptions() {
 }
 
 function LanguageSwitcherContent() {
-  const { isOpen, setIsOpen } = useLanguageSwitcher();
-  const ref = useOutsideClick<HTMLDivElement>(isOpen, setIsOpen);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const { currentLang, handleLanguageChange } = useLanguageSwitcher();
+  
+  useKeyboardNavigation(dropdownRef, isOpen, () => setIsOpen(false));
+
+  const handleItemKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, lang: Lang) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleLanguageChange(lang);
+    }
+  };
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="relative">
       <CustomButton
-        variant="icon"
+        content="icon"
         onClick={() => setIsOpen(!isOpen)}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         icon={<LanguageIcon className="h-6 w-6" aria-hidden="true" />}
       />
-      <Dropdown isOpen={isOpen} width="icon" align="right">
-        <LanguageSwitcherOptions />
+      <Dropdown isOpen={isOpen} onClose={() => setIsOpen(false)} width="icon" align="right">
+        <div ref={dropdownRef}>
+          <ul
+            className="py-1 text-base focus:outline-none sm:text-sm"
+            role="listbox"
+          >
+            {Object.entries(languages).map(([lang, name]) => (
+              <li key={lang}>
+                <button
+                  className={`${languageSwitcherStyles.dropdownItem} ${
+                    lang === currentLang ? 'bg-accent text-text-inverted' : ''
+                  }`}
+                  onClick={() => handleLanguageChange(lang as Lang)}
+                  onKeyDown={(e) => handleItemKeyDown(e, lang as Lang)}
+                  role="option"
+                  aria-selected={lang === currentLang}
+                >
+                  <span className="flex items-center justify-center w-5 mr-3">
+                    {lang === currentLang && (
+                      <CheckIcon className="h-4 w-4" aria-hidden="true" />
+                    )}
+                  </span>
+                  <span>{name}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </Dropdown>
     </div>
   );
 }
 
-export function ListboxLanguageSwitcher({ currentLang }: { currentLang: Lang }) {
+export function LanguageSwitcher({ currentLang }: { currentLang: Lang }) {
   return (
     <LanguageSwitcherProvider currentLang={currentLang}>
       <LanguageSwitcherContent />

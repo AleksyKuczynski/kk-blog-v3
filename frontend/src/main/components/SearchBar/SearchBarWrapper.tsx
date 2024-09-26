@@ -2,21 +2,19 @@
 'use client';
 
 import { SearchProvider } from './SearchContext';
-import SearchInput from './SearchInput';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
-import { useTheme } from '@/main/components/ThemeContext';
+import { SearchInput } from './SearchInput';
 
 interface SearchBarWrapperProps {
   initialSearch?: string;
   translations: SearchTranslations;
+  isVisible?: boolean;
 }
 
-export default function SearchBarWrapper({ initialSearch = '', translations }: SearchBarWrapperProps) {
-  const { currentTheme } = useTheme();
-
+export default function SearchBarWrapper({ initialSearch = '', translations, isVisible = true }: SearchBarWrapperProps) {
   return (
     <SearchProvider initialSearch={initialSearch} translations={translations}>
-      <SearchInput />
+      <SearchInput isVisible={isVisible} onCollapse={() => {}} />
     </SearchProvider>
   );
 }

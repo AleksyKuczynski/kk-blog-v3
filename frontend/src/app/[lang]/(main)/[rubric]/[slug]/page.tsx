@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { getArticlePageData } from '@/main/lib/actions';
 import { Header, Metadata, Content, ScrollToTopButton, TableOfContents } from '@/main/components/Article';
-import Breadcrumbs from '@/main/components/Breadcrumbs';
+import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 
 export default async function ArticlePage({ 
   params,

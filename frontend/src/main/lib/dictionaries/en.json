@@ -46,6 +46,7 @@
     "reset": "Reset"
   },
   "categories": {
+    "categories": "Category",
     "allCategories": "All Categories",
     "selectCategory": "Select Category"
   },

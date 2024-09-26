@@ -5,6 +5,7 @@
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { CustomButton } from '../CustomButton';
 import { SortingTranslations } from '@/main/lib/dictionaries/types';
+import { DateSortDownIcon, DateSortUpIcon } from '../Icons';
 
 interface SortingControlProps {
   currentSort: string;
@@ -25,8 +26,11 @@ export default function SortingControl({ currentSort, translations }: SortingCon
   };
 
   return (
-    <CustomButton variant="accent" onClick={toggleSort}>
-      {translations.sortOrder}: {currentSort === 'desc' ? translations.newest : translations.oldest}
-    </CustomButton>
+    <CustomButton
+      color="secondary"
+      onClick={toggleSort}
+      icon={currentSort === 'desc' ? <DateSortDownIcon className="h-5 w-5" /> : <DateSortUpIcon className="h-5 w-5" />}
+      aria-label={currentSort === 'desc' ? translations.oldest : translations.newest}
+    />
   );
 }

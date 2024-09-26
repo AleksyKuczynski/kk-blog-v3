@@ -38,14 +38,15 @@
     "minCharacters": "Минимум 3 знака"
   },
   "sorting": {
-    "sortOrder": "Порядок сортировки",
-    "newest": "Сначала новые",
-    "oldest": "Сначала старые"
+    "sortOrder": "Порядок",
+    "newest": "От новых",
+    "oldest": "От старых"
   },
   "filter": {
     "reset": "Сброс"
   },
   "categories": {
+    "categories": "Категория",
     "allCategories": "Все категории",
     "selectCategory": "Выберите категорию"
   },

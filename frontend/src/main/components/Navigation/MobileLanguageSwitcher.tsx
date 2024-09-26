@@ -1,11 +1,11 @@
-// src/main/components/LanguageSwitcher.tsx
+// src/main/components/Navigation/MobileLanguageSwitcher.tsx
 'use client'
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { switchLanguage } from '@/main/lib/actions'
-import { Lang } from '../lib/dictionaries/types'
+import { Lang } from '../../lib/dictionaries/types'
 
-export function LanguageSwitcher({ currentLang }: { currentLang: Lang }) {
+export function MobileLanguageSwitcher({ currentLang }: { currentLang: Lang }) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()

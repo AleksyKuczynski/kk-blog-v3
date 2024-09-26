@@ -1,12 +1,14 @@
 // src/main/components/Dropdown.tsx
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { useTheme } from '@/main/components/ThemeContext';
+import { useOutsideClick, useKeyboardNavigation } from '@/main/lib/hooks';
 
 interface DropdownProps {
   children: React.ReactNode;
   isOpen: boolean;
+  onClose: () => void;
   width?: 'icon' | 'narrow' | 'wide' | 'search';
   align?: 'left' | 'right';
   className?: string;
@@ -30,8 +32,19 @@ const dropdownStyles = {
   },
 };
 
-export function Dropdown({ children, isOpen, width = 'narrow', align = 'left', className = '' }: DropdownProps) {
+export const Dropdown: React.FC<DropdownProps> = ({
+  children,
+  isOpen,
+  onClose,
+  width = 'narrow',
+  align = 'left',
+  className = '',
+}) => {
   const { currentTheme } = useTheme();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick(dropdownRef, isOpen, onClose);
+  useKeyboardNavigation(dropdownRef, isOpen, onClose);
 
   if (!isOpen) return null;
 
@@ -40,8 +53,8 @@ export function Dropdown({ children, isOpen, width = 'narrow', align = 'left', c
   const alignStyle = dropdownStyles.align[align];
 
   return (
-    <div className={`${baseStyle} ${widthStyle} ${alignStyle} ${className}`}>
+    <div ref={dropdownRef} className={`${baseStyle} ${widthStyle} ${alignStyle} ${className}`}>
       {children}
     </div>
   );
-}
+};

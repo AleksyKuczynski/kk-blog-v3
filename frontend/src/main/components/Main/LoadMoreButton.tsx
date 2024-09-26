@@ -22,7 +22,8 @@ export default function LoadMoreButton({ currentPage, loadMoreText }: LoadMoreBu
 
   return (
     <CustomButton
-      variant="accent"
+      color="accent"
+      style="outlined"
       size="lg"
       onClick={handleLoadMore}
       className="load-more-button mt-8"

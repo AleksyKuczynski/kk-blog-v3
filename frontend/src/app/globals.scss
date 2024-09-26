@@ -13,14 +13,9 @@ html {
   // Common variables for all themes
   --transition-duration: 200ms;
   --scrollbar-width: 0px;
-}
-
-// Theme-specific variables
-[data-theme="default"] {
   --border-radius: 0.25rem;
   --content-margin: 1rem;
   --font-size-base: 1rem;
-  --card-padding: 1rem;
   --button-padding-x: 1rem;
   --button-padding-y: 0.5rem;
 }
@@ -29,7 +24,6 @@ html {
   --border-radius: 1rem;
   --content-margin: 1.5rem;
   --font-size-base: 1.1rem;
-  --card-padding: 1.5rem;
   --button-padding-x: 1.5rem;
   --button-padding-y: 0.75rem;
 }
@@ -38,7 +32,6 @@ html {
   --border-radius: 0;
   --content-margin: 0.5rem;
   --font-size-base: 0.9rem;
-  --card-padding: 0.75rem;
   --button-padding-x: 0.75rem;
   --button-padding-y: 0.25rem;
 }

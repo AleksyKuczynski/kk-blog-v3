@@ -74,8 +74,10 @@ const config: Config = {
         },
         text: {
           primary: '#1A1A2E',
+          dark: '#000000',
           secondary: '#16213E',
           inverted: '#EEEEEE',
+          accent: '#FFFFFF',
         },
         success: '#06D6A0',
         error: '#EF476F',

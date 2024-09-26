@@ -15,7 +15,7 @@ const heroStyles = {
     grid-cols-1 xl:grid-cols-2 
     gap-6 lg:gap-12 xl:gap-8 2xl:gap-12
     container mx-auto 
-    py-12
+    py-6 md:py-8 lg:py-12
     px-2 sm:px-6 2xl:px-8
   `,
   promotedCard: {

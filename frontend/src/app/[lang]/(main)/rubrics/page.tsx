@@ -1,7 +1,7 @@
 // src/app/[lang]/(main)/rubrics/page.tsx
 import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
 import RubricCard from '@/main/components/Main/RubricCard';
-import Breadcrumbs from '@/main/components/Breadcrumbs';
+import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { Rubric } from '@/main/lib/directus/interfaces';
