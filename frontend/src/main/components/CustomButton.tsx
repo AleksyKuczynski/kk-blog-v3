@@ -2,6 +2,7 @@
 'use client';
 
 import React from 'react';
+import { useTheme } from '@/main/components/ThemeContext';
 
 interface CustomButtonProps {
   color?: 'primary' | 'secondary' | 'accent';
@@ -20,9 +21,9 @@ interface CustomButtonProps {
 const buttonStyles = {
   base: 'font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 transition-all duration-200',
   size: {
-    sm: 'text-sm',
-    md: 'text-base',
-    lg: 'text-lg',
+    sm: 'h-8 w-8 text-sm',
+    md: 'h-10 w-10 text-base',
+    lg: 'h-12 w-12 text-lg',
   },
   content: {
     icon: 'p-2',
@@ -60,14 +61,9 @@ const buttonColors = {
   },
 };
 
-const iconStyles = {
-  default: 'transition-colors duration-200',
-  colored: 'group-hover:text-text-inverted group-focus:text-text-inverted',
-};
-
 export function CustomButton({
   color,
-  style = 'no-border',
+  style = 'filled',
   content = 'text',
   size = 'md',
   icon,
@@ -79,23 +75,43 @@ export function CustomButton({
   shadow = 'none',
   ...props
 }: CustomButtonProps) {
+  const { currentTheme } = useTheme();
+
   const getButtonStyles = () => {
     const colorStyle = buttonColors[color || 'none'][style];
+    const sizeStyle = buttonStyles.size[size];
+    const contentStyle = content === 'icon' ? buttonStyles.content.icon : buttonStyles.content[content];
+
     return `
       ${buttonStyles.base}
-      ${buttonStyles.size[size]}
-      ${buttonStyles.content[content]}
+      ${sizeStyle}
+      ${contentStyle}
       ${buttonStyles.shadow[shadow]}
       ${colorStyle}
       ${style === 'outlined' ? 'border-2' : ''}
       ${className}
+      ${content !== 'icon' ? 'w-auto' : ''} // Allow text buttons to expand
       rounded-[var(--border-radius)]
       transition-colors duration-200
     `;
   };
 
-  const getIconStyles = () => {
-    return `${iconStyles.default} ${color ? iconStyles.colored : ''}`;
+  const renderContent = () => {
+    switch (content) {
+      case 'icon':
+        return icon;
+      case 'text':
+        return children;
+      case 'icon-text':
+        return (
+          <>
+            {icon && <span className="mr-2">{icon}</span>}
+            {children}
+          </>
+        );
+      default:
+        return children;
+    }
   };
 
   const disabledStyle = disabled ? 'opacity-50 cursor-not-allowed' : '';
@@ -108,18 +124,7 @@ export function CustomButton({
       onClick={onClick}
       {...props}
     >
-      {content === 'icon' && icon ? (
-        <span className={getIconStyles()}>
-          {icon}
-        </span>
-      ) : content === 'text' ? (
-        children
-      ) : (
-        <>
-          {icon && <span className={`mr-2 ${getIconStyles()}`}>{icon}</span>}
-          {children}
-        </>
-      )}
+      {renderContent()}
     </button>
   );
 }

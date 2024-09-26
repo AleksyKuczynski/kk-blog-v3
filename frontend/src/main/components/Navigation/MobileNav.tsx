@@ -109,7 +109,9 @@ export default function MobileNavigation({
           <div className="mt-auto space-y-4">
             {!isSearchPage && (
               <div className="py-2">
-                <SearchBarWrapper translations={searchTranslations} isVisible={true} />
+                <SearchBarWrapper 
+                  translations={searchTranslations}
+                />
               </div>
             )}
             <div className="py-2">

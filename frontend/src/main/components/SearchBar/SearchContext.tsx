@@ -1,4 +1,6 @@
 // src/main/components/SearchBar/SearchContext.tsx
+'use client';
+
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
 

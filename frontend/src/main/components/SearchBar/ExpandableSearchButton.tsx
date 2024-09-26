@@ -7,7 +7,7 @@ import { CustomButton } from '../CustomButton';
 import { SearchInput } from './SearchInput';
 import { SearchProvider } from './SearchContext';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
-import { useTheme } from '../ThemeContext';
+import { useTheme } from '@/main/components/ThemeContext';
 
 interface ExpandableSearchButtonProps {
   searchTranslations: SearchTranslations;
@@ -15,56 +15,40 @@ interface ExpandableSearchButtonProps {
 
 export default function ExpandableSearchButton({ searchTranslations }: ExpandableSearchButtonProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isInputVisible, setIsInputVisible] = useState(false);
   const { currentTheme } = useTheme();
 
   const handleButtonClick = () => {
-    if (!isExpanded) {
-      setIsExpanded(true);
-      setTimeout(() => setIsInputVisible(true), 300);
-    } else {
-      collapseSearch();
-    }
+    setIsExpanded(!isExpanded);
   };
 
-  const collapseSearch = () => {
-    setIsInputVisible(false);
-    setTimeout(() => setIsExpanded(false), 300);
+  const handleSearchSubmit = () => {
+    // Handle search submit logic
+    setIsExpanded(false);
   };
 
-  const getThemeClasses = () => {
-    switch (currentTheme) {
-      case 'rounded':
-        return 'rounded-full';
-      case 'sharp':
-        return 'rounded-none';
-      default:
-        return 'rounded-lg';
-    }
-  };
+  const buttonClasses = `
+    absolute right-0 top-0 h-full px-3 
+    flex items-center justify-center 
+    text-secondary hover:text-secondary-dark 
+    transition-colors duration-300
+    ${currentTheme === 'rounded' ? 'rounded-r-full' : currentTheme === 'sharp' ? 'rounded-none' : 'rounded-r-md'}
+  `;
 
   return (
     <SearchProvider initialSearch="" translations={searchTranslations}>
       <div className="relative">
-        <CustomButton
-          content="icon"
-          onClick={handleButtonClick}
-          className={`
-            z-10 transition-all duration-300
-            w-12 h-12 flex items-center justify-end
-            ${getThemeClasses()}
-            ${isExpanded ? 'w-64 bg-secondary text-text-inverted pr-3' : 'pr-0'}
-          `}
-          icon={<SearchIcon className="h-6 w-6" />}
-        />
-        <div
-          className={`
-            absolute top-0 right-0 w-64
-            transition-opacity duration-300
-            ${isInputVisible ? 'opacity-100 visible' : 'opacity-0 invisible'}
-          `}
-        >
-          <SearchInput isVisible={isInputVisible} onCollapse={collapseSearch} />
+        <div className={`flex items-center transition-all duration-300 ${isExpanded ? 'w-64' : 'w-12'}`}>
+          <SearchInput 
+            className={`transition-all duration-300 ${isExpanded ? 'w-full opacity-100' : 'w-0 opacity-0'}`}
+            onSubmit={handleSearchSubmit}
+            isVisible={isExpanded}
+          />
+          <CustomButton
+            content="icon"
+            onClick={handleButtonClick}
+            className={buttonClasses}
+            icon={<SearchIcon className="h-6 w-6" />}
+          />
         </div>
       </div>
     </SearchProvider>
