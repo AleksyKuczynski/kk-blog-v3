@@ -3,7 +3,7 @@
 
 import React, { useRef } from 'react';
 import { useTheme } from '@/main/components/ThemeContext';
-import { useOutsideClick, useKeyboardNavigation } from '@/main/lib/hooks';
+import { useOutsideClick } from '@/main/lib/hooks';
 
 interface DropdownProps {
   children: React.ReactNode;
@@ -32,19 +32,18 @@ const dropdownStyles = {
   },
 };
 
-export const Dropdown: React.FC<DropdownProps> = ({
+export const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(({
   children,
   isOpen,
   onClose,
   width = 'narrow',
   align = 'left',
   className = '',
-}) => {
+}, ref) => {
   const { currentTheme } = useTheme();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useOutsideClick(dropdownRef, isOpen, onClose);
-  useKeyboardNavigation(dropdownRef, isOpen, onClose);
 
   if (!isOpen) return null;
 
@@ -53,8 +52,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const alignStyle = dropdownStyles.align[align];
 
   return (
-    <div ref={dropdownRef} className={`${baseStyle} ${widthStyle} ${alignStyle} ${className}`}>
+    <div 
+      ref={ref || dropdownRef}
+      className={`${baseStyle} ${widthStyle} ${alignStyle} ${className}`}
+    >
       {children}
     </div>
   );
-};
+});
+
+Dropdown.displayName = 'Dropdown';

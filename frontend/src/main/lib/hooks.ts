@@ -1,91 +1,85 @@
 // src/main/lib/hooks.ts
-import { useEffect, RefObject, useState } from 'react';
+import React, { useCallback, useState, useEffect, RefObject } from 'react';
+
+type Handler = (event: MouseEvent | TouchEvent | KeyboardEvent) => void;
 
 export function useOutsideClick<T extends HTMLElement>(
   ref: RefObject<T>,
   isOpen: boolean,
   onClose: () => void
-) {
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (ref.current && !ref.current.contains(event.target as Node) && isOpen) {
-        onClose();
-      }
+): void {
+  const handleClickOutside = useCallback((event: MouseEvent | TouchEvent) => {
+    if (ref.current && !ref.current.contains(event.target as Node) && isOpen) {
+      onClose();
     }
-
-    function handleEscapeKey(event: KeyboardEvent) {
-      if (event.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscapeKey);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscapeKey);
-    };
   }, [ref, isOpen, onClose]);
+
+  const handleEscapeKey = useCallback((event: KeyboardEvent) => {
+    if (event.key === 'Escape' && isOpen) {
+      onClose();
+    }
+  }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+      document.addEventListener('keydown', handleEscapeKey);
+
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener('touchstart', handleClickOutside);
+        document.removeEventListener('keydown', handleEscapeKey);
+      };
+    }
+  }, [isOpen, handleClickOutside, handleEscapeKey]);
 }
 
-export function useKeyboardNavigation(
-  containerRef: RefObject<HTMLElement>,
-  isOpen: boolean,
-  onClose: () => void
-) {
+export function useFocusInput(inputRef: RefObject<HTMLInputElement>, shouldFocus: boolean, delay: number = 0): void {
   useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (!isOpen || !containerRef.current) return;
-
-      const focusableElements = containerRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-
-      if (event.key === 'Tab') {
-        if (event.shiftKey && document.activeElement === firstElement) {
-          event.preventDefault();
-          lastElement.focus();
-        } else if (!event.shiftKey && document.activeElement === lastElement) {
-          event.preventDefault();
-          firstElement.focus();
-        }
-      } else if (event.key === 'Escape') {
-        onClose();
-      }
+    if (shouldFocus && inputRef.current) {
+      const timeoutId = setTimeout(() => {
+        inputRef.current?.focus();
+      }, delay);
+      return () => clearTimeout(timeoutId);
     }
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, containerRef]);
+  }, [shouldFocus, delay, inputRef]);
 }
 
 interface WindowSize {
-  width: number | undefined
-  height: number | undefined
+  width: number | undefined;
+  height: number | undefined;
 }
-  
+
 export function useWindowSize(): WindowSize {
   const [windowSize, setWindowSize] = useState<WindowSize>({
     width: undefined,
     height: undefined,
-  })
+  });
 
   useEffect(() => {
-    function handleResize() {
+    const handleResize = () => {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
-      })
+      });
+    };
+
+    // Use ResizeObserver if available, fallback to window resize event
+    if (typeof ResizeObserver !== 'undefined') {
+      const resizeObserver = new ResizeObserver(handleResize);
+      resizeObserver.observe(document.body);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    } else {
+      window.addEventListener('resize', handleResize);
+      handleResize(); // Call once to set initial size
+
+      return () => window.removeEventListener('resize', handleResize);
     }
+  }, []);
 
-    window.addEventListener('resize', handleResize)
-    handleResize()
-
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  return windowSize
+  return windowSize;
 }

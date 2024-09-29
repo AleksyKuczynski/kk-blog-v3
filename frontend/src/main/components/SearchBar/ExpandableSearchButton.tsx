@@ -1,56 +1,51 @@
 // src/main/components/SearchBar/ExpandableSearchButton.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import SearchInput, { SearchInputHandle } from './SearchInput';
 import { SearchIcon } from '../Icons';
-import { CustomButton } from '../CustomButton';
-import { SearchInput } from './SearchInput';
-import { SearchProvider } from './SearchContext';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
-import { useTheme } from '@/main/components/ThemeContext';
+import { SearchProvider } from './SearchContext';
+import { NavButton } from '../Navigation/NavButton';
 
 interface ExpandableSearchButtonProps {
   searchTranslations: SearchTranslations;
 }
 
 export default function ExpandableSearchButton({ searchTranslations }: ExpandableSearchButtonProps) {
+  const searchInputRef = useRef<SearchInputHandle>(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  const { currentTheme } = useTheme();
 
-  const handleButtonClick = () => {
+  const toggleSearch = () => {
     setIsExpanded(!isExpanded);
   };
 
   const handleSearchSubmit = () => {
-    // Handle search submit logic
+    // Handle search submission logic here
     setIsExpanded(false);
   };
 
-  const buttonClasses = `
-    absolute right-0 top-0 h-full px-3 
-    flex items-center justify-center 
-    text-secondary hover:text-secondary-dark 
-    transition-colors duration-300
-    ${currentTheme === 'rounded' ? 'rounded-r-full' : currentTheme === 'sharp' ? 'rounded-none' : 'rounded-r-md'}
-  `;
-
   return (
-    <SearchProvider initialSearch="" translations={searchTranslations}>
-      <div className="relative">
-        <div className={`flex items-center transition-all duration-300 ${isExpanded ? 'w-64' : 'w-12'}`}>
+    <div className="relative">
+      {isExpanded ? (
+        <SearchProvider initialSearch="" translations={searchTranslations}>
           <SearchInput 
-            className={`transition-all duration-300 ${isExpanded ? 'w-full opacity-100' : 'w-0 opacity-0'}`}
-            onSubmit={handleSearchSubmit}
+            ref={searchInputRef}
             isVisible={isExpanded}
+            onSubmit={handleSearchSubmit}
+            showButton={true}
+            translations={searchTranslations}
+            autoFocus={true}
           />
-          <CustomButton
-            content="icon"
-            onClick={handleButtonClick}
-            className={buttonClasses}
-            icon={<SearchIcon className="h-6 w-6" />}
-          />
-        </div>
-      </div>
-    </SearchProvider>
+        </SearchProvider>
+      ) : (
+        <NavButton
+          context={'desktop'}
+          onClick={toggleSearch}
+          icon={<SearchIcon className="h-6 w-6" />}
+          aria-label="Open search"
+        />
+      )}
+    </div>
   );
 }

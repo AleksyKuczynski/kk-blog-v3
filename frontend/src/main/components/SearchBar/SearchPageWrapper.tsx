@@ -3,7 +3,7 @@
 
 import { SearchProvider } from './SearchContext';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
-import { SearchInput } from './SearchInput';
+import SearchInput from './SearchInput';
 import { useTheme } from '@/main/components/ThemeContext';
 
 interface SearchPageWrapperProps {
@@ -21,7 +21,11 @@ export default function SearchPageWrapper({ initialSearch, translations }: Searc
 
   return (
     <SearchProvider initialSearch={initialSearch} translations={translations}>
-      <SearchInput className={wrapperClasses} />
+      <SearchInput 
+        className={wrapperClasses} 
+        showButton={true} 
+        translations={translations}
+      />
     </SearchProvider>
   );
 }

@@ -8,7 +8,6 @@ import { Dropdown } from '../Dropdown';
 import { ChevronDownIcon, ResetIcon, DateSortUpIcon, DateSortDownIcon } from '../Icons';
 import { Category } from '@/main/lib/directus/interfaces';
 import { SortingTranslations, CategoryTranslations, Lang } from '@/main/lib/dictionaries/types';
-import { useKeyboardNavigation } from '@/main/lib/hooks';
 
 interface FilterGroupProps {
   currentSort: string;
@@ -27,15 +26,12 @@ export default function FilterGroup({
   sortingTranslations,
   categoryTranslations,
   resetText,
-  lang,
 }: FilterGroupProps) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useKeyboardNavigation(dropdownRef, isOpen, () => setIsOpen(false));
 
   const handleCategoryChange = (newCategory: string) => {
     const params = new URLSearchParams(searchParams);

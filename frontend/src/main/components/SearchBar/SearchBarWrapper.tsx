@@ -3,15 +3,22 @@
 
 import { SearchProvider } from './SearchContext';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
-import { SearchInput } from './SearchInput';
+import SearchInput from './SearchInput';
 import { useTheme } from '@/main/components/ThemeContext';
+import { RefObject } from 'react';
 
 interface SearchBarWrapperProps {
   initialSearch?: string;
   translations: SearchTranslations;
+  showButton?: boolean;
+  inputRef?: RefObject<HTMLInputElement>;
 }
 
-export default function SearchBarWrapper({ initialSearch = '', translations }: SearchBarWrapperProps) {
+export default function SearchBarWrapper({ 
+  initialSearch = '', 
+  translations, 
+  showButton = true,
+}: SearchBarWrapperProps) {
   const { currentTheme } = useTheme();
 
   const wrapperClasses = `
@@ -21,7 +28,11 @@ export default function SearchBarWrapper({ initialSearch = '', translations }: S
 
   return (
     <SearchProvider initialSearch={initialSearch} translations={translations}>
-      <SearchInput className={wrapperClasses} />
+      <SearchInput 
+        className={wrapperClasses} 
+        showButton={showButton} 
+        translations={translations}
+      />
     </SearchProvider>
   );
 }

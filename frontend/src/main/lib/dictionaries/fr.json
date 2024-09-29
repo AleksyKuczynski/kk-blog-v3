@@ -35,7 +35,7 @@
     "pageDescription": "Trouvez des articles et du contenu sur notre blog{query}.",
     "relatedTo": "liés à",
     "submit": "Submit search",
-    "minCharacters": "Type at least 3 characters"
+    "minCharacters": "Tapez au moins 3 caractères"
   },
   "sorting": {
     "sortOrder": "Ordre",

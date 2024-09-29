@@ -1,16 +1,17 @@
-// src/main/components/Navigation/MobileNavigation.tsx
+// src/main/components/Navigation/MobileNav.tsx
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { MobileLanguageSwitcher } from './MobileLanguageSwitcher'
 import { MobileThemeSwitcher } from './MobileThemeSwitcher'
-import { useOutsideClick, useKeyboardNavigation } from '@/main/lib/hooks'
+import { useOutsideClick } from '@/main/lib/hooks'
 import { Lang, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types'
 import { useTheme } from '../ThemeContext'
 import { CustomButton } from '../CustomButton'
 import SearchBarWrapper from '../SearchBar/SearchBarWrapper'
+import { NavButton } from './NavButton'
 
 interface MobileNavigationProps {
   lang: Lang
@@ -27,10 +28,11 @@ export default function MobileNavigation({
 }: MobileNavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  const menuToggleRef = useRef<HTMLButtonElement>(null)
   const { currentTheme } = useTheme()
 
   useOutsideClick(menuRef, isMenuOpen, () => setIsMenuOpen(false))
-  useKeyboardNavigation(menuRef, isMenuOpen, () => setIsMenuOpen(false))
 
   const NAVIGATION_LINKS = [
     { href: '/articles', name: translations.articles },
@@ -49,12 +51,21 @@ export default function MobileNavigation({
     }
   }
 
+  useEffect(() => {
+    if (isMenuOpen) {
+      const firstFocusableElement = menuRef.current?.querySelector('a, button, input') as HTMLElement
+      firstFocusableElement?.focus()
+    } else {
+      menuToggleRef.current?.focus()
+    }
+  }, [isMenuOpen])
+
   return (
-    <div ref={menuRef}>
-      <CustomButton
-        content="icon"
+    <div>
+      <NavButton
+        ref={menuToggleRef}
+        context="mobile"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className={`fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center focus:outline-none z-50 ${getThemeClasses()}`}
         aria-expanded={isMenuOpen}
         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
       >
@@ -67,9 +78,10 @@ export default function MobileNavigation({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         )}
-      </CustomButton>
+      </NavButton>
 
       <div 
+        ref={menuRef}
         className={`fixed inset-0 bg-primary text-text-inverted transition-opacity duration-300 ${
           isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         } ${getThemeClasses()}`}
@@ -77,7 +89,7 @@ export default function MobileNavigation({
         <div className="p-4 flex flex-col h-full">
           <div className="flex justify-between items-center mb-8">
             <MobileLanguageSwitcher currentLang={lang} />
-            <Link href={`/${lang}`} onClick={() => setIsMenuOpen(false)}>
+            <Link href={`/${lang}`} onClick={() => setIsMenuOpen(false)} tabIndex={0}>
               <Image 
                 src="/e4m.svg" 
                 alt="Event4me Logo" 
@@ -100,6 +112,7 @@ export default function MobileNavigation({
                   'hover:border-b-2 hover:border-accent'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
+                tabIndex={0}
               >
                 {link.name}
               </Link>
@@ -111,6 +124,8 @@ export default function MobileNavigation({
               <div className="py-2">
                 <SearchBarWrapper 
                   translations={searchTranslations}
+                  showButton={true}
+                  inputRef={searchInputRef}
                 />
               </div>
             )}
