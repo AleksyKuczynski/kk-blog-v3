@@ -22,7 +22,7 @@ export default function Footer({ lang, translations, searchTranslations }: Foote
   ];
 
   return (
-    <footer className="bg-gradient-to-r from-primary via-secondary to-accent text-text-inverted py-16 relative overflow-hidden">
+    <footer className="bg-gradient-to-r from-primary via-secondary to-accent text-text-inverted py-16 relative overflow-hidden z-60">
       {/* Background SVG Shapes remain the same */}
 
       <div className="container mx-auto px-4 relative z-10">

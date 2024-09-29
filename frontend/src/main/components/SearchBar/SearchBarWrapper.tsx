@@ -5,13 +5,11 @@ import { SearchProvider } from './SearchContext';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
 import SearchInput from './SearchInput';
 import { useTheme } from '@/main/components/ThemeContext';
-import { RefObject } from 'react';
 
 interface SearchBarWrapperProps {
   initialSearch?: string;
   translations: SearchTranslations;
   showButton?: boolean;
-  inputRef?: RefObject<HTMLInputElement>;
 }
 
 export default function SearchBarWrapper({ 

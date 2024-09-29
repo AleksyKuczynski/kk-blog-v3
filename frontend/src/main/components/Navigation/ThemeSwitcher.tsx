@@ -1,13 +1,14 @@
 // src/main/components/Navigation/ThemeSwitcher.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { setTheme, Theme } from '@/main/lib/actions';
 import { PaletteIcon, CheckIcon } from '../Icons';
 import { Dropdown } from '../Dropdown';
 import { useTheme } from '../ThemeContext';
 import { NavButton } from './NavButton';
+import { useOutsideClick } from '@/main/lib/hooks';
 
 const themes: { [key in Theme]: string } = {
   default: 'Default',
@@ -23,6 +24,10 @@ export function ThemeSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { currentTheme, setCurrentTheme } = useTheme();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  useOutsideClick(menuRef, toggleRef, isOpen, () => setIsOpen(false));
 
   const handleThemeChange = async (newTheme: Theme) => {
     if (newTheme !== currentTheme) {
@@ -34,18 +39,25 @@ export function ThemeSwitcher() {
     setIsOpen(false);
   };
 
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className="relative">
       <NavButton
         context="desktop"
-        onClick={() => setIsOpen(!isOpen)}
+        ref={toggleRef}
+        onClick={handleToggle}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         icon={<PaletteIcon className="h-6 w-6" aria-hidden="true" />}
       />
       <Dropdown 
         isOpen={isOpen} 
-        onClose={() => setIsOpen(false)} 
+        onClose={() => setIsOpen(false)}
+        ref={menuRef} 
         width="icon" 
         align="right"
       >

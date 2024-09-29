@@ -10,14 +10,14 @@ interface NavButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const buttonStyles = {
   base: 'focus:outline-none transition-all duration-200',
   desktop: {
-    default: 'rounded-md p-2 text-text-primary dark:text-text-inverted hover:bg-primary-dark/50',
-    rounded: 'rounded-full p-2 text-text-primary dark:text-text-inverted hover:bg-primary-dark/50',
-    sharp: 'p-2 text-text-primary dark:text-text-inverted hover:bg-primary-dark/50',
+    default: 'rounded-md p-2 text-text-primary dark:text-text-inverted hover:bg-secondary/50',
+    rounded: 'rounded-full p-2 text-text-primary dark:text-text-inverted hover:bg-secondary/50',
+    sharp: 'p-2 text-text-primary dark:text-text-inverted hover:bg-secondary/50',
   },
   mobile: {
-    default: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50 rounded-md',
-    rounded: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50 rounded-full',
-    sharp: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50 border-2 border-accent',
+    default: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50 rounded-[var(--border-radius)]',
+    rounded: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50 rounded-[var(--border-radius)]',
+    sharp: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50 border-2 border-accent rounded-[var(--border-radius)]',
   },
 };
 

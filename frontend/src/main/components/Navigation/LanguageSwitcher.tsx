@@ -8,6 +8,7 @@ import { Lang } from '@/main/lib/dictionaries/types';
 import { CheckIcon, LanguageIcon } from '../Icons';
 import { Dropdown } from '../Dropdown';
 import { NavButton } from './NavButton';
+import { useOutsideClick } from '@/main/lib/hooks';
 
 const languages: { [key in Lang]: string } = {
   en: 'English',
@@ -71,55 +72,59 @@ function useLanguageSwitcher() {
   return context;
 }
 
-
 function LanguageSwitcherContent() {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const { currentLang, handleLanguageChange } = useLanguageSwitcher();
+  const { isOpen, setIsOpen, currentLang, handleLanguageChange } = useLanguageSwitcher();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  useOutsideClick(menuRef, toggleRef, isOpen, () => setIsOpen(false));
+
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsOpen(!isOpen);
+  };
   
   return (
     <div className="relative">
       <NavButton
-        ref={buttonRef}
         context="desktop"
-        onClick={() => setIsOpen(!isOpen)}
+        ref={toggleRef}
+        onClick={handleToggle}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         icon={<LanguageIcon className="h-6 w-6" aria-hidden="true" />}
       />
       <Dropdown 
+        ref={menuRef}
         isOpen={isOpen} 
         onClose={() => setIsOpen(false)} 
         width="icon" 
         align="right"
       >
-        <div ref={dropdownRef}>
-          <ul
-            className="py-1 text-base focus:outline-none sm:text-sm"
-            role="listbox"
-          >
-            {Object.entries(languages).map(([lang, name]) => (
-              <li key={lang}>
-                <button
-                  className={`${languageSwitcherStyles.dropdownItem} ${
-                    lang === currentLang ? 'bg-accent text-text-inverted' : ''
-                  }`}
-                  onClick={() => handleLanguageChange(lang as Lang)}
-                  role="option"
-                  aria-selected={lang === currentLang}
-                >
-                  <span className="flex items-center justify-center w-5 mr-3">
-                    {lang === currentLang && (
-                      <CheckIcon className="h-4 w-4" aria-hidden="true" />
-                    )}
-                  </span>
-                  <span>{name}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul
+          className="py-1 text-base focus:outline-none sm:text-sm"
+          role="listbox"
+        >
+          {Object.entries(languages).map(([lang, name]) => (
+            <li key={lang}>
+              <button
+                className={`${languageSwitcherStyles.dropdownItem} ${
+                  lang === currentLang ? 'bg-accent text-text-inverted' : ''
+                }`}
+                onClick={() => handleLanguageChange(lang as Lang)}
+                role="option"
+                aria-selected={lang === currentLang}
+              >
+                <span className="flex items-center justify-center w-5 mr-3">
+                  {lang === currentLang && (
+                    <CheckIcon className="h-4 w-4" aria-hidden="true" />
+                  )}
+                </span>
+                <span>{name}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
       </Dropdown>
     </div>
   );

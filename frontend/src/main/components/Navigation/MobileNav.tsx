@@ -6,10 +6,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { MobileLanguageSwitcher } from './MobileLanguageSwitcher'
 import { MobileThemeSwitcher } from './MobileThemeSwitcher'
-import { useOutsideClick } from '@/main/lib/hooks'
 import { Lang, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types'
 import { useTheme } from '../ThemeContext'
-import { CustomButton } from '../CustomButton'
 import SearchBarWrapper from '../SearchBar/SearchBarWrapper'
 import { NavButton } from './NavButton'
 
@@ -32,7 +30,6 @@ export default function MobileNavigation({
   const menuToggleRef = useRef<HTMLButtonElement>(null)
   const { currentTheme } = useTheme()
 
-  useOutsideClick(menuRef, isMenuOpen, () => setIsMenuOpen(false))
 
   const NAVIGATION_LINKS = [
     { href: '/articles', name: translations.articles },
@@ -50,15 +47,6 @@ export default function MobileNavigation({
         return ''
     }
   }
-
-  useEffect(() => {
-    if (isMenuOpen) {
-      const firstFocusableElement = menuRef.current?.querySelector('a, button, input') as HTMLElement
-      firstFocusableElement?.focus()
-    } else {
-      menuToggleRef.current?.focus()
-    }
-  }, [isMenuOpen])
 
   return (
     <div>

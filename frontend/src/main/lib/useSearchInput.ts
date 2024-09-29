@@ -1,24 +1,20 @@
 // src/main/lib/useSearchInput.ts
-import { useState, useRef, useCallback } from 'react';
+import { useState, useCallback, KeyboardEvent } from 'react';
 import { useSearch } from './useSearch';
 
 export function useSearchInput(onSubmit?: () => void) {
   const [focusedIndex, setFocusedIndex] = useState(-1);
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const {
     searchQuery,
     suggestions,
     hasInteracted,
     handleSearch,
     handleSelect,
-    handleSearchSubmit,
+    handleSearchSubmit
   } = useSearch(onSubmit);
 
-  const shouldShowDropdown = searchQuery.length > 0 && hasInteracted;
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (shouldShowDropdown && suggestions.length > 0) {
+  const handleKeyDown = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
+    if (suggestions.length > 0) {
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
@@ -39,27 +35,23 @@ export function useSearchInput(onSubmit?: () => void) {
           break;
         case 'Escape':
           e.preventDefault();
-          inputRef.current?.blur();
+          // Close suggestions or clear input
           break;
       }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearchSubmit();
     }
-  }, [shouldShowDropdown, suggestions, focusedIndex, handleSelect, handleSearchSubmit]);
-
-  const handleBlur = useCallback(() => {
-    setTimeout(() => setFocusedIndex(-1), 200);
-  }, []);
+  }, [suggestions, focusedIndex, handleSelect, handleSearchSubmit]);
 
   return {
-    inputRef,
     searchQuery,
     suggestions,
     hasInteracted,
     focusedIndex,
-    shouldShowDropdown,
     handleSearch,
     handleSelect,
     handleSearchSubmit,
     handleKeyDown,
-    handleBlur,
   };
 }

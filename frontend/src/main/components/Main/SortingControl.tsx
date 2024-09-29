@@ -1,5 +1,4 @@
 // src/main/components/Main/SortingControl.tsx
-
 'use client';
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
@@ -26,11 +25,17 @@ export default function SortingControl({ currentSort, translations }: SortingCon
   };
 
   return (
-    <CustomButton
-      color="secondary"
-      onClick={toggleSort}
-      icon={currentSort === 'desc' ? <DateSortDownIcon className="h-5 w-5" /> : <DateSortUpIcon className="h-5 w-5" />}
-      aria-label={currentSort === 'desc' ? translations.oldest : translations.newest}
-    />
+    <div className="flex flex-col items-center">
+      <span className="mb-2 text-sm font-medium">{translations.sortOrder}</span>
+      <CustomButton
+        color="secondary"
+        onClick={toggleSort}
+        icon={currentSort === 'desc' ? <DateSortDownIcon className="h-5 w-5" /> : <DateSortUpIcon className="h-5 w-5" />}
+        aria-label={currentSort === 'desc' ? translations.oldest : translations.newest}
+      />
+      <span className="mt-2 text-xs">
+        {currentSort === 'desc' ? translations.newest : translations.oldest}
+      </span>
+    </div>
   );
 }

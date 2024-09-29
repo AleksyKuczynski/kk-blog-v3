@@ -1,13 +1,16 @@
 // src/main/components/Main/FilterGroup.tsx
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { CustomButton } from '../CustomButton';
+import { NavButton } from '../Navigation/NavButton';
 import { Dropdown } from '../Dropdown';
-import { ChevronDownIcon, ResetIcon, DateSortUpIcon, DateSortDownIcon } from '../Icons';
+import { ChevronDownIcon, ResetIcon } from '../Icons';
 import { Category } from '@/main/lib/directus/interfaces';
 import { SortingTranslations, CategoryTranslations, Lang } from '@/main/lib/dictionaries/types';
+import { useOutsideClick } from '@/main/lib/hooks';
+import { CustomButton } from '../CustomButton';
+import SortingControl from './SortingControl';
 
 interface FilterGroupProps {
   currentSort: string;
@@ -26,63 +29,65 @@ export default function FilterGroup({
   sortingTranslations,
   categoryTranslations,
   resetText,
+  lang,
 }: FilterGroupProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleCategoryChange = (newCategory: string) => {
+  const categoryDropdownRef = useRef<HTMLDivElement>(null);
+  const categoryToggleRef = useRef<HTMLButtonElement>(null);
+
+  useOutsideClick(categoryDropdownRef, categoryToggleRef, isCategoryOpen, () => setIsCategoryOpen(false));
+
+  const handleCategoryChange = useCallback((newCategory: string) => {
     const params = new URLSearchParams(searchParams);
     params.set('category', newCategory);
     params.set('page', '1');
     router.push(`${pathname}?${params.toString()}`);
-    setIsOpen(false);
-  };
+    setIsCategoryOpen(false);
+  }, [searchParams, router, pathname]);
 
-  const handleSortChange = () => {
-    const params = new URLSearchParams(searchParams);
-    const newSort = currentSort === 'desc' ? 'asc' : 'desc';
-    params.set('sort', newSort);
-    params.set('page', '1');
-    router.push(`${pathname}?${params.toString()}`);
-  };
-
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     router.push(pathname);
-  };
+  }, [router, pathname]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, category: string) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleCategoryChange(category);
-    }
-  };
+  const toggleCategoryDropdown = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsCategoryOpen(!isCategoryOpen);
+  }, [isCategoryOpen]);
 
   return (
     <div className="mb-8 flex justify-center items-start space-x-8">
       <div className="flex flex-col items-center">
         <span className="mb-2 text-sm font-medium">{categoryTranslations.categories}</span>
-        <div className="relative" ref={dropdownRef}>
-          <CustomButton
-            color="primary"
-            style="outlined"
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center justify-between w-40"
+        <div className="relative">
+          <NavButton
+            ref={categoryToggleRef}
+            context="desktop"
+            onClick={toggleCategoryDropdown}
+            className="flex items-center justify-between w-40 px-4 py-2"
+            aria-haspopup="listbox"
+            aria-expanded={isCategoryOpen}
           >
             <span className="truncate">
               {currentCategory ? categories.find(c => c.slug === currentCategory)?.name : categoryTranslations.allCategories}
             </span>
             <ChevronDownIcon className="h-5 w-5 ml-2 flex-shrink-0" />
-          </CustomButton>
-          <Dropdown isOpen={isOpen} onClose={() => setIsOpen(false)} width="wide" align="right">
+          </NavButton>
+          <Dropdown 
+            ref={categoryDropdownRef}
+            isOpen={isCategoryOpen} 
+            onClose={() => setIsCategoryOpen(false)} 
+            width="wide" 
+            align="left"
+          >
             <ul className="py-1">
               <li>
                 <button
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
                   onClick={() => handleCategoryChange('')}
-                  onKeyDown={(e) => handleKeyDown(e, '')}
                 >
                   {categoryTranslations.allCategories}
                 </button>
@@ -90,9 +95,8 @@ export default function FilterGroup({
               {categories.map((category) => (
                 <li key={category.slug}>
                   <button
-                    className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={() => handleCategoryChange(category.slug)}
-                    onKeyDown={(e) => handleKeyDown(e, category.slug)}
                   >
                     {category.name}
                   </button>
@@ -103,16 +107,7 @@ export default function FilterGroup({
         </div>
       </div>
       <div className="flex flex-col items-center">
-        <span className="mb-2 text-sm font-medium">{sortingTranslations.sortOrder}</span>
-        <CustomButton
-          style="filled"
-          color="primary"
-          content="icon"
-          onClick={handleSortChange}
-          icon={currentSort === 'desc' ? <DateSortDownIcon className="h-5 w-5" /> : <DateSortUpIcon className="h-5 w-5" />}
-          aria-label={currentSort === 'desc' ? sortingTranslations.oldest : sortingTranslations.newest}
-        />
-        <span className="mt-2 text-xs">{currentSort === 'desc' ? sortingTranslations.newest : sortingTranslations.oldest}</span>
+        <SortingControl currentSort={currentSort} translations={sortingTranslations} />
       </div>
       <div className="flex flex-col items-center">
         <span className="mb-2 text-sm font-medium">{resetText}</span>
