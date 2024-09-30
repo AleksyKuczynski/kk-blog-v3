@@ -11,9 +11,9 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: '192.168.0.50',
-        port: '8055',
+        protocol: 'https',
+        hostname: 'purple-hornets-juggle.loca.lt',
+        port: '',
         pathname: '/assets/**',
       },
     ],

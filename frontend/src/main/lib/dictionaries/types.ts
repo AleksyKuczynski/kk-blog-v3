@@ -32,6 +32,7 @@ export interface CommonTranslations {
 
 export interface SearchTranslations {
   placeholder: string;
+  searching: string;
   noResults: string;
   results: string;
   resultsFor: string;
@@ -116,6 +117,7 @@ export interface Dictionary {
 
 export const DEFAULT_SEARCH_TRANSLATIONS: SearchTranslations = {
   placeholder: "Search articles...",
+  searching: "Searching...",
   noResults: "No results found",
   results: "Search Results",
   resultsFor: "Results for \"{query}\"",

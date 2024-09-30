@@ -14,6 +14,7 @@ interface SearchInputProps {
   translations: SearchTranslations;
   autoFocus?: boolean;
   isExpandable?: boolean;
+  initiallyExpanded?: boolean;
   onClose?: () => void;
 }
 
@@ -37,13 +38,17 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
     suggestions,
     hasInteracted,
     focusedIndex,
+    isInputValid,
+    showMinCharMessage,
+    showSearchingMessage,
+    showNoResultsMessage,
     handleSearch,
     handleSelect,
     handleSearchSubmit,
     handleKeyDown,
   } = useSearchInput(() => {
     onSubmit?.();
-    if (isExpandable && searchQuery.length < 3) {
+    if (isExpandable && !isInputValid) {
       onClose?.();
     }
   });
@@ -65,7 +70,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
 
   const handleSubmitClick = () => {
     handleSearchSubmit();
-    if (isExpandable && searchQuery.length < 3) {
+    if (isExpandable && !isInputValid) {
       onClose?.();
     }
   };
@@ -129,28 +134,39 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
           />
         )}
       </div>
-      {hasInteracted && suggestions.length > 0 && (
+      {hasInteracted && (
         <Dropdown 
           isOpen={true}
           onClose={() => {}}
           width="search"
           parentRef={inputWrapperRef}
         >
-          <ul>
-            {suggestions.map((suggestion, index) => (
-              <li key={suggestion.slug}>
-                <button
-                  className={`w-full text-left px-4 py-2 ${index === focusedIndex ? 'bg-secondary text-text-inverted' : ''}`}
-                  onClick={() => {
-                    handleSelect(suggestion.slug, suggestion.rubric_slug);
-                    if (isExpandable) onClose?.();
-                  }}
-                >
-                  {suggestion.title}
-                </button>
-              </li>
-            ))}
-          </ul>
+          {showMinCharMessage && (
+            <p className="px-4 py-2 text-text-secondary dark:text-text-invsecondary">{translations.minCharacters}</p>
+          )}
+          {showSearchingMessage && (
+            <p className="px-4 py-2 text-text-secondary dark:text-text-invsecondary">{translations.searching}</p>
+          )}
+          {showNoResultsMessage && (
+            <p className="px-4 py-2 text-text-secondary dark:text-text-invsecondary">{translations.noResults}</p>
+          )}
+          {isInputValid && suggestions.length > 0 && (
+            <ul>
+              {suggestions.map((suggestion, index) => (
+                <li key={suggestion.slug}>
+                  <button
+                    className={`w-full text-left px-4 py-2 ${index === focusedIndex ? 'bg-secondary text-text-inverted' : ''}`}
+                    onClick={() => {
+                      handleSelect(suggestion.slug, suggestion.rubric_slug);
+                      if (isExpandable) onClose?.();
+                    }}
+                  >
+                    {suggestion.title}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </Dropdown>
       )}
     </div>

@@ -9,6 +9,7 @@ export function useSearch(onSubmit?: () => void) {
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<SearchProposition[]>([]);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -16,8 +17,13 @@ export function useSearch(onSubmit?: () => void) {
     setSearchQuery(term);
     setHasInteracted(true);
     if (term.length >= 3) {
-      const results = await getSearchSuggestions(term, pathname.split('/')[1] as Lang);
-      setSuggestions(results);
+      setIsSearching(true);
+      try {
+        const results = await getSearchSuggestions(term, pathname.split('/')[1] as Lang);
+        setSuggestions(results);
+      } finally {
+        setIsSearching(false);
+      }
     } else {
       setSuggestions([]);
     }
@@ -45,6 +51,7 @@ export function useSearch(onSubmit?: () => void) {
     searchQuery,
     suggestions,
     hasInteracted,
+    isSearching,
     handleSearch,
     handleSelect,
     handleSearchSubmit,

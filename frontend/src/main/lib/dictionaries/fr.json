@@ -28,6 +28,7 @@
   },
   "search": {
     "placeholder": "Rechercher des articles...",
+    "searching": "Recherche...",
     "noResults": "Aucun résultat trouvé",
     "results": "Résultats de recherche",
     "resultsFor": "Résultats pour \"{query}\"",
