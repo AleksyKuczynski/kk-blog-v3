@@ -6,6 +6,7 @@ import { NavButton } from '../Navigation/NavButton';
 import { SearchIcon } from '../Icons';
 import { useSearchInput } from '@/main/lib/useSearchInput';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
+import { animationClasses } from '../animationClasses';
 
 interface SearchInputProps {
   className?: string;
@@ -95,6 +96,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
     focus-within:ring-2 focus-within:ring-secondary-dark
     transition-colors duration-300
     ${getGroupStyles()}
+    ${animationClasses.transition}
     ${className}
   `;
 
@@ -128,6 +130,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
           <NavButton
             context="desktop"
             onClick={handleSubmitClick}
+            noHover={true}
             aria-label={translations.submit}
             icon={<SearchIcon className="h-6 w-6" />}
             className={buttonStyles}

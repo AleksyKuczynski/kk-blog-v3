@@ -29,6 +29,30 @@ const config: Config = {
       transitionDuration: {
         DEFAULT: 'var(--transition-duration)',
       },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        fadeOut: {
+          '0%': { opacity: '1' },
+          '100%': { opacity: '0' },
+        },
+        expandWidth: {
+          '0%': { width: '3rem' },
+          '100%': { width: '16rem' },
+        },
+        collapseWidth: {
+          '0%': { width: '16rem' },
+          '100%': { width: '3rem' },
+        },
+      },
+      animation: {
+        fadeIn: 'fadeIn 300ms ease-in-out',
+        fadeOut: 'fadeOut 300ms ease-in-out',
+        expandWidth: 'expandWidth 300ms ease-in-out',
+        collapseWidth: 'collapseWidth 300ms ease-in-out',
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

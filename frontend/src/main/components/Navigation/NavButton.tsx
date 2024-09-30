@@ -5,28 +5,43 @@ import { useTheme } from '@/main/components/ThemeContext';
 interface NavButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   context: 'desktop' | 'mobile';
   icon?: React.ReactNode;
+  noHover?: boolean; // New prop
 }
 
 const buttonStyles = {
-  base: 'focus:outline-none transition-all duration-200',
+  base: 'transition-all duration-200 rounded-[var(--border-radius)]',
   desktop: {
-    default: 'rounded-md p-2 text-text-primary dark:text-text-inverted hover:bg-secondary/50',
-    rounded: 'rounded-full p-2 text-text-primary dark:text-text-inverted hover:bg-secondary/50',
-    sharp: 'p-2 text-text-primary dark:text-text-inverted hover:bg-secondary/50',
+    default: 'p-2 text-text-primary dark:text-text-inverted',
+    rounded: 'p-2 text-text-primary dark:text-text-inverted',
+    sharp: 'p-2 text-text-primary dark:text-text-inverted',
   },
   mobile: {
-    default: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50 rounded-[var(--border-radius)]',
-    rounded: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50 rounded-[var(--border-radius)]',
-    sharp: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50 border-2 border-accent rounded-[var(--border-radius)]',
+    default: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50',
+    rounded: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50',
+    sharp: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50',
+  },
+};
+
+const hoverStyles = {
+  desktop: {
+    default: 'hover:bg-primary-dark/50',
+    rounded: 'hover:bg-primary-dark/50',
+    sharp: 'hover:bg-primary-dark/50',
   },
 };
 
 export const NavButton = forwardRef<HTMLButtonElement, NavButtonProps>(
-  ({ context, icon, className = '', children, ...props }, ref) => {
+  ({ context, icon, className = '', noHover = false, children, ...props }, ref) => {
     const { currentTheme } = useTheme();
 
-    const themeClasses = buttonStyles[context][currentTheme];
-    const classes = `${buttonStyles.base} ${themeClasses} ${className}`;
+    const getButtonStyles = () => {
+      const baseStyle = buttonStyles.base;
+      const contextStyle = buttonStyles[context][currentTheme];
+      const hoverStyle = !noHover && context === 'desktop' ? hoverStyles.desktop[currentTheme] : '';
+      return `${baseStyle} ${contextStyle} ${hoverStyle} ${className}`;
+    };
+
+    const classes = getButtonStyles();
 
     return (
       <button

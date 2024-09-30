@@ -17,7 +17,7 @@ export default function Navigation({ lang, translations, searchTranslations }: N
   const isSearchPage = pathname === `/${lang}/search`
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50" aria-label="Main Navigation">
+    <nav className="w-full" aria-label="Main Navigation">
       <div className="hidden xl:block">
         <DesktopNavigation
           lang={lang}

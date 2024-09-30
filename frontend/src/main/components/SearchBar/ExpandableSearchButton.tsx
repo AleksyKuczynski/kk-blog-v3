@@ -4,6 +4,7 @@ import SearchInput, { SearchInputHandle } from './SearchInput';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
 import { NavButton } from '../Navigation/NavButton';
 import { SearchIcon } from '../Icons';
+import { animationClasses } from '../animationClasses';
 
 interface ExpandableSearchButtonProps {
   searchTranslations: SearchTranslations;
@@ -20,6 +21,13 @@ export default function ExpandableSearchButton({ searchTranslations }: Expandabl
   const handleClose = () => {
     setIsExpanded(false);
   };
+
+  const expandContainerClass = `
+    ${animationClasses.transition}
+    ${isExpanded ? 'w-64' : 'w-12'}
+    overflow-hidden
+  `;
+
 
   if (!isExpanded) {
     return (
