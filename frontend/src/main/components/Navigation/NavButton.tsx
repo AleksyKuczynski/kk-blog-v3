@@ -5,7 +5,8 @@ import { useTheme } from '@/main/components/ThemeContext';
 interface NavButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   context: 'desktop' | 'mobile';
   icon?: React.ReactNode;
-  noHover?: boolean; // New prop
+  noHover?: boolean;
+  isHamburger?: boolean;
 }
 
 const buttonStyles = {
@@ -16,10 +17,15 @@ const buttonStyles = {
     sharp: 'p-2 text-text-primary dark:text-text-inverted',
   },
   mobile: {
+    default: 'px-3 py-1 text-sm font-medium',
+    rounded: 'px-3 py-1 text-sm font-medium',
+    sharp: 'px-3 py-1 text-sm font-medium',
+  },
+  hamburger: {
     default: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50',
     rounded: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50',
     sharp: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50',
-  },
+  }
 };
 
 const hoverStyles = {
@@ -31,12 +37,12 @@ const hoverStyles = {
 };
 
 export const NavButton = forwardRef<HTMLButtonElement, NavButtonProps>(
-  ({ context, icon, className = '', noHover = false, children, ...props }, ref) => {
+  ({ context, icon, className = '', noHover = false, isHamburger = false, children, ...props }, ref) => {
     const { currentTheme } = useTheme();
 
     const getButtonStyles = () => {
       const baseStyle = buttonStyles.base;
-      const contextStyle = buttonStyles[context][currentTheme];
+      const contextStyle = isHamburger ? buttonStyles.hamburger[currentTheme] : buttonStyles[context][currentTheme];
       const hoverStyle = !noHover && context === 'desktop' ? hoverStyles.desktop[currentTheme] : '';
       return `${baseStyle} ${contextStyle} ${hoverStyle} ${className}`;
     };

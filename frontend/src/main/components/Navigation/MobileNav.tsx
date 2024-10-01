@@ -1,11 +1,11 @@
 // src/main/components/Navigation/MobileNav.tsx
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { MobileLanguageSwitcher } from './MobileLanguageSwitcher'
-import { MobileThemeSwitcher } from './MobileThemeSwitcher'
+import { MobileLanguageSwitcher } from './LanguageSwitcher'
+import { MobileThemeSwitcher } from './ThemeSwitcher'
 import { Lang, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types'
 import { useTheme } from '../ThemeContext'
 import SearchBarWrapper from '../SearchBar/SearchBarWrapper'
@@ -26,10 +26,7 @@ export default function MobileNavigation({
 }: MobileNavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  const searchInputRef = useRef<HTMLInputElement>(null)
-  const menuToggleRef = useRef<HTMLButtonElement>(null)
   const { currentTheme } = useTheme()
-
 
   const NAVIGATION_LINKS = [
     { href: '/articles', name: translations.articles },
@@ -40,22 +37,23 @@ export default function MobileNavigation({
   const getThemeClasses = () => {
     switch (currentTheme) {
       case 'rounded':
-        return 'rounded-2xl'
+        return 'rounded-l-2xl'
       case 'sharp':
-        return 'border-2 border-accent'
+        return 'border-l-2 border-y-2 border-accent'
       default:
         return ''
     }
   }
 
   return (
-    <div>
+    <div className="xl:hidden">
       <NavButton
-        ref={menuToggleRef}
         context="mobile"
+        isHamburger={true}
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         aria-expanded={isMenuOpen}
         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+        className="fixed top-4 right-4 z-50 sm:landscape:top-2 sm:landscape:right-2"
       >
         {isMenuOpen ? (
           <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -67,57 +65,65 @@ export default function MobileNavigation({
           </svg>
         )}
       </NavButton>
-
+      
       <div 
         ref={menuRef}
-        className={`fixed inset-0 bg-primary text-text-inverted transition-opacity duration-300 ${
-          isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        } ${getThemeClasses()}`}
+        className={`fixed top-0 right-0 bottom-0 w-[90vw] max-w-md 
+          sm:landscape:w-full sm:landscape:max-w-none
+          backdrop-blur-xl bg-background/20 transition-all duration-300 overflow-y-auto 
+          ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
+          ${getThemeClasses()}`}
       >
-        <div className="p-4 flex flex-col h-full">
-          <div className="flex justify-between items-center mb-8">
-            <MobileLanguageSwitcher currentLang={lang} />
-            <Link href={`/${lang}`} onClick={() => setIsMenuOpen(false)} tabIndex={0}>
+        <div className="flex flex-col sm:landscape:flex-row h-full p-6 sm:landscape:p-4">
+          {/* First column / top section */}
+          <div className="sm:landscape:w-1/2 sm:landscape:pr-4 space-y-6 sm:landscape:space-y-4">
+            <div className="sm:landscape:hidden">
+              <MobileLanguageSwitcher currentLang={lang} />
+            </div>
+
+            <Link href={`/${lang}`} className="z-50 flex justify-center sm:landscape:justify-start">
               <Image 
                 src="/e4m.svg" 
                 alt="Event4me Logo" 
                 width={240}
-                height={80}
-                className="w-40 h-auto"
+                height={60}
+                className="w-60 h-auto sm:landscape:w-40"
                 priority
               />
             </Link>
-          </div>
 
-          <div className="flex-grow overflow-y-auto flex flex-col justify-center items-center space-y-6">
-            {NAVIGATION_LINKS.map((link) => (
-              <Link 
-                key={link.href}
-                href={`/${lang}${link.href}`}
-                className={`text-2xl font-bold text-text-inverted hover:text-accent transition-colors duration-200 ${
-                  currentTheme === 'default' ? 'hover:underline' :
-                  currentTheme === 'rounded' ? 'hover:bg-primary-dark hover:px-4 hover:py-2 hover:rounded-full' :
-                  'hover:border-b-2 hover:border-accent'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-                tabIndex={0}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-auto space-y-4">
             {!isSearchPage && (
-              <div className="py-2">
+              <div className="py-2 sm:landscape:py-1">
                 <SearchBarWrapper 
                   translations={searchTranslations}
                   showButton={true}
-                  inputRef={searchInputRef}
                 />
               </div>
             )}
-            <div className="py-2">
+          </div>
+
+          {/* Second column / bottom section */}
+          <div className="sm:landscape:w-1/2 sm:landscape:pl-4 flex flex-col justify-between">
+            <div className="space-y-6 sm:landscape:space-y-4">
+              <div className="hidden sm:landscape:block">
+                <MobileLanguageSwitcher currentLang={lang} />
+              </div>
+
+              <nav className="space-y-4">
+                {NAVIGATION_LINKS.map((link) => (
+                  <Link 
+                    key={link.href}
+                    href={`/${lang}${link.href}`}
+                    className="block text-2xl sm:landscape:text-xl font-bold text-text-primary dark:text-text-inverted"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            <div className="mt-6 sm:landscape:mt-4">
               <MobileThemeSwitcher />
             </div>
           </div>

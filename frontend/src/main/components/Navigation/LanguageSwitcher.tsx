@@ -17,10 +17,6 @@ const languages: { [key in Lang]: string } = {
   ru: 'Русский',
 };
 
-const languageSwitcherStyles = {
-  dropdownItem: 'flex items-center w-full px-4 py-2 text-sm text-text-primary dark:text-text-inverted hover:bg-secondary hover:text-text-inverted transition-colors duration-200',
-};
-
 interface LanguageSwitcherContextType {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
@@ -108,7 +104,7 @@ function LanguageSwitcherContent() {
           {Object.entries(languages).map(([lang, name]) => (
             <li key={lang}>
               <button
-                className={`${languageSwitcherStyles.dropdownItem} ${
+                className={`flex items-center w-full px-4 py-2 text-sm text-text-primary dark:text-text-inverted hover:bg-secondary hover:text-text-inverted transition-colors duration-200 ${
                   lang === currentLang ? 'bg-accent text-text-inverted' : ''
                 }`}
                 onClick={() => handleLanguageChange(lang as Lang)}
@@ -135,5 +131,46 @@ export function LanguageSwitcher({ currentLang }: { currentLang: Lang }) {
     <LanguageSwitcherProvider currentLang={currentLang}>
       <LanguageSwitcherContent />
     </LanguageSwitcherProvider>
+  );
+}
+
+export function MobileLanguageSwitcher({ currentLang }: { currentLang: Lang }) {
+  return (
+    <LanguageSwitcherProvider currentLang={currentLang}>
+      <MobileLanguageSwitcherContent />
+    </LanguageSwitcherProvider>
+  );
+}
+
+function MobileLanguageSwitcherContent() {
+  const { currentLang, handleLanguageChange } = useLanguageSwitcher();
+
+  return (
+    <div className="flex items-center space-x-4">
+      <NavButton
+        context="mobile"
+        noHover={true}
+        className="pointer-events-none bg-transparent"
+        aria-hidden="true"
+      >
+        <LanguageIcon className="h-6 w-6 text-text-primary dark:text-text-inverted" />
+      </NavButton>
+      <div className="flex flex-wrap gap-2">
+        {Object.entries(languages).map(([lang, name]) => (
+          <NavButton
+            key={lang}
+            context="mobile"
+            onClick={() => handleLanguageChange(lang as Lang)}
+            className={`${
+              currentLang === lang
+                ? 'bg-accent text-text-inverted'
+                : 'bg-background-light text-text-primary'
+            }`}
+          >
+            {lang.toUpperCase()}
+          </NavButton>
+        ))}
+      </div>
+    </div>
   );
 }

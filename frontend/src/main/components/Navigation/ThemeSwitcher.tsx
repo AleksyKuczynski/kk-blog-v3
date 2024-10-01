@@ -1,7 +1,7 @@
 // src/main/components/Navigation/ThemeSwitcher.tsx
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, createContext, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { setTheme, Theme } from '@/main/lib/actions';
 import { PaletteIcon, CheckIcon } from '../Icons';
@@ -16,18 +16,19 @@ const themes: { [key in Theme]: string } = {
   sharp: 'Sharp',
 };
 
-const themeSwitcherStyles = {
-  dropdownItem: 'flex items-center w-full px-4 py-2 text-sm text-text-primary dark:text-text-inverted hover:bg-secondary hover:text-text-inverted transition-colors duration-200',
-};
+interface ThemeSwitcherContextType {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  currentTheme: Theme;
+  handleThemeChange: (newTheme: Theme) => Promise<void>;
+}
 
-export function ThemeSwitcher() {
+const ThemeSwitcherContext = createContext<ThemeSwitcherContextType | undefined>(undefined);
+
+function ThemeSwitcherProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { currentTheme, setCurrentTheme } = useTheme();
-  const menuRef = useRef<HTMLDivElement>(null);
-  const toggleRef = useRef<HTMLButtonElement>(null);
-
-  useOutsideClick(menuRef, toggleRef, isOpen, () => setIsOpen(false));
 
   const handleThemeChange = async (newTheme: Theme) => {
     if (newTheme !== currentTheme) {
@@ -38,6 +39,28 @@ export function ThemeSwitcher() {
     }
     setIsOpen(false);
   };
+
+  return (
+    <ThemeSwitcherContext.Provider value={{ isOpen, setIsOpen, currentTheme, handleThemeChange }}>
+      {children}
+    </ThemeSwitcherContext.Provider>
+  );
+}
+
+function useThemeSwitcher() {
+  const context = useContext(ThemeSwitcherContext);
+  if (context === undefined) {
+    throw new Error('useThemeSwitcher must be used within a ThemeSwitcherProvider');
+  }
+  return context;
+}
+
+function ThemeSwitcherContent() {
+  const { isOpen, setIsOpen, currentTheme, handleThemeChange } = useThemeSwitcher();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  useOutsideClick(menuRef, toggleRef, isOpen, () => setIsOpen(false));
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -68,7 +91,7 @@ export function ThemeSwitcher() {
           {Object.entries(themes).map(([theme, name]) => (
             <li key={theme}>
               <button
-                className={`${themeSwitcherStyles.dropdownItem} ${
+                className={`flex items-center w-full px-4 py-2 text-sm text-text-primary dark:text-text-inverted hover:bg-secondary hover:text-text-inverted transition-colors duration-200 ${
                   theme === currentTheme ? 'bg-accent text-text-inverted' : ''
                 }`}
                 onClick={() => handleThemeChange(theme as Theme)}
@@ -87,5 +110,53 @@ export function ThemeSwitcher() {
         </ul>
       </Dropdown>
     </div>
+  );
+}
+
+export function ThemeSwitcher() {
+  return (
+    <ThemeSwitcherProvider>
+      <ThemeSwitcherContent />
+    </ThemeSwitcherProvider>
+  );
+}
+
+function MobileThemeSwitcherContent() {
+  const { currentTheme, handleThemeChange } = useThemeSwitcher();
+
+  return (
+    <div className="flex items-center space-x-4">
+      <NavButton
+        context="mobile"
+        noHover={true}
+        className="pointer-events-none bg-transparent"
+        aria-hidden="true"
+      >
+        <PaletteIcon className="h-6 w-6 text-text-primary dark:text-text-inverted" />
+      </NavButton>
+      <div className="flex flex-wrap gap-2">
+        {Object.entries(themes).map(([theme, name]) => (
+          <NavButton
+            key={theme}
+            context="mobile"
+            onClick={() => handleThemeChange(theme as Theme)}
+            className={`${
+              currentTheme === theme
+                ? 'bg-accent text-text-inverted'
+                : 'bg-background-light text-text-primary'
+            }`}
+          >
+            {name}
+          </NavButton>
+        ))}
+      </div>
+    </div>
+  );
+}
+export function MobileThemeSwitcher() {
+  return (
+    <ThemeSwitcherProvider>
+      <MobileThemeSwitcherContent />
+    </ThemeSwitcherProvider>
   );
 }
