@@ -2,7 +2,7 @@
 import localFont from 'next/font/local'
 import { Jost, Literata, Unbounded, Yeseva_One, Noto_Serif, PT_Serif, Roboto, Roboto_Slab, Montserrat } from 'next/font/google';
 
-export const fontSans = Montserrat({
+export const fontSans = Jost({
   subsets: ['latin', 'cyrillic'],
   display: 'swap',
   weight: 'variable',

@@ -7,6 +7,7 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
     container: `
       relative 
       px-2 sm:px-0
+      group
     `,
     contentWrapper: `
       lg:h-full
@@ -19,8 +20,8 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
       rounded-lg 
       aspect-[12/10] sm:max-lg:aspect-[11/12] xl:aspect-[11/12]
       shadow-md
-      hover:shadow-xl
-      dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)]
+      group-hover:shadow-xl
+      group-hover:dark:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)]
       transition-shadow
       duration-200
     `,
@@ -159,6 +160,7 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
     container: `
       relative 
       px-2 sm:px-0
+      group
     `,
     contentWrapper: `
       lg:h-full
@@ -170,8 +172,8 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
       px-4
       aspect-[12/10] sm:max-lg:aspect-[11/12] xl:aspect-[11/12]
       shadow-md
-      hover:shadow-xl
-      dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)]
+      group-hover:shadow-xl
+      group-hover:dark:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)]
       transition-shadow
       duration-200
     `,

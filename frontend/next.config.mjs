@@ -12,7 +12,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'mean-monkeys-fly.loca.lt',
+        hostname: 'forty-bikes-roll.loca.lt',
         port: '',
         pathname: '/assets/**',
       },

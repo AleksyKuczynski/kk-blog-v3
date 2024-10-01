@@ -93,8 +93,10 @@ const config: Config = {
         },
         background: {
           accent: '#FFFFFF',
+          lightaccent: '#FFFFFF',
           light: '#EEEEEE',
           dark: '#000000',
+          darkaccent: '#343A40',
         },
         text: {
           primary: '#1A1A2E',

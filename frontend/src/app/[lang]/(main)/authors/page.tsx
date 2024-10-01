@@ -6,6 +6,7 @@ import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { Metadata } from 'next';
+import Section from '@/main/components/Main/Section';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +28,7 @@ export default async function AuthorsPage({ params: { lang } }: { params: { lang
   ];
 
   return (
-    <section className="py-8">
+    <>
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricNames} 
@@ -38,18 +39,23 @@ export default async function AuthorsPage({ params: { lang } }: { params: { lang
           allAuthors: dict.sections.authors.ourAuthors,
         }}
       />
-      <h1 className="text-4xl font-bold text-primary mb-8 text-center font-display">{dict.sections.authors.ourAuthors}</h1>
-      {authors.length === 0 ? (
-        <p className="text-center text-text-secondary">{dict.sections.authors.noAuthorsFound}</p>
-      ) : (
-        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {authors.map((author) => (
-            <li key={author.slug}>
-              <AuthorCard author={author} lang={lang} />
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+      <Section 
+        isOdd={false} 
+        title={dict.sections.authors.ourAuthors}
+        className="py-8"
+      >
+        {authors.length === 0 ? (
+          <p className="text-center text-text-secondary">{dict.sections.authors.noAuthorsFound}</p>
+        ) : (
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {authors.map((author) => (
+              <li key={author.slug}>
+                <AuthorCard author={author} lang={lang} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </Section>
+    </>
   );
 }

@@ -9,6 +9,7 @@ import { Lang } from '@/main/lib/dictionaries/types';
 import ArticleList from '@/main/components/Main/ArticleList';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
+import Section from '@/main/components/Main/Section';
 
 export default async function AuthorPage({ params, searchParams }: { 
   params: { slug: string, lang: Lang },
@@ -60,7 +61,8 @@ export default async function AuthorPage({ params, searchParams }: {
           allAuthors: dict.sections.authors.ourAuthors,
         }}
       />
-      <section className="py-8 mb-12">
+      
+      <Section isOdd={false} className="py-8">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
           {author.avatar && (
             <Image
@@ -76,32 +78,35 @@ export default async function AuthorPage({ params, searchParams }: {
             {author.bio && <p className="text-text-secondary mb-4">{author.bio}</p>}
           </div>
         </div>
-      </section>
+      </Section>
 
-      <section aria-labelledby="author-articles" className="py-8">
-        <h2 id="author-articles" className="text-2xl font-bold text-primary mb-6">
-          {dict.sections.author.articlesByAuthor.replace('{author}', author.name)}
-        </h2>
+      <Section 
+        isOdd={true} 
+        title={dict.sections.author.articlesByAuthor.replace('{author}', author.name)}
+        className="py-8"
+      >
         <Suspense fallback={<div>{dict.common.loading}</div>}>
           {allSlugs.length > 0 ? (
-            <ArticleList 
-              slugInfos={allSlugs}
-              lang={params.lang}
-              authorSlug={params.slug}
-            />
+            <>
+              <ArticleList 
+                slugInfos={allSlugs}
+                lang={params.lang}
+                authorSlug={params.slug}
+              />
+              {hasMore && (
+                <div className="mt-8 flex justify-center">
+                  <LoadMoreButton 
+                    currentPage={currentPage}
+                    loadMoreText={dict.common.loadMore}
+                  />
+                </div>
+              )}
+            </>
           ) : (
             <p className="text-center text-text-secondary">{dict.sections.author.noArticlesFound}</p>
           )}
-          {hasMore && (
-            <div className="mt-8 flex justify-center">
-              <LoadMoreButton 
-                currentPage={currentPage}
-                loadMoreText={dict.common.loadMore}
-              />
-            </div>
-          )}
         </Suspense>
-      </section>
+      </Section>
     </>
   );
 }

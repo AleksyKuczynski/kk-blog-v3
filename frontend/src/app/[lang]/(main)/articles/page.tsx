@@ -1,4 +1,5 @@
 // src/app/[lang]/(main)/articles/page.tsx
+
 import { Suspense } from 'react';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
@@ -8,6 +9,7 @@ import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import FilterGroup from '@/main/components/Main/FilterGroup';
 import HeroArticles from '@/main/components/Main/HeroArticles';
+import Section from '@/main/components/Main/Section';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,20 +51,24 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
   }
 
   return (
-    <div className="space-y-8">
-      <FilterGroup
-        currentSort={currentSort}
-        currentCategory={currentCategory}
-        categories={categories}
-        sortingTranslations={dict.sorting}
-        categoryTranslations={dict.categories}
-        resetText={dict.filter.reset}
-        lang={lang}
-      />
+    <>
+      <Section isOdd={true}>
+        <FilterGroup
+          currentSort={currentSort}
+          currentCategory={currentCategory}
+          categories={categories}
+          sortingTranslations={dict.sorting}
+          categoryTranslations={dict.categories}
+          resetText={dict.filter.reset}
+          lang={lang}
+        />
+      </Section>
 
       {isDefaultView && (
-        <section aria-label={dict.sections.articles.featuredArticles} className="pb-6 lg:pb-12 bg-background-accent dark:bg-neutral-900">
-          <h2 className="uppercase text-3xl sm:text-4xl lg:text-5xl font-bold text-background-light dark:text-background-dark 2xl:mb-4">{dict.sections.articles.featuredArticles}</h2>
+        <Section 
+          isOdd={false}
+          title={dict.sections.articles.featuredArticles}
+        >
           <Suspense fallback={<div>{dict.common.loading}</div>}>
             {heroSlugs.length > 0 ? (
               <HeroArticles heroSlugs={heroSlugs} lang={lang} />
@@ -70,13 +76,13 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
               <div>{dict.sections.articles.noFeaturedArticles}</div>
             )}
           </Suspense>
-        </section>
+        </Section>
       )}
 
-      <section aria-label={dict.sections.articles.allArticles} className="sm:pb-12">
-        {isDefaultView && (
-          <h2 className="uppercase text-3xl sm:text-4xl lg:text-5xl font-bold text-background-accent dark:text-neutral-900 2xl:mb-4">{dict.sections.articles.latestArticles}</h2>
-        )}
+      <Section 
+        isOdd={true}
+        title={isDefaultView ? dict.sections.articles.latestArticles : dict.sections.articles.allArticles}
+      >
         <Suspense fallback={<div>{dict.common.loading}</div>}>
           <ArticleList 
             slugInfos={allSlugs}
@@ -91,7 +97,7 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
             </div>
           )}
         </Suspense>
-      </section>
-    </div>
+      </Section>
+    </>
   );
 }
