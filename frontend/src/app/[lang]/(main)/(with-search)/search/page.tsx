@@ -3,13 +3,12 @@
 import { Suspense } from 'react';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
-import SortingControl from '@/main/components/Main/SortingControl';
-import SearchPageWrapper from '@/main/components/SearchBar/SearchPageWrapper';
 import { fetchArticleSlugs } from '@/main/lib/directus/index';
 import { Metadata } from 'next';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { ArticleSlugInfo } from '@/main/lib/directus/interfaces';
+import Section from '@/main/components/Main/Section';
 
 export const dynamic = 'force-dynamic';
 
@@ -53,18 +52,11 @@ export default async function SearchPage({ params: { lang }, searchParams }: {
   return (
     <>
       <h1 className="text-4xl font-bold text-primary mb-8 text-center font-display">{dict.search.results}</h1>
-      <section className="mb-8">
-        <SearchPageWrapper initialSearch={searchQuery} translations={dict.search} />
-      </section>
-      <section className="mb-8 flex justify-between items-center flex-wrap gap-4">
-        <SortingControl currentSort={currentSort} translations={dict.sorting} />
-        {searchQuery && (
-          <h2 className="text-xl font-semibold text-text-secondary">
-            {dict.search.resultsFor.replace('{query}', searchQuery)}
-          </h2>
-        )}
-      </section>
-      <section aria-label={dict.search.results}>
+
+      <Section 
+        ariaLabel={dict.search.results}
+        title={dict.search.resultsFor.replace('{query}', searchQuery)}
+      >
         <Suspense fallback={<div className="text-center text-lg text-text-secondary">{dict.common.loading}</div>}>
           <ArticleList 
             key={`${searchQuery}-${currentSort}-${currentPage}`}
@@ -80,7 +72,7 @@ export default async function SearchPage({ params: { lang }, searchParams }: {
             </div>
           )}
         </Suspense>
-      </section>
+      </Section>
     </>
   );
 }

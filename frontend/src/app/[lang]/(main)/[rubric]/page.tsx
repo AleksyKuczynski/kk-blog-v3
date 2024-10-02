@@ -7,6 +7,7 @@ import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ArticleSlugInfo } from '@/main/lib/directus/index';
+import Section from '@/main/components/Main/Section';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,7 +55,7 @@ export default async function RubricPage({
     ];
 
     return (
-      <div className="max-w-[1200px] mx-auto px-8">
+      <>
         <Breadcrumbs 
           items={breadcrumbItems} 
           rubrics={rubricBasics}
@@ -66,16 +67,21 @@ export default async function RubricPage({
           }}
         />
         <h1 className="text-4xl font-bold mb-8">{rubricName}</h1>
-        <ArticleList slugInfos={allSlugs} lang={params.lang} rubricSlug={params.rubric} />
-        {hasMore && (
-          <div className="mt-8 flex justify-center">
-            <LoadMoreButton
-              currentPage={currentPage}
-              loadMoreText={dict.common.loadMore}
-            />
-          </div>
-        )}
-      </div>
+        <Section 
+          isOdd={true}
+          ariaLabel={rubricName}
+        >
+          <ArticleList slugInfos={allSlugs} lang={params.lang} rubricSlug={params.rubric} />
+          {hasMore && (
+            <div className="mt-8 flex justify-center">
+              <LoadMoreButton
+                currentPage={currentPage}
+                loadMoreText={dict.common.loadMore}
+              />
+            </div>
+          )}
+        </Section>
+      </>
     );
   } catch (error) {
     console.error('Error in RubricPage:', error);

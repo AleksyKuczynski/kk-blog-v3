@@ -54,7 +54,7 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
     readMore: `
       sm:max-lg:grow xl:grow
       text-sm 
-      font-medium text-secondary hover:text-secondary-dark 
+      font-medium text-primary hover:text-primary-dark 
       transition-colors duration-200 
       flex justify-end items-end
     `,

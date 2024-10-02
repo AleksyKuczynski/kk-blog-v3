@@ -65,20 +65,15 @@ const config: Config = {
         custom: ['var(--font-custom)'],
       },
       colors: {
-        primary: {
+        accent: {
           DEFAULT: '#FF6B6B', // Vibrant coral
           light: '#FFA5A5',
           dark: '#FF3E3E',
         },
-        secondary: {
+        primary: {
           DEFAULT: '#4ECDC4', // Bright teal
           light: '#7EEAE3',
           dark: '#2EAFA5',
-        },
-        accent: {
-          DEFAULT: '#FFD93D', // Sunny yellow
-          light: '#FFE685',
-          dark: '#FFCC00',
         },
         neutral: {
           100: '#F8F9FA',

@@ -5,6 +5,7 @@ import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { Rubric } from '@/main/lib/directus/interfaces';
+import Section from '@/main/components/Main/Section';
 
 interface AllRubricsPageProps {
   params: {
@@ -24,7 +25,7 @@ export default async function AllRubricsPage({ params: { lang } }: AllRubricsPag
   }));
 
   return (
-    <div className="max-w-[1200px] mx-auto px-8">
+    <>
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricBasics}
@@ -36,7 +37,10 @@ export default async function AllRubricsPage({ params: { lang } }: AllRubricsPag
         }}
       />
       <h1 className="text-4xl font-bold mb-8">{dict.sections.rubrics.allRubrics}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <Section 
+        isOdd={true}
+        ariaLabel={dict.sections.rubrics.allRubrics}
+      >
         {rubrics.map((rubric: Rubric) => (
           <RubricCard 
             key={rubric.slug} 
@@ -44,7 +48,7 @@ export default async function AllRubricsPage({ params: { lang } }: AllRubricsPag
             lang={lang} 
           />
         ))}
-      </div>
-    </div>
+      </Section>
+    </>
   );
 }

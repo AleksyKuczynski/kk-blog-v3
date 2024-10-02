@@ -7,6 +7,7 @@ import { getDictionary } from '@/main/lib/dictionaries';
 import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/index';
 import HeroArticles from '@/main/components/Main/HeroArticles';
 import RubricCard from '@/main/components/Main/RubricCard';
+import Section from '@/main/components/Main/Section';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,27 +39,32 @@ export default async function Home({ params: { lang } }: { params: { lang: Lang 
 
   return (
     <>
-      <section className="py-12 md:py-24">
-        <h1 className="text-4xl md:text-6xl font-bold text-primary mb-4 text-center">
+      <Section isOdd={true}>
+      <h1 className="text-4xl md:text-6xl font-bold text-primary mb-4 text-center">
           {dict.sections.home.welcomeTitle}
         </h1>
         <p className="text-xl text-text-secondary text-center mb-8">
           {dict.sections.home.welcomeDescription}
         </p>
-      </section>
+      </Section>
 
-      <section aria-label={dict.sections.articles.featuredArticles} className="container mx-auto px-4 mb-12">
-          <Suspense fallback={<div>{dict.common.loading}</div>}>
-            {heroSlugs.length > 0 ? (
-              <HeroArticles heroSlugs={heroSlugs} lang={lang} />
-            ) : (
-              <div>{dict.sections.articles.noFeaturedArticles}</div>
-            )}
-          </Suspense>
-        </section>
+      <Section 
+        ariaLabel={dict.sections.articles.featuredArticles}
+      >
+        <Suspense fallback={<div>{dict.common.loading}</div>}>
+          {heroSlugs.length > 0 ? (
+            <HeroArticles heroSlugs={heroSlugs} lang={lang} />
+          ) : (
+            <div>{dict.sections.articles.noFeaturedArticles}</div>
+          )}
+        </Suspense>
+      </Section>
 
-      <section aria-label={dict.sections.home.exploreRubrics} className="my-12">
-        <h2 className="text-3xl font-bold text-primary mb-6">{dict.sections.home.exploreRubrics}</h2>
+      <Section 
+        isOdd={true}
+        ariaLabel={dict.sections.home.exploreRubrics}
+        title={dict.sections.home.exploreRubrics}
+      >
         {rubrics.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {rubrics.slice(0, 6).map((rubric) => {
@@ -75,7 +81,7 @@ export default async function Home({ params: { lang } }: { params: { lang: Lang 
             </Link>
           </div>
         )}
-      </section>
+      </Section>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{
         __html: JSON.stringify({

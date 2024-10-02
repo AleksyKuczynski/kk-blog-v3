@@ -7,7 +7,6 @@ import { fetchHeroSlugs, fetchArticleSlugs, fetchAllCategories } from '@/main/li
 import { ArticleSlugInfo } from '@/main/lib/directus/interfaces';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
-import FilterGroup from '@/main/components/Main/FilterGroup';
 import HeroArticles from '@/main/components/Main/HeroArticles';
 import Section from '@/main/components/Main/Section';
 
@@ -18,16 +17,18 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
   searchParams: { page?: string, sort?: string, category?: string, search?: string } 
 }) {
   const dict = await getDictionary(lang);
-  const categories = await fetchAllCategories(lang);
   const currentPage = Number(searchParams.page) || 1;
   const currentSort = searchParams.sort || 'desc';
   const currentCategory = searchParams.category || '';
   const currentSearch = searchParams.search || '';
-  const isDefaultView = currentSort === 'desc' && !currentCategory && !currentSearch;
-
+  const isSortExplicit = 'sort' in searchParams;
+  const isDefaultView = !isSortExplicit && !currentCategory && !currentSearch;
+  
   let heroSlugs: string[] = [];
   let allSlugs: ArticleSlugInfo[] = [];
   let hasMore = false;
+
+  
 
   if (isDefaultView) {
     try {
@@ -52,22 +53,10 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
 
   return (
     <>
-      <Section isOdd={true}>
-        <FilterGroup
-          currentSort={currentSort}
-          currentCategory={currentCategory}
-          categories={categories}
-          sortingTranslations={dict.sorting}
-          categoryTranslations={dict.categories}
-          resetText={dict.filter.reset}
-          lang={lang}
-        />
-      </Section>
-
       {isDefaultView && (
         <Section 
-          isOdd={false}
           title={dict.sections.articles.featuredArticles}
+          ariaLabel={dict.sections.articles.featuredArticles}
         >
           <Suspense fallback={<div>{dict.common.loading}</div>}>
             {heroSlugs.length > 0 ? (
@@ -82,6 +71,7 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
       <Section 
         isOdd={true}
         title={isDefaultView ? dict.sections.articles.latestArticles : dict.sections.articles.allArticles}
+        ariaLabel={isDefaultView ? dict.sections.articles.latestArticles : dict.sections.articles.allArticles}
       >
         <Suspense fallback={<div>{dict.common.loading}</div>}>
           <ArticleList 

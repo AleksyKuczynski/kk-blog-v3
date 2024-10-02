@@ -23,13 +23,11 @@ interface FilterGroupProps {
 }
 
 export default function FilterGroup({
-  currentSort,
   currentCategory,
   categories,
   sortingTranslations,
   categoryTranslations,
   resetText,
-  lang,
 }: FilterGroupProps) {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const router = useRouter();
@@ -107,14 +105,14 @@ export default function FilterGroup({
         </div>
       </div>
       <div className="flex flex-col items-center">
-        <SortingControl currentSort={currentSort} translations={sortingTranslations} />
+        <SortingControl translations={sortingTranslations} />
       </div>
       <div className="flex flex-col items-center">
         <span className="mb-2 text-sm font-medium">{resetText}</span>
         <CustomButton
-          color="secondary"
+          color="primary"
           content="icon"
-          style="outlined"
+          style="filled"
           onClick={handleReset}
           icon={<ResetIcon className="h-5 w-5" />}
           aria-label={resetText}

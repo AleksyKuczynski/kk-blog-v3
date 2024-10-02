@@ -40,9 +40,7 @@ export default async function AuthorsPage({ params: { lang } }: { params: { lang
         }}
       />
       <Section 
-        isOdd={false} 
         title={dict.sections.authors.ourAuthors}
-        className="py-8"
       >
         {authors.length === 0 ? (
           <p className="text-center text-text-secondary">{dict.sections.authors.noAuthorsFound}</p>

@@ -55,7 +55,7 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
     readMore: `
       sm:max-lg:grow 
       text-sm 
-      font-medium text-primary hover:text-secondary-dark 
+      font-medium text-accent hover:text-accent-dark 
       transition-colors duration-200 
       flex justify-end items-end
     `,

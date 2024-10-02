@@ -93,7 +93,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
     bg-background-accent dark:bg-neutral-800 
     shadow-md
     rounded-[var(--border-radius)]
-    focus-within:ring-2 focus-within:ring-secondary-dark
+    focus-within:ring-2 focus-within:ring-primary-dark
     transition-colors duration-300
     ${getGroupStyles()}
     ${animationClasses.transition}

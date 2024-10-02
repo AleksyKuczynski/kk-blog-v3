@@ -62,7 +62,7 @@ export default async function AuthorPage({ params, searchParams }: {
         }}
       />
       
-      <Section isOdd={false} className="py-8">
+      <Section className="py-8">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
           {author.avatar && (
             <Image
