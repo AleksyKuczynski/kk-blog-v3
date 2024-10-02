@@ -11,9 +11,9 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'forty-bikes-roll.loca.lt',
-        port: '',
+        protocol: 'http',
+        hostname: '192.168.0.50',
+        port: '8055',
         pathname: '/assets/**',
       },
     ],
