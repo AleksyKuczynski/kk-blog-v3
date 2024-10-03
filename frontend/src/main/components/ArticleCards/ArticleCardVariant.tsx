@@ -1,7 +1,6 @@
 // /frontend/src/main/components/ArticleCards/ArticleCardVariant.tsx
 'use client';
 
-import { useTheme } from '@/main/components/ThemeContext';
 import { CardThemeStyles } from '@/main/lib/themeUtils';
 import { ArticleCardVariantProps } from './interfaces';
 import { NewsCard } from './NewsCard';
@@ -10,6 +9,7 @@ import { StandardCard } from './StandardCard';
 import { regularCardStyles } from './regularCardStyles';
 import { latestCardStyles } from './latestCardStyles';
 import { promotedCardStyles } from './promotedCardStyles';
+import { useTheme } from '../ThemeSwitcher';
 
 export function ArticleCardVariant(props: ArticleCardVariantProps) {
   const { currentTheme } = useTheme();

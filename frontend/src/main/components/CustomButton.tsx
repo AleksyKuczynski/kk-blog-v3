@@ -2,7 +2,6 @@
 'use client';
 
 import React from 'react';
-import { useTheme } from '@/main/components/ThemeContext';
 
 interface CustomButtonProps {
   color?: 'primary' | 'secondary' | 'accent';
@@ -75,7 +74,6 @@ export function CustomButton({
   shadow = 'none',
   ...props
 }: CustomButtonProps) {
-  const { currentTheme } = useTheme();
 
   const getButtonStyles = () => {
     const colorStyle = buttonColors[color || 'none'][style];

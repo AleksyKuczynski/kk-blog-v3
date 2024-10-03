@@ -1,6 +1,6 @@
 // src/main/components/Navigation/NavButton.tsx
 import React, { forwardRef } from 'react';
-import { useTheme } from '@/main/components/ThemeContext';
+import { useTheme } from '../ThemeSwitcher';
 
 interface NavButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   context: 'desktop' | 'mobile';

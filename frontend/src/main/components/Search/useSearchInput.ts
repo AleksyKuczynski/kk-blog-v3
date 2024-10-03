@@ -1,7 +1,6 @@
 // src/main/lib/useSearchInput.ts
 import { useState, useCallback, KeyboardEvent } from 'react';
 import { useSearch } from './useSearch';
-import { SearchTranslations } from './dictionaries/types';
 
 export function useSearchInput(onSubmit?: () => void) {
   const [focusedIndex, setFocusedIndex] = useState(-1);

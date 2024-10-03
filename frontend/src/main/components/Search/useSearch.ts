@@ -1,9 +1,9 @@
 // src/main/lib/useSearch.ts
 import { useState, useCallback } from 'react';
-import { getSearchSuggestions } from './actions';
 import { useRouter, usePathname } from 'next/navigation';
-import { SearchProposition } from './directus/interfaces';
-import { Lang } from './dictionaries/types';
+import { SearchProposition } from '@/main/lib/directus';
+import { getSearchSuggestions } from '@/main/lib/actions';
+import { Lang } from '@/main/lib/dictionaries/types';
 
 export function useSearch(onSubmit?: () => void) {
   const [searchQuery, setSearchQuery] = useState('');

@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import SearchBarWrapper from '@/main/components/SearchBar/SearchBarWrapper';
+import SearchBarWrapper from '@/main/components/Search/SearchBarWrapper';
 import { Lang, FooterTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
 
 interface FooterProps {

@@ -5,11 +5,10 @@ import { useState, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { MobileLanguageSwitcher } from './LanguageSwitcher'
-import { MobileThemeSwitcher } from './ThemeSwitcher'
 import { Lang, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types'
-import { useTheme } from '../ThemeContext'
-import SearchBarWrapper from '../SearchBar/SearchBarWrapper'
+import SearchBarWrapper from '../Search/SearchBarWrapper'
 import { NavButton } from './NavButton'
+import { ThemeMobile } from '../ThemeSwitcher'
 
 interface MobileNavigationProps {
   lang: Lang
@@ -26,24 +25,12 @@ export default function MobileNavigation({
 }: MobileNavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  const { currentTheme } = useTheme()
 
   const NAVIGATION_LINKS = [
     { href: '/articles', name: translations.articles },
     { href: '/rubrics', name: translations.rubrics },
     { href: '/authors', name: translations.authors },
   ]
-
-  const getThemeClasses = () => {
-    switch (currentTheme) {
-      case 'rounded':
-        return 'rounded-l-2xl'
-      case 'sharp':
-        return 'border-l-2 border-y-2 border-accent'
-      default:
-        return ''
-    }
-  }
 
   return (
     <div className="xl:hidden">
@@ -72,7 +59,7 @@ export default function MobileNavigation({
           sm:landscape:w-full sm:landscape:max-w-none
           backdrop-blur-xl bg-background/20 transition-all duration-300 overflow-y-auto 
           ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
-          ${getThemeClasses()}`}
+        `}
       >
         <div className="flex flex-col sm:landscape:flex-row h-full p-6 sm:landscape:p-4">
           {/* First column / top section */}
@@ -124,7 +111,7 @@ export default function MobileNavigation({
             </div>
 
             <div className="mt-6 sm:landscape:mt-4">
-              <MobileThemeSwitcher />
+              <ThemeMobile />
             </div>
           </div>
         </div>

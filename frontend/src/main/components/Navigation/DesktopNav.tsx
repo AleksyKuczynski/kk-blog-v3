@@ -4,11 +4,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useTheme } from '../ThemeContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { ThemeSwitcher } from './ThemeSwitcher';
 import { Lang, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
-import ExpandableSearchButton from '../SearchBar/ExpandableSearchButton';
+import ExpandableSearchButton from '../Search/ExpandableSearchButton';
+import { ThemeDesktop } from '../ThemeSwitcher';
 
 interface DesktopNavigationProps {
   lang: Lang;
@@ -23,8 +22,6 @@ export default function DesktopNavigation({
   searchTranslations,
   isSearchPage,
 }: DesktopNavigationProps) {
-  const { currentTheme } = useTheme();
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   const NAVIGATION_LINKS = [
     { href: '/articles', name: translations.articles },
@@ -32,9 +29,6 @@ export default function DesktopNavigation({
     { href: '/authors', name: translations.authors },
   ];
 
-  const toggleSearch = () => {
-    setIsSearchExpanded(!isSearchExpanded);
-  };
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/20 transition-all duration-300">
@@ -68,7 +62,7 @@ export default function DesktopNavigation({
         <div className="flex items-center justify-end space-x-4 pr-8">
           {!isSearchPage && <ExpandableSearchButton searchTranslations={searchTranslations} />}
           <LanguageSwitcher currentLang={lang} />
-          <ThemeSwitcher />
+          <ThemeDesktop />
         </div>
       </div>
     </div>

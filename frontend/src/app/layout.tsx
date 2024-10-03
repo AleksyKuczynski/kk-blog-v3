@@ -1,8 +1,8 @@
 // src/app/[lang]/layout.tsx
-import { ThemeProvider } from '@/main/components/ThemeContext';
 import { getTheme } from '@/main/lib/actions';
 import { fontSans, fontSerif, fontDisplay, fontCustom } from '@/app/fonts/fonts';
 import '@/app/globals.scss';
+import { ThemeProvider } from '@/main/components/ThemeSwitcher';
 
 export default async function RootLayout({
   children,

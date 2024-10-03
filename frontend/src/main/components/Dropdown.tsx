@@ -1,6 +1,6 @@
-// src/main/components/Dropdown.tsx
+// /frontend/src/main/components/Dropdown.tsx
 import React, { useRef, useEffect, useState } from 'react';
-import { useTheme } from '@/main/components/ThemeContext';
+import { useTheme } from './ThemeSwitcher';
 
 interface DropdownProps {
   children: React.ReactNode;
@@ -10,6 +10,7 @@ interface DropdownProps {
   align?: 'left' | 'right';
   className?: string;
   parentRef?: React.RefObject<HTMLElement>;
+  onKeyDown?: (e: React.KeyboardEvent) => void;
 }
 
 const dropdownStyles = {
@@ -33,10 +34,12 @@ const dropdownStyles = {
 export const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(({
   children,
   isOpen,
+  onClose,
   width = 'narrow',
   align = 'left',
   className = '',
   parentRef,
+  onKeyDown,
 }, ref) => {
   const { currentTheme } = useTheme();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -68,6 +71,8 @@ export const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(({
     <div 
       ref={ref || dropdownRef}
       className={`${baseStyle} ${widthStyle} ${alignStyle} ${positionStyle} ${className}`}
+      onKeyDown={onKeyDown}
+      tabIndex={-1}
     >
       {children}
     </div>

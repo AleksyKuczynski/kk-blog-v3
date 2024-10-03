@@ -3,7 +3,7 @@
 import { Suspense } from 'react';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
-import { fetchHeroSlugs, fetchArticleSlugs, fetchAllCategories } from '@/main/lib/directus/index';
+import { fetchHeroSlugs, fetchArticleSlugs } from '@/main/lib/directus/index';
 import { ArticleSlugInfo } from '@/main/lib/directus/interfaces';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
@@ -23,7 +23,7 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
   const currentSearch = searchParams.search || '';
   const isSortExplicit = 'sort' in searchParams;
   const isDefaultView = !isSortExplicit && !currentCategory && !currentSearch;
-  
+
   let heroSlugs: string[] = [];
   let allSlugs: ArticleSlugInfo[] = [];
   let hasMore = false;

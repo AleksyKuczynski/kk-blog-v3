@@ -1,12 +1,12 @@
 // src/main/components/SearchBar/SearchInput.tsx
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
-import { useTheme } from '@/main/components/ThemeContext';
 import { Dropdown } from '../Dropdown';
 import { NavButton } from '../Navigation/NavButton';
 import { SearchIcon } from '../Icons';
-import { useSearchInput } from '@/main/lib/useSearchInput';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
 import { animationClasses } from '../animationClasses';
+import { useSearchInput } from './useSearchInput';
+import { useTheme } from '../ThemeSwitcher';
 
 interface SearchInputProps {
   className?: string;
@@ -158,7 +158,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
               {suggestions.map((suggestion, index) => (
                 <li key={suggestion.slug}>
                   <button
-                    className={`w-full text-left px-4 py-2 ${index === focusedIndex ? 'bg-secondary text-text-inverted' : ''}`}
+                    className={`w-full text-left px-4 py-2 ${index === focusedIndex ? 'text-primary' : ''}`}
                     onClick={() => {
                       handleSelect(suggestion.slug, suggestion.rubric_slug);
                       if (isExpandable) onClose?.();

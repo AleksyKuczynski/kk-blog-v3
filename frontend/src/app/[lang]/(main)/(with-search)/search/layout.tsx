@@ -1,6 +1,6 @@
 // src/app/[lang]/(main)/(with-search)/layout.tsx
 import SortingControl from '@/main/components/Main/SortingControl';
-import SearchPageWrapper from '@/main/components/SearchBar/SearchPageWrapper';
+import SearchPageWrapper from '@/main/components/Search/SearchPageWrapper';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { Suspense } from 'react';

@@ -1,5 +1,5 @@
 // src/main/lib/hooks.ts
-import React, { useCallback, useEffect, RefObject } from 'react';
+import { useCallback, useEffect, RefObject } from 'react';
 
 export function useOutsideClick<T extends HTMLElement>(
   ref: RefObject<T>,
