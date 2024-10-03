@@ -15,9 +15,9 @@ interface DropdownProps {
 
 const dropdownStyles = {
   base: {
-    default: 'absolute z-60 bg-background-accent dark:bg-neutral-800 text-text-primary dark:text-text-inverted shadow-lg border border-neutral-200 dark:border-neutral-700',
-    rounded: 'absolute z-60 bg-background-accent dark:bg-neutral-800 text-text-primary dark:text-text-inverted shadow-lg border border-neutral-200 dark:border-neutral-700 rounded-2xl',
-    sharp: 'absolute z-60 bg-background-accent dark:bg-neutral-800 text-text-primary dark:text-text-inverted shadow-lg border border-neutral-200 dark:border-neutral-700',
+    default: 'absolute z-60 bg-bgcolor-alt text-txcolor-secondary shadow-lg border border-tx-color-muted rounded-[var(--border-radius)]',
+    rounded: 'absolute z-60 bg-bgcolor-alt text-txcolor-secondary shadow-lg border border-tx-color-muted rounded-[var(--border-radius)]',
+    sharp: 'absolute z-60 bg-bgcolor-alt text-txcolor-secondary shadow-lg border border-tx-color-muted rounded-[var(--border-radius)]',
   },
   width: {
     icon: 'w-40',

@@ -84,7 +84,7 @@ export default function FilterGroup({
             <ul className="py-1">
               <li>
                 <button
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full text-left px-4 py-2 hover:bg-bgcolor-alt"
                   onClick={() => handleCategoryChange('')}
                 >
                   {categoryTranslations.allCategories}
@@ -93,7 +93,7 @@ export default function FilterGroup({
               {categories.map((category) => (
                 <li key={category.slug}>
                   <button
-                    className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="w-full text-left px-4 py-2 hover:bg-bgcolor-alt"
                     onClick={() => handleCategoryChange(category.slug)}
                   >
                     {category.name}

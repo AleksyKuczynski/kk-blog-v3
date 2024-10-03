@@ -31,7 +31,7 @@ export default function DesktopNavigation({
 
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/20 transition-all duration-300">
+    <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-bgcolor-alt/20 transition-all duration-300">
       <div className="grid grid-cols-3 items-center h-24">
 
       <div className="flex items-center justify-start pl-8">
@@ -39,7 +39,7 @@ export default function DesktopNavigation({
             <Link 
               key={link.href} 
               href={`/${lang}${link.href}`} 
-              className="text-text-primary dark:text-text-inverted hover:bg-primary-dark/50 px-3 py-2 text-sm font-medium uppercase tracking-wider transition duration-300"
+              className="text-txcolor-secondary hover:text-txcolor hover:bg-prcolor px-3 py-2 text-sm font-medium uppercase tracking-wider transition duration-300"
             >
               {link.name}
             </Link>

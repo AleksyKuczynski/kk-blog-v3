@@ -75,7 +75,7 @@ export default async function AuthorPage({ params, searchParams }: {
           )}
           <div>
             <h1 className="text-4xl font-bold text-primary mb-4">{author.name}</h1>
-            {author.bio && <p className="text-text-secondary mb-4">{author.bio}</p>}
+            {author.bio && <p className="text-txcolor-secondary mb-4">{author.bio}</p>}
           </div>
         </div>
       </Section>
@@ -103,7 +103,7 @@ export default async function AuthorPage({ params, searchParams }: {
               )}
             </>
           ) : (
-            <p className="text-center text-text-secondary">{dict.sections.author.noArticlesFound}</p>
+            <p className="text-center text-txcolor-secondary">{dict.sections.author.noArticlesFound}</p>
           )}
         </Suspense>
       </Section>

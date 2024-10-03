@@ -22,7 +22,7 @@ const listStyles = {
     
   `,
   card: {
-    container: 'bg-white shadow-md self-stretch',
+    container: 'bg-bgcolor-alt shadow-md self-stretch',
     imageWrapper: 'relative overflow-hidden',
   },
 };
@@ -30,7 +30,7 @@ const listStyles = {
 async function ArticleListContent({ slugInfos, lang, authorSlug, rubricSlug }: ArticleListProps) {
 
   if (slugInfos.length === 0) {
-    return <p className="text-text-secondary">No articles found.</p>;
+    return <p className="text-txcolor-secondary">No articles found.</p>;
   }
 
   return (

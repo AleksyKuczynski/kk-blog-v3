@@ -22,7 +22,7 @@ export default function Footer({ lang, translations, searchTranslations }: Foote
   ];
 
   return (
-    <footer className="bg-gradient-to-r from-primary via-secondary to-accent text-text-inverted py-16 relative overflow-hidden z-60">
+    <footer className="bg-gradient-to-t from-bgcolor to-bgcolor-alt text-txcolor-muted py-16 relative overflow-hidden z-60">
       {/* Background SVG Shapes remain the same */}
 
       <div className="container mx-auto px-4 relative z-10">
@@ -64,7 +64,7 @@ export default function Footer({ lang, translations, searchTranslations }: Foote
         {/* Fun Interactive Element */}
         <div className="text-center mb-12">
           <button 
-            className="bg-primary-dark hover:bg-primary-light text-text-inverted px-8 py-4 rounded-full text-xl font-bold transition duration-300 transform hover:rotate-3 hover:scale-110"
+            className="bg-prcolor-dark hover:bg-prcolor-light px-8 py-4 rounded-full text-xl font-bold transition duration-300 transform hover:rotate-3 hover:scale-110"
             onClick={() => alert('Thanks for visiting our crazy footer!')}
           >
             {translations.clickForSurprise}

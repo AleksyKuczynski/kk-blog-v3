@@ -65,42 +65,27 @@ const config: Config = {
         custom: ['var(--font-custom)'],
       },
       colors: {
-        accent: {
-          DEFAULT: '#FF6B6B', // Vibrant coral
-          light: '#FFA5A5',
-          dark: '#FF3E3E',
+        bgcolor: {
+          DEFAULT: 'var(--color-background)',
+          accent: 'var(--color-background-accent)',
+          alt: 'var(--color-background-alt)',
         },
-        primary: {
-          DEFAULT: '#4ECDC4', // Bright teal
-          light: '#7EEAE3',
-          dark: '#2EAFA5',
+        txcolor: {
+          DEFAULT: 'var(--color-text)',
+          secondary: 'var(--color-text-secondary)',
+          muted: 'var(--color-text-muted)',
         },
-        neutral: {
-          100: '#F8F9FA',
-          200: '#E9ECEF',
-          300: '#DEE2E6',
-          400: '#CED4DA',
-          500: '#ADB5BD',
-          600: '#6C757D',
-          700: '#495057',
-          800: '#343A40',
-          900: '#212529',
+        prcolor: {
+          DEFAULT: 'var(--color-primary)',
+          dark: 'var(--color-primary-dark)',
+          light: 'var(--color-primary-light)',
         },
-        background: {
-          accent: '#FFFFFF',
-          lightaccent: '#FFFFFF',
-          light: '#EEEEEE',
-          dark: '#000000',
-          darkaccent: '#343A40',
+        accolor: {
+          DEFAULT: 'var(--color-accent)',
+          dark: 'var(--color-accent-dark)',
+          light: 'var(--color-accent-light)',
         },
-        text: {
-          primary: '#1A1A2E',
-          secondary: '#16213E',
-          dark: '#000000',
-          inverted: '#EEEEEE',
-          invsecondary: '#DDDDDD',
-          accent: '#FFFFFF',
-        },
+        // Direct color values
         success: '#06D6A0',
         error: '#EF476F',
         warning: '#FFC43D',

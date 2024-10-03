@@ -3,7 +3,7 @@
 
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { ColorTheme, Lang } from '@/main/lib/dictionaries/types'
+import { Lang } from '@/main/lib/dictionaries/types'
 import { AuthorDetails, SearchProposition, fetchAllRubrics, fetchArticleCard, fetchAuthorBySlug, fetchAuthorsForArticle, fetchFullArticle, fetchRubricDetails, fetchSearchPropositions } from '@/main/lib/directus/index'
 import { getDictionary } from './dictionaries'
 import { processContent } from './markdown/processContent'
@@ -14,11 +14,6 @@ export async function switchLanguage(lang: Lang, fullPath: string) {
 }
 
 export type Theme = 'default' | 'rounded' | 'sharp';
-
-export interface ThemeState {
-  geometry: Theme;
-  color: ColorTheme;
-}
 
 export async function getTheme(): Promise<Theme> {
   const theme = cookies().get('theme')?.value as Theme;

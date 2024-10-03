@@ -43,7 +43,7 @@ export default async function AuthorsPage({ params: { lang } }: { params: { lang
         title={dict.sections.authors.ourAuthors}
       >
         {authors.length === 0 ? (
-          <p className="text-center text-text-secondary">{dict.sections.authors.noAuthorsFound}</p>
+          <p className="text-center text-txcolor-secondary">{dict.sections.authors.noAuthorsFound}</p>
         ) : (
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {authors.map((author) => (

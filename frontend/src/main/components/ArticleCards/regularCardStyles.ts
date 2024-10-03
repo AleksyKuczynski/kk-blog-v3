@@ -6,10 +6,7 @@ const baseStyles = {
   container: `
     relative 
     overflow-hidden
-    bg-background-light 
-    dark:bg-neutral-900 
-    
-
+    bg-bgcolor-alt 
   `,
 }
 
@@ -53,18 +50,18 @@ export const regularCardStyles: Record<Theme, CardThemeStyles> = {
       transition-colors
       duration-600
     `,
-    date: 'text-xs lg:text-sm text-gray-500',
+    date: 'text-xs lg:text-sm text-txcolor-muted',
     description: `
       max-sm:hidden
       text-sm lg:text-base line-clamp-3 mb-4 
       transition-colors duration-600
     `,
     readMore: `
-          hidden
-
+hidden
       grow 
       text-xs lg:text-sm 
-      font-medium text-secondary hover:text-secondary-dark 
+      font-medium 
+      text-prcolor hover:text-prcolor-dark 
       transition-colors duration-200 
       flex justify-end items-end
     `,

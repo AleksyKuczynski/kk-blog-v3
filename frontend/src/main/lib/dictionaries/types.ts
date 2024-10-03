@@ -129,5 +129,3 @@ export const DEFAULT_SEARCH_TRANSLATIONS: SearchTranslations = {
 };
 
 export type Lang = 'ru' | 'en' | 'fr' | 'pl';
-
-export type ColorTheme = 'default' | 'nature' | 'sunset' | 'ocean';

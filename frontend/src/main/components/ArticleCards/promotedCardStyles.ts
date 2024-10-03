@@ -39,30 +39,30 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
       text-2xl lg:max-xl:text-3xl
       font-custom
       mb-2 
-      transition-colors
-      duration-600
     `,
     date: `
       sm:max-lg:grow
-      text-xs lg:text-sm text-gray-500
+      text-xs lg:text-sm 
+      text-txcolor-muted
     `,
     description: `
       xl:grow
       max-sm:hidden
       text-sm lg:text-base line-clamp-3 mb-4 
-      transition-colors duration-600
     `,
     readMore: `
       sm:max-lg:grow 
       text-sm 
-      font-medium text-accent hover:text-accent-dark 
+      font-medium 
+      text-accolor hover:text-accolor-dark
+      hover:underline underline-offset-4
       transition-colors duration-200 
       flex justify-end items-end
     `,
     image: '',
     authorWrapper: `
     hidden
-      bg-background-light bg-opacity-80 dark:bg-neutral-900 dark:bg-opacity-50 
+      bg-bgcolor-alt bg-opacity-80 
       top-2 left-2 
       pb-1 px-3 
       rounded-md
@@ -73,8 +73,7 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
       inline-block 
       mr-1 
       last:mr-0 
-      hover:text-primary
-      dark:text-white 
+      hover:text-prcolor
       transition-colors 
       duration-200 
 
@@ -90,8 +89,7 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
       h-full
       flex flex-col
       sm:max-xl:grid grid-cols-3 lg:grid-cols-2
-      border
-      dark:border-neutral-800
+      bg-bgcolor-alt
       rounded-3xl 
       shadow-md
       hover:shadow-lg
@@ -117,30 +115,29 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
       text-2xl lg:text-4xl
       font-display
       mb-2 
-      transition-colors
-      duration-600
     `,
     date: `
       sm:max-lg:grow
-      text-xs lg:text-sm text-gray-500
+      text-xs lg:text-sm 
+      text-txcolor-muted
     `,
     description: `
       xl:grow
       max-sm:hidden
       text-sm lg:text-base line-clamp-3 mb-4 
-      transition-colors duration-600
     `,
     readMore: `
       sm:max-lg:grow 
       text-sm 
-      font-medium text-primary hover:text-secondary-dark 
+      font-medium 
+      text-accolor hover:text-accolor-dark 
       transition-colors duration-200 
       flex justify-end items-end
     `,
     image: '',
     authorWrapper: `
     hidden
-      bg-background-light bg-opacity-80 dark:bg-neutral-900 dark:bg-opacity-50 
+      bg-bgcolor-alt bg-opacity-80 
       top-2 left-2 
       pb-1 px-3 
       rounded-md
@@ -151,8 +148,7 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
       inline-block 
       mr-1 
       last:mr-0 
-      hover:text-primary
-      dark:text-white 
+      hover:text-prcolor
       transition-colors 
       duration-200 
 
@@ -192,30 +188,30 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
       text-2xl lg:max-xl:text-3xl
       font-custom
       mb-2 
-      transition-colors
-      duration-600
     `,
     date: `
       sm:max-lg:grow
-      text-xs lg:text-sm text-gray-500
+      text-xs lg:text-sm 
+      text-txcolor-muted
     `,
     description: `
       xl:grow
       max-sm:hidden
       text-sm lg:text-base line-clamp-3 mb-4 
-      transition-colors duration-600
     `,
     readMore: `
       sm:max-lg:grow 
       text-sm 
-      font-medium text-primary hover:text-secondary-dark 
+      font-medium 
+      text-prcolor hover:text-prcolor-dark
+      underline underline-offset-2 
       transition-colors duration-200 
       flex justify-end items-end
     `,
     image: '',
     authorWrapper: `
     hidden
-      bg-background-light bg-opacity-80 dark:bg-neutral-900 dark:bg-opacity-50 
+      bg-bgcolor-alt bg-opacity-80 
       top-2 left-2 
       pb-1 px-3 
       rounded-md
@@ -226,11 +222,9 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
       inline-block 
       mr-1 
       last:mr-0 
-      hover:text-primary
-      dark:text-white 
+      hover:text-prcolor
       transition-colors 
       duration-200 
-
     `,
   },
 };

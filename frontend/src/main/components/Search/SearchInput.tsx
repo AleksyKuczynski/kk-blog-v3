@@ -90,10 +90,10 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
   const groupStyles = `
     group
     flex items-center
-    bg-background-accent dark:bg-neutral-800 
+    bg-bgcolor-accent 
     shadow-md
     rounded-[var(--border-radius)]
-    focus-within:ring-2 focus-within:ring-primary-dark
+    focus-within:ring-2 focus-within:ring-prcolor-dark
     transition-colors duration-300
     ${getGroupStyles()}
     ${animationClasses.transition}
@@ -103,8 +103,8 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
   const inputStyles = `
     w-full py-2 pl-3 pr-2
     bg-transparent
-    text-text-primary dark:text-text-inverted 
-    placeholder-text-secondary dark:placeholder-neutral-400 
+    text-txcolor 
+    placeholder-txcolor-muted 
     focus:outline-none
     ${showButton ? 'rounded-r-none' : getGroupStyles()}
   `;
@@ -145,20 +145,20 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
           parentRef={inputWrapperRef}
         >
           {showMinCharMessage && (
-            <p className="px-4 py-2 text-text-secondary dark:text-text-invsecondary">{translations.minCharacters}</p>
+            <p className="px-4 py-2 text-txcolor-secondary">{translations.minCharacters}</p>
           )}
           {showSearchingMessage && (
-            <p className="px-4 py-2 text-text-secondary dark:text-text-invsecondary">{translations.searching}</p>
+            <p className="px-4 py-2 text-txcolor-secondary">{translations.searching}</p>
           )}
           {showNoResultsMessage && (
-            <p className="px-4 py-2 text-text-secondary dark:text-text-invsecondary">{translations.noResults}</p>
+            <p className="px-4 py-2 text-txcolor-secondary">{translations.noResults}</p>
           )}
           {isInputValid && suggestions.length > 0 && (
             <ul>
               {suggestions.map((suggestion, index) => (
                 <li key={suggestion.slug}>
                   <button
-                    className={`w-full text-left px-4 py-2 ${index === focusedIndex ? 'text-primary' : ''}`}
+                    className={`w-full text-left px-4 py-2 hover:text-prcolor-dark ${index === focusedIndex ? 'text-prcolor' : ''}`}
                     onClick={() => {
                       handleSelect(suggestion.slug, suggestion.rubric_slug);
                       if (isExpandable) onClose?.();

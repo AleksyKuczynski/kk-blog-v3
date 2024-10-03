@@ -24,7 +24,7 @@ export default async function MainLayout({
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-primary text-text-inverted" role="banner">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-bgcolor-alt" role="banner">
         <Navigation 
           lang={lang} 
           translations={navigationTranslations}

@@ -6,7 +6,7 @@ import { NewsCardProps } from './interfaces';
 export function NewsCard({ article, formattedDate, articleLink, dict, themeClasses }: NewsCardProps) {
   const translation = article.translations[0];
   return (
-    <article className={`${themeClasses.container} bg-background-light border border-accent p-4`}>
+    <article className={`${themeClasses.container} bg-bgcolor-alt border border-accent p-4`}>
       <Link href={articleLink} className="block h-full">
         <h2 className={`${themeClasses.title} text-lg`}>
           {translation.title}

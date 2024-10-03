@@ -57,7 +57,7 @@ export default function MobileNavigation({
         ref={menuRef}
         className={`fixed top-0 right-0 bottom-0 w-[90vw] max-w-md 
           sm:landscape:w-full sm:landscape:max-w-none
-          backdrop-blur-xl bg-background/20 transition-all duration-300 overflow-y-auto 
+          backdrop-blur-xl bg-bgcolor-alt/20 transition-all duration-300 overflow-y-auto 
           ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
       >

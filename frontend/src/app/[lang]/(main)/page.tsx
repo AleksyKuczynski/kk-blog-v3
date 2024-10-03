@@ -40,10 +40,10 @@ export default async function Home({ params: { lang } }: { params: { lang: Lang 
   return (
     <>
       <Section isOdd={true}>
-      <h1 className="text-4xl md:text-6xl font-bold text-primary mb-4 text-center">
+      <h1 className="text-4xl md:text-6xl font-bold text-prcolor mb-4 text-center">
           {dict.sections.home.welcomeTitle}
         </h1>
-        <p className="text-xl text-text-secondary text-center mb-8">
+        <p className="text-xl text-accolor text-center mb-8">
           {dict.sections.home.welcomeDescription}
         </p>
       </Section>
@@ -72,11 +72,11 @@ export default async function Home({ params: { lang } }: { params: { lang: Lang 
             })}
           </div>
         ) : (
-          <p className="text-center text-text-secondary">No rubrics available</p>
+          <p className="text-center text-txcolor-secondary">No rubrics available</p>
         )}
         {rubrics.length > 6 && (
           <div className="text-center mt-8">
-            <Link href={`/${lang}/rubrics`} className="text-primary hover:text-primary-dark transition-colors duration-200">
+            <Link href={`/${lang}/rubrics`} className="text-prcolor hover:text-prcolor-dark transition-colors duration-200">
               {dict.sections.home.viewAllRubrics}
             </Link>
           </div>

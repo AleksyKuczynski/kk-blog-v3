@@ -8,7 +8,7 @@ import { AdvertisingCardProps } from './interfaces';
 export function AdvertisingCard({ article, articleLink, dict, themeClasses }: AdvertisingCardProps) {
   const translation = article.translations[0];
   return (
-    <article className={`${themeClasses.container} bg-primary text-text-inverted`}>
+    <article className={`${themeClasses.container} bg-bgcolor-alt text-text`}>
       <Link href={article.external_link || articleLink} className="block h-full">
         {article.article_heading_img && (
           <div className="relative h-56 sm:h-64">

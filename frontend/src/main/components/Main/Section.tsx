@@ -12,12 +12,12 @@ interface SectionProps {
 
 export default function Section({ children, isOdd, title, className = '', ariaLabel }: SectionProps) {
   const sectionBaseClasses = 'w-full pb-12';
-  const sectionOddClasses = 'bg-background-light dark:bg-background-dark';
-  const sectionEvenClasses = 'bg-background-lightaccent dark:bg-background-darkaccent';
+  const sectionOddClasses = 'bg-bgcolor';
+  const sectionEvenClasses = 'bg-bgcolor-accent';
 
   const h2BaseClasses = ' text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase mb-6 pl-1';
-  const h2OddClasses = 'text-background-lightaccent dark:text-background-darkaccent';
-  const h2EvenClasses = 'text-background-light dark:text-background-dark';
+  const h2OddClasses = 'text-bgcolor-accent';
+  const h2EvenClasses = 'text-bgcolor';
 
   const sectionAriaLabel = ariaLabel || title;
 

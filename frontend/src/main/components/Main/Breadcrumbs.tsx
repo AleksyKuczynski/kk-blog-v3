@@ -56,11 +56,11 @@ export default function Breadcrumbs({ items, rubrics, lang, translations }: Brea
       <ol className="list-none p-0 inline-flex">
         {fullPath.map((item, index) => (
           <li key={item.href} className="flex items-center">
-            {index > 0 && <ChevronRightIcon className="h-4 w-4 text-gray-400 mx-2" />}
+            {index > 0 && <ChevronRightIcon className="h-4 w-4 text-txcolor-secondary mx-2" />}
             {index === fullPath.length - 1 ? (
-              <span className="text-gray-500">{item.label}</span>
+              <span className="text-txcolor-muted">{item.label}</span>
             ) : (
-              <Link href={item.href} className="text-primary hover:text-primary-dark transition-colors duration-200">
+              <Link href={item.href} className="text-prcolor hover:text-prcolor-dark hover:underline underline-offset-4 transition-colors duration-200">
                 {item.label}
               </Link>
             )}

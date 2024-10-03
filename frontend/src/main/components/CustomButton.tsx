@@ -4,7 +4,7 @@
 import React from 'react';
 
 interface CustomButtonProps {
-  color?: 'primary' | 'secondary' | 'accent';
+  color?: 'primary' | 'accent';
   style?: 'filled' | 'outlined' | 'no-border';
   content?: 'icon' | 'text' | 'icon-text';
   size?: 'sm' | 'md' | 'lg';
@@ -39,23 +39,18 @@ const buttonStyles = {
 
 const buttonColors = {
   primary: {
-    filled: 'bg-primary hover:bg-primary-dark focus:bg-primary-dark text-text-inverted',
-    outlined: 'border-primary hover:border-primary-dark text-primary hover:text-primary-dark',
-    'no-border': 'text-primary hover:text-primary-dark',
-  },
-  secondary: {
-    filled: 'bg-secondary hover:bg-secondary-dark focus:bg-secondary-dark text-text-inverted',
-    outlined: 'border-secondary hover:border-secondary-dark text-secondary hover:text-secondary-dark',
-    'no-border': 'text-secondary hover:text-secondary-dark',
+    filled: 'bg-prcolor hover:bg-prcolor-dark focus:bg-prcolor-dark text-text-inverted',
+    outlined: 'border-prcolor hover:border-prcolor-dark text-primary hover:text-prcolor-dark',
+    'no-border': 'text-prcolor hover:text-prcolor-dark',
   },
   accent: {
-    filled: 'bg-accent hover:bg-accent-dark focus:bg-accent-dark text-text-inverted',
-    outlined: 'border-accent hover:border-accent-dark text-accent hover:text-accent-dark',
-    'no-border': 'text-accent hover:text-accent-dark',
+    filled: 'bg-accolor hover:bg-accolor-dark focus:bg-accolor-dark',
+    outlined: 'border-accolor hover:border-accolor-dark text-accolor hover:text-accolor-dark',
+    'no-border': 'text-accolor hover:text-accolor-dark',
   },
   none: {
     filled: 'bg-transparent hover:bg-neutral-500 focus:bg-neutral-700 dark:hover:bg-neutral-500 dark:focus:bg-neutral-300 text-text-primary dark:text-text-inverted hover:text-text-inverted focus:text-text-inverted',
-    outlined: 'border-text-primary dark:border-text-inverted text-text-primary dark:text-text-inverted',
+    outlined: 'border-txcolor text-txcolor',
     'no-border': 'bg-transparent hover:bg-neutral-500 focus:bg-neutral-700 dark:hover:bg-neutral-500 dark:focus:bg-neutral-300 text-text-primary dark:text-text-inverted focus:text-text-inverted dark:focus:text-text-primary',
   },
 };

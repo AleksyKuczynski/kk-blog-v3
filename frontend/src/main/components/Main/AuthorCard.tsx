@@ -14,8 +14,7 @@ const authorCardStyles = {
   container: `
     relative 
     overflow-hidden
-    bg-background-light 
-    dark:bg-neutral-900 
+    bg-bgcolor-alt 
     shadow-sm
     hover:shadow-md
     dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)]
@@ -47,7 +46,6 @@ const authorCardStyles = {
   `,
   name: `
     font-bold
-    text-text-primary dark:text-text-inverted
     transition-colors
     duration-600
     theme-default:text-lg theme-default:lg:text-xl
@@ -55,7 +53,7 @@ const authorCardStyles = {
     theme-sharp:text-xl
   `,
   bio: `
-    text-text-secondary dark:text-text-invsecondary
+    text-txcolor-secondary
     line-clamp-3
     transition-colors 
     duration-600

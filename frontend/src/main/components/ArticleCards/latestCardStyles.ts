@@ -38,30 +38,30 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
       text-lg 2xl:text-xl
       font-custom
       mb-2 
-      transition-colors
-      duration-600
     `,
     date: `
       sm:max-lg:grow xl:grow
-      text-xs lg:text-sm text-gray-500
+      text-xs lg:text-sm 
+      text-txcolor-muted
     `,
     description: `
       max-sm:hidden
       text-sm lg:text-base line-clamp-3 
       mb-4 
-      transition-colors duration-600
     `,
     readMore: `
       sm:max-lg:grow xl:grow
       text-sm 
-      font-medium text-primary hover:text-primary-dark 
+      font-medium 
+      text-prcolor hover:text-prcolor-dark 
+      hover:underline underline-offset-4
       transition-colors duration-200 
       flex justify-end items-end
     `,
     image: '',
     authorWrapper: `
     hidden  
-      bg-background-light bg-opacity-80 dark:bg-neutral-900 dark:bg-opacity-50 
+      bg-bgcolor-alt bg-opacity-80 
       top-2 left-2 
       pb-1 px-3 
       rounded-md
@@ -72,8 +72,7 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
       inline-block 
       mr-1 
       last:mr-0 
-      hover:text-primary
-      dark:text-white 
+      hover:text-prcolor
       transition-colors 
       duration-200 
 
@@ -88,8 +87,7 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
       lg:h-full
       flex flex-col
       sm:max-lg:grid xl:grid grid-cols-3
-      border
-      dark:border-neutral-800
+      bg-bgcolor-alt
       rounded-3xl 
       shadow-md
       hover:shadow-lg
@@ -120,25 +118,26 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
     `,
     date: `
       sm:max-lg:grow xl:grow
-      text-xs lg:text-sm text-gray-500
+      text-xs lg:text-sm 
+      text-txcolor-muted
     `,
     description: `
       max-sm:hidden
       text-sm lg:text-base line-clamp-3 
       mb-4 
-      transition-colors duration-600
     `,
     readMore: `
       sm:max-lg:grow xl:grow
       text-sm 
-      font-medium text-secondary hover:text-secondary-dark 
+      font-medium 
+      text-prcolor hover:text-prcolor-dark 
       transition-colors duration-200 
       flex justify-end items-end
     `,
     image: '',
     authorWrapper: `
     hidden  
-      bg-background-light bg-opacity-80 dark:bg-neutral-900 dark:bg-opacity-50 
+      bg-bgcolor-alt bg-opacity-80 
       top-2 left-2 
       pb-1 px-3 
       rounded-md
@@ -149,8 +148,7 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
       inline-block 
       mr-1 
       last:mr-0 
-      hover:text-primary
-      dark:text-white 
+      hover:text-prcolor
       transition-colors 
       duration-200 
 
@@ -190,30 +188,30 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
       text-lg 2xl:text-xl
       font-custom
       mb-2 
-      transition-colors
-      duration-600
     `,
     date: `
       sm:max-lg:grow xl:grow
-      text-xs lg:text-sm text-gray-500
+      text-xs lg:text-sm 
+      text-txcolor-muted
     `,
     description: `
       max-sm:hidden
       text-sm lg:text-base line-clamp-3 
       mb-4 
-      transition-colors duration-600
     `,
     readMore: `
       sm:max-lg:grow xl:grow
       text-sm 
-      font-medium text-secondary hover:text-secondary-dark 
+      font-medium 
+      text-prcolor hover:text-prcolor-dark
+      underline underline-offset-2 
       transition-colors duration-200 
       flex justify-end items-end
     `,
     image: '',
     authorWrapper: `
     hidden  
-      bg-background-light bg-opacity-80 dark:bg-neutral-900 dark:bg-opacity-50 
+      bg-bgcolor-alt bg-opacity-80 
       top-2 left-2 
       pb-1 px-3 
       rounded-md
@@ -224,8 +222,7 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
       inline-block 
       mr-1 
       last:mr-0 
-      hover:text-primary
-      dark:text-white 
+      hover:text-prcolor
       transition-colors 
       duration-200 
 
