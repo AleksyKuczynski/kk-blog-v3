@@ -1,9 +1,9 @@
 // src/app/[lang]/layout.tsx
-import { getTheme, getColorMode, getColorScheme } from '@/main/lib/actions';
 import { fontSans, fontSerif, fontDisplay, fontCustom } from '@/app/fonts/fonts';
 import '@/app/globals.scss';
 import { ThemeProvider } from '@/main/components/ThemeSwitcher';
 import { ColorThemeProvider } from '@/main/components/ThemeSwitcher/ColorThemeSwitcher';
+import { getColorMode, getColorScheme, getTheme } from '@/main/components/ThemeSwitcher/themeActions';
 
 export default async function RootLayout({
   children,

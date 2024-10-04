@@ -5,7 +5,7 @@ import React from 'react';
 import { NavButton } from '../Navigation/NavButton';
 import { PaletteIcon } from '../Icons';
 import { useThemeLogic } from './useTheme';
-import { Theme } from '@/main/lib/actions';
+import { Theme } from './themeTypes';
 
 const themes: { [key in Theme]: string } = {
   default: 'Default',

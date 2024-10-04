@@ -3,7 +3,8 @@
 
 import React, { createContext, useContext, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ColorMode, setColorMode, setTheme, Theme } from '@/main/lib/actions';
+import { ColorMode, Theme } from './themeTypes';
+import { setColorMode, setTheme } from './themeActions';
 
 interface ThemeContextType {
   currentTheme: Theme;

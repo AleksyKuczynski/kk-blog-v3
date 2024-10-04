@@ -4,7 +4,7 @@ import Footer from '@/main/components/Footer';
 import Navigation from '@/main/components/Navigation/Navigation'
 import { Lang, Dictionary, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
 import { Metadata } from 'next';
-import { getColorMode } from '@/main/lib/actions';
+import { getColorMode } from '@/main/components/ThemeSwitcher/themeActions';
 
 export const metadata: Metadata = {
   title: "My Blog",

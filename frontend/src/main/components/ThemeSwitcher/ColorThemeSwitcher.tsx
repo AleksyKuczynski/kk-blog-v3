@@ -4,8 +4,9 @@
 
 import React, { createContext, useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
-import { setColorScheme, ColorScheme } from '@/main/lib/actions';
 import { NavButton } from '../Navigation/NavButton';
+import { ColorScheme } from './themeTypes';
+import { setColorScheme } from './themeActions';
 
 interface ColorThemeContextType {
   colorScheme: ColorScheme;

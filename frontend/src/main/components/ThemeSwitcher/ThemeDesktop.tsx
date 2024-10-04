@@ -7,7 +7,7 @@ import { Dropdown } from '../Dropdown';
 import { PaletteIcon, CheckIcon } from '../Icons';
 import { useThemeLogic } from './useTheme';
 import { useOutsideClick } from '@/main/lib/hooks';
-import { Theme } from '@/main/lib/actions';
+import { Theme } from './themeTypes';
 
 const themes: { [key in Theme]: string } = {
   default: 'Default',

@@ -8,41 +8,6 @@ import { AuthorDetails, SearchProposition, fetchAllRubrics, fetchArticleCard, fe
 import { getDictionary } from './dictionaries'
 import { processContent } from './markdown/processContent'
 
-export type Theme = 'default' | 'rounded' | 'sharp';
-export type ColorMode = 'light' | 'dark';
-
-export async function getTheme(): Promise<Theme> {
-  const theme = cookies().get('theme')?.value as Theme;
-  return theme && ['default', 'rounded', 'sharp'].includes(theme) ? theme : 'default';
-}
-
-export async function setTheme(theme: Theme): Promise<Theme> {
-  cookies().set('theme', theme)
-  return theme
-}
-
-export async function getColorMode(): Promise<ColorMode> {
-  const colorMode = cookies().get('colorMode')?.value as ColorMode;
-  return colorMode === 'dark' ? 'dark' : 'light';
-}
-
-export async function setColorMode(colorMode: ColorMode): Promise<ColorMode> {
-  cookies().set('colorMode', colorMode)
-  return colorMode
-}
-
-export type ColorScheme = 'default' | 'scheme1' | 'scheme2';
-
-export async function getColorScheme(): Promise<ColorScheme> {
-  const colorScheme = cookies().get('colorScheme')?.value as ColorScheme;
-  return colorScheme && ['default', 'scheme1', 'scheme2'].includes(colorScheme) ? colorScheme : 'default';
-}
-
-export async function setColorScheme(colorScheme: ColorScheme): Promise<ColorScheme> {
-  cookies().set('colorScheme', colorScheme)
-  return colorScheme
-}
-
 export async function switchLanguage(lang: Lang, fullPath: string) {
   cookies().set('NEXT_LOCALE', lang)
   redirect(fullPath)

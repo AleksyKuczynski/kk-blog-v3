@@ -3,7 +3,7 @@
 
 import { useState, useCallback } from 'react';
 import { useTheme } from './ThemeContext';
-import { Theme } from '@/main/lib/actions';
+import { Theme } from './themeTypes';
 
 export function useThemeLogic() {
   const { currentTheme, handleThemeChange } = useTheme();
