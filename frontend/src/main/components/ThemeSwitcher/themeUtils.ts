@@ -1,4 +1,6 @@
-import { Theme } from './actions';
+// src/main/components/ThemeSwitcher/themeUtils.ts
+
+import { Theme } from '../../lib/actions';
 
 export type CardThemeStyles = {
   container: string;

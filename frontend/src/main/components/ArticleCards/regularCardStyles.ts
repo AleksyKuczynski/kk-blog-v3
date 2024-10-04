@@ -1,6 +1,6 @@
 // src/main/components/ArticleCards/regularCardStyles.ts
 import { Theme } from '@/main/lib/actions';
-import { CardThemeStyles } from '@/main/lib/themeUtils';
+import { CardThemeStyles } from '@/main/components/ThemeSwitcher/themeUtils';
 
 const baseStyles = {
   container: `

@@ -98,6 +98,8 @@ const config: Config = {
       addVariant('theme-default', 'body[data-theme="default"] &')
       addVariant('theme-rounded', 'body[data-theme="rounded"] &')
       addVariant('theme-sharp', 'body[data-theme="sharp"] &')
+      addVariant('theme-light', 'body[data-color-mode="light"] &')
+      addVariant('theme-dark', 'body[data-color-mode="dark"] &')
     },
     require('@tailwindcss/typography'),
   ],

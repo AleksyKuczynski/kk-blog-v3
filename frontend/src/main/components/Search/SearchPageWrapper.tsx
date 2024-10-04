@@ -1,4 +1,4 @@
-// src/main/components/SearchBar/SearchPageWrapper.tsx
+// src/main/components/Search/SearchPageWrapper.tsx
 'use client';
 
 import { SearchProvider } from './SearchContext';

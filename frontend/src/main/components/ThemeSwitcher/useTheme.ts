@@ -1,4 +1,4 @@
-// /frontend/src/main/components/Theme/useTheme.ts
+// /frontend/src/main/components/ThemeSwitcher/useTheme.ts
 'use client';
 
 import { useState, useCallback } from 'react';

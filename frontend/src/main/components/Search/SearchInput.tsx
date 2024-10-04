@@ -1,4 +1,4 @@
-// src/main/components/SearchBar/SearchInput.tsx
+// src/main/components/Search/SearchInput.tsx
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Dropdown } from '../Dropdown';
 import { NavButton } from '../Navigation/NavButton';

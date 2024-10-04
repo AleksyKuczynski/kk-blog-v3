@@ -1,6 +1,6 @@
 // src/main/components/ArticleCards/promotedCardStyles.ts
 import { Theme } from '@/main/lib/actions';
-import { CardThemeStyles } from '@/main/lib/themeUtils';
+import { CardThemeStyles } from '@/main/components/ThemeSwitcher/themeUtils';
 
 export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
   default: {

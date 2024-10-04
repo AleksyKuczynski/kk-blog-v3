@@ -1,4 +1,4 @@
-// src/main/components/SearchBar/ExpandableSearchButton.tsx
+// src/main/components/Search/ExpandableSearchButton.tsx
 import React, { useRef, useState } from 'react';
 import SearchInput, { SearchInputHandle } from './SearchInput';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';

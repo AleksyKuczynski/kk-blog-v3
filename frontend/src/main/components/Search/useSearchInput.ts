@@ -1,4 +1,4 @@
-// src/main/lib/useSearchInput.ts
+// src/main/components/Search/useSearchInput.ts
 import { useState, useCallback, KeyboardEvent } from 'react';
 import { useSearch } from './useSearch';
 

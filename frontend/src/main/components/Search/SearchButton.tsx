@@ -1,4 +1,4 @@
-// src/main/components/SearchBar/SearchButton.tsx
+// src/main/components/Search/SearchButton.tsx
 'use client';
 
 import React from 'react';

@@ -1,7 +1,7 @@
 // /frontend/src/main/components/ArticleCards/ArticleCardVariant.tsx
 'use client';
 
-import { CardThemeStyles } from '@/main/lib/themeUtils';
+import { CardThemeStyles } from '@/main/components/ThemeSwitcher/themeUtils';
 import { ArticleCardVariantProps } from './interfaces';
 import { NewsCard } from './NewsCard';
 import { AdvertisingCard } from './AdvertisingCard';

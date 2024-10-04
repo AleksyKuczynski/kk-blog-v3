@@ -1,4 +1,4 @@
-// src/main/lib/useSearch.ts
+// src/main/components/Search/useSearch.ts
 import { useState, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { SearchProposition } from '@/main/lib/directus';

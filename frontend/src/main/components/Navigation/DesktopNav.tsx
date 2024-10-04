@@ -8,12 +8,15 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { Lang, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
 import ExpandableSearchButton from '../Search/ExpandableSearchButton';
 import { ThemeDesktop } from '../ThemeSwitcher';
+import { ColorModeSwitcher } from './ColorModeSwitcher';
+import { ColorMode } from '@/main/lib/actions';
 
 interface DesktopNavigationProps {
   lang: Lang;
   translations: NavigationTranslations;
   searchTranslations: SearchTranslations;
   isSearchPage: boolean;
+  initialColorMode: ColorMode;
 }
 
 export default function DesktopNavigation({
@@ -21,6 +24,7 @@ export default function DesktopNavigation({
   translations,
   searchTranslations,
   isSearchPage,
+  initialColorMode,
 }: DesktopNavigationProps) {
 
   const NAVIGATION_LINKS = [
@@ -29,12 +33,10 @@ export default function DesktopNavigation({
     { href: '/authors', name: translations.authors },
   ];
 
-
   return (
     <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-bgcolor-alt/20 transition-all duration-300">
       <div className="grid grid-cols-3 items-center h-24">
-
-      <div className="flex items-center justify-start pl-8">
+        <div className="flex items-center justify-start pl-8">
           {NAVIGATION_LINKS.map((link) => (
             <Link 
               key={link.href} 
@@ -57,12 +59,12 @@ export default function DesktopNavigation({
               priority
             />
           </Link>
-
         </div>
         <div className="flex items-center justify-end space-x-4 pr-8">
           {!isSearchPage && <ExpandableSearchButton searchTranslations={searchTranslations} />}
           <LanguageSwitcher currentLang={lang} />
           <ThemeDesktop />
+          <ColorModeSwitcher initialColorMode={initialColorMode} />
         </div>
       </div>
     </div>

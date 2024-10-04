@@ -8,12 +8,8 @@ import { AuthorDetails, SearchProposition, fetchAllRubrics, fetchArticleCard, fe
 import { getDictionary } from './dictionaries'
 import { processContent } from './markdown/processContent'
 
-export async function switchLanguage(lang: Lang, fullPath: string) {
-  cookies().set('NEXT_LOCALE', lang)
-  redirect(fullPath)
-}
-
 export type Theme = 'default' | 'rounded' | 'sharp';
+export type ColorMode = 'light' | 'dark';
 
 export async function getTheme(): Promise<Theme> {
   const theme = cookies().get('theme')?.value as Theme;
@@ -23,6 +19,21 @@ export async function getTheme(): Promise<Theme> {
 export async function setTheme(theme: Theme): Promise<Theme> {
   cookies().set('theme', theme)
   return theme
+}
+
+export async function getColorMode(): Promise<ColorMode> {
+  const colorMode = cookies().get('colorMode')?.value as ColorMode;
+  return colorMode === 'dark' ? 'dark' : 'light';
+}
+
+export async function setColorMode(colorMode: ColorMode): Promise<ColorMode> {
+  cookies().set('colorMode', colorMode)
+  return colorMode
+}
+
+export async function switchLanguage(lang: Lang, fullPath: string) {
+  cookies().set('NEXT_LOCALE', lang)
+  redirect(fullPath)
 }
 
 export async function getSearchSuggestions(query: string, lang: Lang): Promise<SearchProposition[]> {

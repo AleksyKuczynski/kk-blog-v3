@@ -2,7 +2,7 @@
 
 import { Lang } from "@/main/lib/dictionaries/types";
 import { ArticleCardType } from "@/main/lib/directus";
-import { CardThemeStyles } from "@/main/lib/themeUtils";
+import { CardThemeStyles } from "@/main/components/ThemeSwitcher/themeUtils";
 
 
 export interface ArticleCardProps {

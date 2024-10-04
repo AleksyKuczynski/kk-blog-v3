@@ -4,6 +4,7 @@ import Footer from '@/main/components/Footer';
 import Navigation from '@/main/components/Navigation/Navigation'
 import { Lang, Dictionary, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
 import { Metadata } from 'next';
+import { getColorMode } from '@/main/lib/actions';
 
 export const metadata: Metadata = {
   title: "My Blog",
@@ -18,6 +19,7 @@ export default async function MainLayout({
   params: { lang: Lang }
 }) {
   const dict: Dictionary = await getDictionary(lang);
+  const initialColorMode = await getColorMode();
 
   const navigationTranslations: NavigationTranslations = dict.navigation;
   const searchTranslations: SearchTranslations = dict.search;
@@ -29,6 +31,7 @@ export default async function MainLayout({
           lang={lang} 
           translations={navigationTranslations}
           searchTranslations={searchTranslations}
+          initialColorMode={initialColorMode}
         />
       </header>
       <main className="flex-grow mt-16 md:mt-24 pt-4 md:pt-8" role="main">        
