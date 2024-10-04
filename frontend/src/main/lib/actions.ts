@@ -31,6 +31,18 @@ export async function setColorMode(colorMode: ColorMode): Promise<ColorMode> {
   return colorMode
 }
 
+export type ColorScheme = 'default' | 'scheme1' | 'scheme2';
+
+export async function getColorScheme(): Promise<ColorScheme> {
+  const colorScheme = cookies().get('colorScheme')?.value as ColorScheme;
+  return colorScheme && ['default', 'scheme1', 'scheme2'].includes(colorScheme) ? colorScheme : 'default';
+}
+
+export async function setColorScheme(colorScheme: ColorScheme): Promise<ColorScheme> {
+  cookies().set('colorScheme', colorScheme)
+  return colorScheme
+}
+
 export async function switchLanguage(lang: Lang, fullPath: string) {
   cookies().set('NEXT_LOCALE', lang)
   redirect(fullPath)

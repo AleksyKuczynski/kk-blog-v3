@@ -98,8 +98,9 @@ const config: Config = {
       addVariant('theme-default', 'body[data-theme="default"] &')
       addVariant('theme-rounded', 'body[data-theme="rounded"] &')
       addVariant('theme-sharp', 'body[data-theme="sharp"] &')
-      addVariant('theme-light', 'body[data-color-mode="light"] &')
-      addVariant('theme-dark', 'body[data-color-mode="dark"] &')
+      addVariant('scheme-default', 'body[data-color-scheme="default"] &')
+      addVariant('scheme-1', 'body[data-color-scheme="scheme1"] &')
+      addVariant('scheme-2', 'body[data-color-scheme="scheme2"] &')
     },
     require('@tailwindcss/typography'),
   ],

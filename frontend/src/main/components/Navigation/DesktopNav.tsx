@@ -8,7 +8,7 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { Lang, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
 import ExpandableSearchButton from '../Search/ExpandableSearchButton';
 import { ThemeDesktop } from '../ThemeSwitcher';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
+import { ColorThemeSwitcher } from '../ThemeSwitcher/ColorThemeSwitcher';
 import { ColorMode } from '@/main/lib/actions';
 
 interface DesktopNavigationProps {
@@ -24,7 +24,6 @@ export default function DesktopNavigation({
   translations,
   searchTranslations,
   isSearchPage,
-  initialColorMode,
 }: DesktopNavigationProps) {
 
   const NAVIGATION_LINKS = [
@@ -64,7 +63,7 @@ export default function DesktopNavigation({
           {!isSearchPage && <ExpandableSearchButton searchTranslations={searchTranslations} />}
           <LanguageSwitcher currentLang={lang} />
           <ThemeDesktop />
-          <ColorModeSwitcher initialColorMode={initialColorMode} />
+          <ColorThemeSwitcher />
         </div>
       </div>
     </div>
