@@ -104,6 +104,20 @@ export interface SectionsTranslations {
   rubrics: RubricsTranslations;
 }
 
+export interface ThemesTranslations {
+  name: string;
+  default: string;
+  rounded: string;
+  sharp: string;
+}
+
+export interface ColorsTranslations {
+  name: string;
+  default: string;
+  scheme1: string;
+  scheme2: string;
+}
+
 export interface Dictionary {
   navigation: NavigationTranslations;
   footer: FooterTranslations;
@@ -113,6 +127,8 @@ export interface Dictionary {
   sorting: SortingTranslations;
   filter: FilterTranslations;
   categories: CategoryTranslations;
+  themes: ThemesTranslations;
+  colors: ColorsTranslations;
 }
 
 export const DEFAULT_SEARCH_TRANSLATIONS: SearchTranslations = {

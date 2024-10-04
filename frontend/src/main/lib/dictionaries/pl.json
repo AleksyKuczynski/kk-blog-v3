@@ -38,19 +38,6 @@
     "submit": "Submit search",
     "minCharacters": "Wpisz co najmniej 3 znaki"
   },
-  "sorting": {
-    "sortOrder": "Porządek",
-    "newest": "Od najnowszych",
-    "oldest": "Od najstarzych"
-  },
-  "filter": {
-    "reset": "Reset"
-  },
-  "categories": {
-    "categories": "Kategoria",
-    "allCategories": "Wszystkie kategorie",
-    "selectCategory": "Wybierz kategorię"
-  },
   "sections": {
     "home": {
       "welcomeTitle": "Witamy w naszym magazynie",
@@ -84,5 +71,30 @@
       "featuredRubric": "Wyróżniona rubryka",
       "rubricList": "Lista rubryk"
     }
+  },
+  "sorting": {
+    "sortOrder": "Porządek",
+    "newest": "Od najnowszych",
+    "oldest": "Od najstarzych"
+  },
+  "filter": {
+    "reset": "Reset"
+  },
+  "categories": {
+    "categories": "Kategoria",
+    "allCategories": "Wszystkie kategorie",
+    "selectCategory": "Wybierz kategorię"
+  },
+  "themes": {
+    "name": "Styl",
+    "default": "«Komputer»",
+    "rounded": "«Smartfon»",
+    "sharp": "«Magazyn»"
+  },
+  "colors": {
+    "name": "Kolor",
+    "default": "Norma",
+    "scheme1": "Chłodny",
+    "scheme2": "Ciepły"
   }
 }

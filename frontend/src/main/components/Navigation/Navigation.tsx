@@ -1,20 +1,24 @@
 // src/main/components/Navigation/Navigation.tsx
 'use client'
 
+import { ColorMode } from '../ThemeSwitcher/themeTypes'
 import DesktopNavigation from './DesktopNav'
 import MobileNavigation from './MobileNav'
-import { Lang, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types'
+import { ColorsTranslations, Lang, NavigationTranslations, SearchTranslations, ThemesTranslations } from '@/main/lib/dictionaries/types'
 import { usePathname } from 'next/navigation'
-import { ColorMode } from '@/main/lib/actions'
 
 interface NavigationProps {
   lang: Lang
-  translations: NavigationTranslations
-  searchTranslations: SearchTranslations
+  translations: {
+    navigation: NavigationTranslations
+    search: SearchTranslations
+    themes: ThemesTranslations
+    colors: ColorsTranslations
+  }
   initialColorMode: ColorMode
 }
 
-export default function Navigation({ lang, translations, searchTranslations, initialColorMode }: NavigationProps) {
+export default function Navigation({ lang, translations, initialColorMode }: NavigationProps) {
   const pathname = usePathname()
   const isSearchPage = pathname === `/${lang}/search`
 
@@ -24,7 +28,6 @@ export default function Navigation({ lang, translations, searchTranslations, ini
         <DesktopNavigation
           lang={lang}
           translations={translations}
-          searchTranslations={searchTranslations}
           isSearchPage={isSearchPage}
           initialColorMode={initialColorMode}
         />
@@ -33,7 +36,6 @@ export default function Navigation({ lang, translations, searchTranslations, ini
         <MobileNavigation
           lang={lang}
           translations={translations}
-          searchTranslations={searchTranslations}
           isSearchPage={isSearchPage}
         />
       </div>

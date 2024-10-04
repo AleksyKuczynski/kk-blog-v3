@@ -2,7 +2,7 @@
 import { fontSans, fontSerif, fontDisplay, fontCustom } from '@/app/fonts/fonts';
 import '@/app/globals.scss';
 import { ThemeProvider } from '@/main/components/ThemeSwitcher';
-import { ColorThemeProvider } from '@/main/components/ThemeSwitcher/ColorThemeSwitcher';
+import { ColorThemeProvider } from '@/main/components/ThemeSwitcher/ColorThemeContext';
 import { getColorMode, getColorScheme, getTheme } from '@/main/components/ThemeSwitcher/themeActions';
 
 export default async function RootLayout({

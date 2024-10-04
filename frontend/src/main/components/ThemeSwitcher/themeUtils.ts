@@ -36,3 +36,13 @@ export function combineTheme(theme: Theme, mode: ColorMode): ThemeKey {
 export function isValidTheme(theme: unknown): theme is ThemeKey {
   return typeof theme === 'string' && allThemeKeys.includes(theme as ThemeKey);
 }
+
+export function getSchemeColors(scheme: string) {
+  const styles = getComputedStyle(document.documentElement);
+  const colorSchemes = JSON.parse(styles.getPropertyValue('--color-schemes').replace(/'/g, '"'));
+  
+  return {
+    accolor: colorSchemes[scheme].accent,
+    prcolor: colorSchemes[scheme].primary
+  };
+}

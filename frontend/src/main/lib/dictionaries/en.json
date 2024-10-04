@@ -38,19 +38,6 @@
     "submit": "Submit search",
     "minCharacters": "Type at least 3 characters"
   },
-  "sorting": {
-    "sortOrder": "Sort Order",
-    "newest": "Newest",
-    "oldest": "Oldest"
-  },
-  "filter": {
-    "reset": "Reset"
-  },
-  "categories": {
-    "categories": "Category",
-    "allCategories": "All Categories",
-    "selectCategory": "Select Category"
-  },
   "sections": {
     "home": {
       "welcomeTitle": "Welcome to Our Magazine",
@@ -84,5 +71,30 @@
       "featuredRubric": "Featured Rubric",
       "rubricList": "Rubric List"
     }
+  },
+  "sorting": {
+    "sortOrder": "Sort Order",
+    "newest": "Newest",
+    "oldest": "Oldest"
+  },
+  "filter": {
+    "reset": "Reset"
+  },
+  "categories": {
+    "categories": "Category",
+    "allCategories": "All Categories",
+    "selectCategory": "Select Category"
+  },
+  "themes": {
+    "name": "Design",
+    "default": "«Computer»",
+    "rounded": "«Smartphone»",
+    "sharp": "«Magazine»"
+  },
+  "colors": {
+    "name": "Color Theme",
+    "default": "Default",
+    "scheme1": "Cool",
+    "scheme2": "Warm"
   }
 }

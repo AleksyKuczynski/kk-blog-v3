@@ -21,16 +21,17 @@ export default async function MainLayout({
   const dict: Dictionary = await getDictionary(lang);
   const initialColorMode = await getColorMode();
 
-  const navigationTranslations: NavigationTranslations = dict.navigation;
-  const searchTranslations: SearchTranslations = dict.search;
-
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 bg-bgcolor-alt" role="banner">
         <Navigation 
           lang={lang} 
-          translations={navigationTranslations}
-          searchTranslations={searchTranslations}
+          translations={{
+            navigation: dict.navigation,
+            search: dict.search,
+            themes: dict.themes,
+            colors: dict.colors,
+          }}
           initialColorMode={initialColorMode}
         />
       </header>

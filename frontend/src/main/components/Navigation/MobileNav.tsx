@@ -5,31 +5,36 @@ import { useState, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { MobileLanguageSwitcher } from './LanguageSwitcher'
-import { Lang, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types'
+import { Lang, NavigationTranslations, SearchTranslations, ThemesTranslations, ColorsTranslations } from '@/main/lib/dictionaries/types'
 import SearchBarWrapper from '../Search/SearchBarWrapper'
 import { NavButton } from './NavButton'
 import { ThemeMobile } from '../ThemeSwitcher'
 
 interface MobileNavigationProps {
   lang: Lang
-  translations: NavigationTranslations
-  searchTranslations: SearchTranslations
+  translations: {
+    navigation: NavigationTranslations
+    search: SearchTranslations
+    themes: ThemesTranslations
+    colors: ColorsTranslations
+  }
   isSearchPage: boolean
 }
 
 export default function MobileNavigation({
   lang,
   translations,
-  searchTranslations,
   isSearchPage,
 }: MobileNavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
+  const { navigation, search, themes, colors } = translations
+
   const NAVIGATION_LINKS = [
-    { href: '/articles', name: translations.articles },
-    { href: '/rubrics', name: translations.rubrics },
-    { href: '/authors', name: translations.authors },
+    { href: '/articles', name: navigation.articles },
+    { href: '/rubrics', name: navigation.rubrics },
+    { href: '/authors', name: navigation.authors },
   ]
 
   return (
@@ -82,7 +87,7 @@ export default function MobileNavigation({
             {!isSearchPage && (
               <div className="py-2 sm:landscape:py-1">
                 <SearchBarWrapper 
-                  translations={searchTranslations}
+                  translations={search}
                   showButton={true}
                 />
               </div>
@@ -111,7 +116,7 @@ export default function MobileNavigation({
             </div>
 
             <div className="mt-6 sm:landscape:mt-4">
-              <ThemeMobile />
+              <ThemeMobile themeTranslations={themes} colorTranslations={colors} />
             </div>
           </div>
         </div>

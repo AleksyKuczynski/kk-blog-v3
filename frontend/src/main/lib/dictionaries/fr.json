@@ -38,19 +38,6 @@
     "submit": "Submit search",
     "minCharacters": "Tapez au moins 3 caractères"
   },
-  "sorting": {
-    "sortOrder": "Ordre",
-    "newest": "De nouveaux",
-    "oldest": "De vieux"
-  },
-  "filter": {
-    "reset": "Reset"
-  },
-  "categories": {
-    "categories": "Categorie",
-    "allCategories": "Tous les Categories",
-    "selectCategory": "Selectez la Categorie"
-  },
   "sections": {
     "home": {
       "welcomeTitle": "Bienvenue dans notre magazine",
@@ -84,5 +71,30 @@
       "featuredRubric": "Rubrique en vedette",
       "rubricList": "Liste des rubriques"
     }
+  },
+  "sorting": {
+    "sortOrder": "Ordre",
+    "newest": "De nouveaux",
+    "oldest": "De vieux"
+  },
+  "filter": {
+    "reset": "Reset"
+  },
+  "categories": {
+    "categories": "Categorie",
+    "allCategories": "Tous les Categories",
+    "selectCategory": "Selectez la Categorie"
+  },
+  "themes": {
+    "name": "Style",
+    "default": "«Ordinateur»",
+    "rounded": "«Smartphone»",
+    "sharp": "«Journal»"
+  },
+  "colors": {
+    "name": "Couleur",
+    "default": "Norme",
+    "scheme1": "Froid",
+    "scheme2": "Chaud"
   }
 }

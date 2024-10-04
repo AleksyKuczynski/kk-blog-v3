@@ -38,19 +38,6 @@
     "submit": "Искать",
     "minCharacters": "Минимум 3 знака"
   },
-  "sorting": {
-    "sortOrder": "Порядок",
-    "newest": "От новых",
-    "oldest": "От старых"
-  },
-  "filter": {
-    "reset": "Сброс"
-  },
-  "categories": {
-    "categories": "Категория",
-    "allCategories": "Все категории",
-    "selectCategory": "Выберите категорию"
-  },
   "sections": {
     "home": {
       "welcomeTitle": "Добро пожаловать в наш журнал",
@@ -84,5 +71,30 @@
       "featuredRubric": "Рубрика в фокусе",
       "rubricList": "Список рубрик"
     }
+  },
+  "sorting": {
+    "sortOrder": "Порядок",
+    "newest": "От новых",
+    "oldest": "От старых"
+  },
+  "filter": {
+    "reset": "Сброс"
+  },
+  "categories": {
+    "categories": "Категория",
+    "allCategories": "Все категории",
+    "selectCategory": "Выберите категорию"
+  },
+  "themes": {
+    "name": "Стиль",
+    "default": "«Компьютер»",
+    "rounded": "«Смартфон»",
+    "sharp": "«Газета»"
+  },
+  "colors": {
+    "name": "Цветовая тема",
+    "default": "Нормальная",
+    "scheme1": "Холодная",
+    "scheme2": "Теплая"
   }
 }

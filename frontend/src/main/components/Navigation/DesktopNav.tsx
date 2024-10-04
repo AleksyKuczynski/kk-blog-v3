@@ -5,16 +5,19 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { Lang, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
+import { ColorsTranslations, Lang, NavigationTranslations, SearchTranslations, ThemesTranslations } from '@/main/lib/dictionaries/types';
 import ExpandableSearchButton from '../Search/ExpandableSearchButton';
 import { ThemeDesktop } from '../ThemeSwitcher';
-import { ColorThemeSwitcher } from '../ThemeSwitcher/ColorThemeSwitcher';
-import { ColorMode } from '@/main/lib/actions';
+import { ColorMode } from '../ThemeSwitcher/themeTypes';
 
 interface DesktopNavigationProps {
   lang: Lang;
-  translations: NavigationTranslations;
-  searchTranslations: SearchTranslations;
+  translations: {
+    navigation: NavigationTranslations;
+    search: SearchTranslations;
+    themes: ThemesTranslations;
+    colors: ColorsTranslations;
+  };
   isSearchPage: boolean;
   initialColorMode: ColorMode;
 }
@@ -22,14 +25,13 @@ interface DesktopNavigationProps {
 export default function DesktopNavigation({
   lang,
   translations,
-  searchTranslations,
   isSearchPage,
 }: DesktopNavigationProps) {
 
   const NAVIGATION_LINKS = [
-    { href: '/articles', name: translations.articles },
-    { href: '/rubrics', name: translations.rubrics },
-    { href: '/authors', name: translations.authors },
+    { href: '/articles', name: translations.navigation.articles },
+    { href: '/rubrics', name: translations.navigation.rubrics },
+    { href: '/authors', name: translations.navigation.authors },
   ];
 
   return (
@@ -60,10 +62,12 @@ export default function DesktopNavigation({
           </Link>
         </div>
         <div className="flex items-center justify-end space-x-4 pr-8">
-          {!isSearchPage && <ExpandableSearchButton searchTranslations={searchTranslations} />}
+          {!isSearchPage && <ExpandableSearchButton searchTranslations={translations.search} />}
           <LanguageSwitcher currentLang={lang} />
-          <ThemeDesktop />
-          <ColorThemeSwitcher />
+          <ThemeDesktop 
+            themeTranslations={translations.themes} 
+            colorTranslations={translations.colors} 
+          />
         </div>
       </div>
     </div>
