@@ -1,6 +1,6 @@
 // src/main/components/Breadcrumbs.tsx
 import Link from 'next/link';
-import { ChevronRightIcon } from '@/main/components/Icons';
+import { ChevronRightIcon } from '@/main/components/Interface/Icons';
 import { RubricBasic } from '@/main/lib/directus/interfaces';
 
 export interface BreadcrumbItem {

@@ -1,7 +1,7 @@
 // /frontend/src/main/components/ArticleCards/StandardCard.tsx
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronRightIcon } from '../Icons';
+import { ChevronRightIcon } from '../Interface/Icons';
 import { StandardCardProps } from './interfaces';
 
 export function StandardCard({

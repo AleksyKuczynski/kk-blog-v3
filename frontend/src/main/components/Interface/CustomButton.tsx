@@ -1,4 +1,4 @@
-// src/main/components/CustomButton.tsx
+// src/main/components/Interface/CustomButton.tsx
 'use client';
 
 import React from 'react';

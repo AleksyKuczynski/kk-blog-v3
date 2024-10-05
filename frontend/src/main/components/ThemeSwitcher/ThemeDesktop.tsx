@@ -1,15 +1,13 @@
-// /frontend/src/main/components/ThemeSwitcher/ThemeDesktop.tsx
+// src/main/components/ThemeSwitcher/ThemeDesktop.tsx
 'use client';
 
 import React, { useRef } from 'react';
-import { NavButton } from '../Navigation/NavButton';
-import { Dropdown } from '../Dropdown';
-import { PaletteIcon, CheckIcon } from '../Icons';
 import { useThemeLogic } from './useTheme';
 import { useColor } from './ColorContext';
 import { useOutsideClick } from '@/main/lib/hooks';
 import { Theme, ColorScheme } from './themeTypes';
 import { ThemesTranslations, ColorsTranslations } from '@/main/lib/dictionaries/types';
+import { CheckIcon, Dropdown, DropdownItem, NavButton, PaletteIcon } from '../Interface';
 
 interface ThemeDesktopProps {
   themeTranslations: ThemesTranslations;
@@ -36,7 +34,7 @@ export function ThemeDesktop({ themeTranslations, colorTranslations }: ThemeDesk
         aria-expanded={isOpen}
         icon={<PaletteIcon className="h-6 w-6" aria-hidden="true" />}
       />
-      <Dropdown 
+      <Dropdown
         ref={dropdownRef}
         isOpen={isOpen} 
         onClose={toggleDropdown} 
@@ -44,53 +42,43 @@ export function ThemeDesktop({ themeTranslations, colorTranslations }: ThemeDesk
         align="right"
       >
         <div className="py-1">
-          <div className="px-4 py-2 text-sm font-medium text-txcolor-secondary">
+          <DropdownItem state="sectionName">
             {themeTranslations?.name || 'Theme'}
-          </div>
+          </DropdownItem>
           <ul className="mt-2 py-1">
             {themes.map((theme) => (
               <li key={theme}>
-                <button
-                  className={`flex items-center w-full px-4 py-2 text-sm text-txcolor hover:bg-bgcolor-alt transition-colors duration-200 ${
-                    theme === currentTheme ? 'bg-bgcolor-accent text-txcolor' : ''
-                  }`}
+                <DropdownItem
+                  state={theme === currentTheme ? 'selected' : 'normal'}
                   onClick={() => changeTheme(theme)}
-                  role="option"
-                  aria-selected={theme === currentTheme}
+                  withCheckmark
                 >
-                  <span className="flex items-center justify-center w-5 mr-3">
-                    {theme === currentTheme && (
-                      <CheckIcon className="h-4 w-4" aria-hidden="true" />
-                    )}
-                  </span>
                   <span>{themeTranslations?.[theme] || theme}</span>
-                </button>
+                  {theme === currentTheme && (
+                    <CheckIcon className="h-4 w-4" aria-hidden="true" />
+                  )}
+                </DropdownItem>
               </li>
             ))}
           </ul>
         </div>
         <div className="border-t border-bgcolor-alt py-1">
-          <div className="px-4 py-2 text-sm font-medium text-txcolor-secondary">
+          <DropdownItem state="sectionName">
             {colorTranslations?.name || 'Color'}
-          </div>
+          </DropdownItem>
           <ul className="mt-2 py-1">
             {Object.entries(colorTranslations).filter(([key]) => key !== 'name').map(([scheme, translation]) => (
               <li key={scheme}>
-                <button
-                  className={`flex items-center w-full px-4 py-2 text-sm text-txcolor hover:bg-bgcolor-alt transition-colors duration-200 ${
-                    scheme === colorScheme ? 'bg-bgcolor-accent text-txcolor' : ''
-                  }`}
+                <DropdownItem
+                  state={scheme === colorScheme ? 'selected' : 'normal'}
                   onClick={() => setColorScheme(scheme as ColorScheme)}
-                  role="option"
-                  aria-selected={scheme === colorScheme}
+                  withCheckmark
                 >
-                  <span className="flex items-center justify-center w-5 mr-3">
-                    {scheme === colorScheme && (
-                      <CheckIcon className="h-4 w-4" aria-hidden="true" />
-                    )}
-                  </span>
                   <span>{translation}</span>
-                </button>
+                  {scheme === colorScheme && (
+                    <CheckIcon className="h-4 w-4" aria-hidden="true" />
+                  )}
+                </DropdownItem>
               </li>
             ))}
           </ul>

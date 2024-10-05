@@ -1,8 +1,8 @@
-// /frontend/src/main/components/Dropdown.tsx
+// src/main/components/Interface/Dropdown.tsx
 import React, { useRef, useEffect, useState } from 'react';
-import { useTheme } from './ThemeSwitcher';
+import { useTheme } from '../ThemeSwitcher';
 
-interface DropdownProps {
+export interface DropdownProps {
   children: React.ReactNode;
   isOpen: boolean;
   onClose: () => void;
@@ -15,9 +15,9 @@ interface DropdownProps {
 
 const dropdownStyles = {
   base: {
-    default: 'absolute z-60 bg-bgcolor-alt text-txcolor-secondary shadow-lg border border-tx-color-muted rounded-[var(--border-radius)]',
-    rounded: 'absolute z-60 bg-bgcolor-alt text-txcolor-secondary shadow-lg border border-tx-color-muted rounded-[var(--border-radius)]',
-    sharp: 'absolute z-60 bg-bgcolor-alt text-txcolor-secondary shadow-lg border border-tx-color-muted rounded-[var(--border-radius)]',
+    default: 'absolute z-60 bg-bgcolor-alt shadow-lg border border-tx-color-muted rounded-[var(--border-radius)]',
+    rounded: 'absolute z-60 bg-bgcolor-alt shadow-lg border border-tx-color-muted rounded-[var(--border-radius)]',
+    sharp: 'absolute z-60 bg-bgcolor-alt shadow-lg border border-tx-color-muted',
   },
   width: {
     icon: 'w-40',
@@ -46,7 +46,7 @@ export const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(({
   const [position, setPosition] = useState<'top' | 'bottom'>('bottom');
 
   useEffect(() => {
-    if (isOpen && dropdownRef.current && parentRef.current) {
+    if (isOpen && dropdownRef.current && parentRef?.current) {
       const dropdownRect = dropdownRef.current.getBoundingClientRect();
       const parentRect = parentRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - parentRect.bottom;

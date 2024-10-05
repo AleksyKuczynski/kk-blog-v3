@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { MobileLanguageSwitcher } from './LanguageSwitcher'
 import SearchBarWrapper from '../Search/SearchBarWrapper'
-import { NavButton } from './NavButton'
+import { NavButton } from '../Interface/NavButton'
 import { ThemeMobile } from '../ThemeSwitcher'
 import { NavProps } from './Navigation'
 

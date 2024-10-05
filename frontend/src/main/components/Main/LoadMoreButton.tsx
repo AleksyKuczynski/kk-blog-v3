@@ -2,7 +2,7 @@
 'use client'
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { CustomButton } from '../CustomButton';
+import { CustomButton } from '../Interface/CustomButton';
 
 interface LoadMoreButtonProps {
   currentPage: number;

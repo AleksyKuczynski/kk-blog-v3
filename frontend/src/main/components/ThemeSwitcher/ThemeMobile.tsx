@@ -2,8 +2,8 @@
 'use client';
 
 import React from 'react';
-import { NavButton } from '../Navigation/NavButton';
-import { PaletteIcon } from '../Icons';
+import { NavButton } from '../Interface/NavButton';
+import { PaletteIcon } from '../Interface/Icons';
 import { useThemeLogic } from './useTheme';
 import { useColor } from './ColorContext';
 import { Theme, ColorScheme } from './themeTypes';

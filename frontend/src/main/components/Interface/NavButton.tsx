@@ -1,4 +1,4 @@
-// src/main/components/Navigation/NavButton.tsx
+// src/main/components/Interface/NavButton.tsx
 import React, { forwardRef } from 'react';
 import { useTheme } from '../ThemeSwitcher';
 

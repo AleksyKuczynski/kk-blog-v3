@@ -2,8 +2,8 @@
 import React, { useRef, useState } from 'react';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
 import SearchInput, { SearchInputHandle } from './SearchInput';
-import { NavButton } from '../Navigation/NavButton';
-import { SearchIcon } from '../Icons';
+import { NavButton } from '../Interface/NavButton';
+import { SearchIcon } from '../Interface/Icons';
 
 interface ExpandableSearchButtonProps {
   searchTranslations: SearchTranslations;

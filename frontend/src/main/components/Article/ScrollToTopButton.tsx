@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronUpIcon } from '@/main/components/Icons';
+import { ChevronUpIcon } from '@/main/components/Interface/Icons';
 
 export function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);

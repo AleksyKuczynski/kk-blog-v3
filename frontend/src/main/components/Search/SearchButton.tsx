@@ -2,8 +2,8 @@
 'use client';
 
 import React from 'react';
-import { NavButton } from '../Navigation/NavButton';
-import { SearchIcon } from '../Icons';
+import { NavButton } from '../Interface/NavButton';
+import { SearchIcon } from '../Interface/Icons';
 
 interface SearchButtonProps {
   onClick: () => void;

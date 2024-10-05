@@ -3,14 +3,11 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { NavButton } from '../Navigation/NavButton';
-import { Dropdown } from '../Dropdown';
-import { ChevronDownIcon, ResetIcon } from '../Icons';
 import { Category } from '@/main/lib/directus/interfaces';
 import { SortingTranslations, CategoryTranslations, Lang } from '@/main/lib/dictionaries/types';
 import { useOutsideClick } from '@/main/lib/hooks';
-import { CustomButton } from '../CustomButton';
 import SortingControl from './SortingControl';
+import { ChevronDownIcon, CustomButton, Dropdown, DropdownItem, NavButton, ResetIcon } from '../Interface';
 
 interface FilterGroupProps {
   currentSort: string;
@@ -83,21 +80,21 @@ export default function FilterGroup({
           >
             <ul className="py-1">
               <li>
-                <button
-                  className="w-full text-left px-4 py-2 hover:bg-bgcolor-alt"
+                <DropdownItem
+                  state="normal"
                   onClick={() => handleCategoryChange('')}
                 >
                   {categoryTranslations.allCategories}
-                </button>
+                </DropdownItem>
               </li>
               {categories.map((category) => (
                 <li key={category.slug}>
-                  <button
-                    className="w-full text-left px-4 py-2 hover:bg-bgcolor-alt"
+                  <DropdownItem
+                    state={category.slug === currentCategory ? 'selected' : 'normal'}
                     onClick={() => handleCategoryChange(category.slug)}
                   >
                     {category.name}
-                  </button>
+                  </DropdownItem>
                 </li>
               ))}
             </ul>

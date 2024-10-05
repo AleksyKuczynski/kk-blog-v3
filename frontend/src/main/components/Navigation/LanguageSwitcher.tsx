@@ -6,9 +6,7 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { switchLanguage } from '@/main/lib/actions';
 import { useOutsideClick } from '@/main/lib/hooks';
-import { CheckIcon, LanguageIcon } from '../Icons';
-import { Dropdown } from '../Dropdown';
-import { NavButton } from './NavButton';
+import { CheckIcon, Dropdown, DropdownItem, NavButton, LanguageIcon } from '../Interface';
 
 const languages: { [key in Lang]: string } = {
   en: 'English',
@@ -103,21 +101,16 @@ function LanguageSwitcherContent() {
         >
           {Object.entries(languages).map(([lang, name]) => (
             <li key={lang}>
-              <button
-                className={`flex items-center w-full px-4 py-2 text-sm text-text-primary dark:text-text-inverted hover:bg-secondary hover:text-text-inverted transition-colors duration-200 ${
-                  lang === currentLang ? 'bg-accent text-text-inverted' : ''
-                }`}
+              <DropdownItem
+                state={lang === currentLang ? 'selected' : 'normal'}
                 onClick={() => handleLanguageChange(lang as Lang)}
-                role="option"
-                aria-selected={lang === currentLang}
+                withCheckmark
               >
-                <span className="flex items-center justify-center w-5 mr-3">
-                  {lang === currentLang && (
-                    <CheckIcon className="h-4 w-4" aria-hidden="true" />
-                  )}
-                </span>
                 <span>{name}</span>
-              </button>
+                {lang === currentLang && (
+                  <CheckIcon className="h-4 w-4 ml-2" aria-hidden="true" />
+                )}
+              </DropdownItem>
             </li>
           ))}
         </ul>

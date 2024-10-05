@@ -1,4 +1,4 @@
-// src/main/components/Icons.tsx
+// src/main/components/Interface/Icons.tsx
 
 import React from 'react';
 

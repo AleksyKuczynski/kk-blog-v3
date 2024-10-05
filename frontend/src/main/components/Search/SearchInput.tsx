@@ -1,12 +1,10 @@
 // src/main/components/Search/SearchInput.tsx
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
-import { Dropdown } from '../Dropdown';
-import { NavButton } from '../Navigation/NavButton';
-import { SearchIcon } from '../Icons';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
 import { animationClasses } from '../animationClasses';
 import { useSearchInput } from './useSearchInput';
 import { useTheme } from '../ThemeSwitcher';
+import { Dropdown, DropdownItem, NavButton, SearchIcon } from '../Interface';
 
 interface SearchInputProps {
   className?: string;
@@ -145,27 +143,33 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
           parentRef={inputWrapperRef}
         >
           {showMinCharMessage && (
-            <p className="px-4 py-2 text-txcolor-secondary">{translations.minCharacters}</p>
+            <DropdownItem state="normal">
+              {translations.minCharacters}
+            </DropdownItem>
           )}
           {showSearchingMessage && (
-            <p className="px-4 py-2 text-txcolor-secondary">{translations.searching}</p>
+            <DropdownItem state="normal">
+              {translations.searching}
+            </DropdownItem>
           )}
           {showNoResultsMessage && (
-            <p className="px-4 py-2 text-txcolor-secondary">{translations.noResults}</p>
+            <DropdownItem state="normal">
+              {translations.noResults}
+            </DropdownItem>
           )}
           {isInputValid && suggestions.length > 0 && (
             <ul>
               {suggestions.map((suggestion, index) => (
                 <li key={suggestion.slug}>
-                  <button
-                    className={`w-full text-left px-4 py-2 hover:text-prcolor-dark ${index === focusedIndex ? 'text-prcolor' : ''}`}
+                  <DropdownItem
+                    state={index === focusedIndex ? 'active' : 'normal'}
                     onClick={() => {
                       handleSelect(suggestion.slug, suggestion.rubric_slug);
                       if (isExpandable) onClose?.();
                     }}
                   >
                     {suggestion.title}
-                  </button>
+                  </DropdownItem>
                 </li>
               ))}
             </ul>
