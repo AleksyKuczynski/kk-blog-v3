@@ -2,9 +2,8 @@
 import { getDictionary } from '@/main/lib/dictionaries';
 import Footer from '@/main/components/Footer';
 import Navigation from '@/main/components/Navigation/Navigation'
-import { Lang, Dictionary, NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
+import { Lang, Dictionary } from '@/main/lib/dictionaries/types';
 import { Metadata } from 'next';
-import { getColorMode } from '@/main/components/ThemeSwitcher/themeActions';
 
 export const metadata: Metadata = {
   title: "My Blog",
@@ -19,7 +18,6 @@ export default async function MainLayout({
   params: { lang: Lang }
 }) {
   const dict: Dictionary = await getDictionary(lang);
-  const initialColorMode = await getColorMode();
 
   return (
     <>
@@ -32,7 +30,6 @@ export default async function MainLayout({
             themes: dict.themes,
             colors: dict.colors,
           }}
-          initialColorMode={initialColorMode}
         />
       </header>
       <main className="flex-grow mt-16 md:mt-24 pt-4 md:pt-8" role="main">        

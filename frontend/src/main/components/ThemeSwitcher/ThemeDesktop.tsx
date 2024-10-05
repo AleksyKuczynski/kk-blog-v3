@@ -6,10 +6,9 @@ import { NavButton } from '../Navigation/NavButton';
 import { Dropdown } from '../Dropdown';
 import { PaletteIcon, CheckIcon } from '../Icons';
 import { useThemeLogic } from './useTheme';
-import { useColorTheme } from './ColorThemeContext';
+import { useColor } from './ColorContext';
 import { useOutsideClick } from '@/main/lib/hooks';
 import { Theme, ColorScheme } from './themeTypes';
-import { useTheme } from './ThemeContext';
 import { ThemesTranslations, ColorsTranslations } from '@/main/lib/dictionaries/types';
 
 interface ThemeDesktopProps {
@@ -18,11 +17,10 @@ interface ThemeDesktopProps {
 }
 
 const themes: Theme[] = ['default', 'rounded', 'sharp'];
-const colorSchemes: ColorScheme[] = ['default', 'scheme1', 'scheme2'];
 
 export function ThemeDesktop({ themeTranslations, colorTranslations }: ThemeDesktopProps) {
   const { currentTheme, isOpen, toggleDropdown, changeTheme } = useThemeLogic();
-  const { colorScheme, setColorScheme } = useColorTheme();
+  const { colorScheme, setColorScheme } = useColor();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 

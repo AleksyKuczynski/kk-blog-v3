@@ -1,6 +1,6 @@
 // src/main/components/ThemeSwitcher/themeUtils.ts
 
-import { allThemeKeys, ColorMode, Theme, ThemeKey } from "./themeTypes";
+import { ColorMode, Theme, ThemeKey } from "./themeTypes";
 
 export type CardThemeStyles = {
   container: string;
@@ -23,7 +23,6 @@ export function getCardThemeClasses(theme: Theme, styles: Record<Theme, CardThem
   }, {} as CardThemeStyles);
 }
 
-
 export function parseTheme(themeString: ThemeKey): { geometry: Theme; mode: ColorMode } {
   const [geometry, mode] = themeString.split('-') as [Theme, ColorMode];
   return { geometry, mode };
@@ -31,10 +30,6 @@ export function parseTheme(themeString: ThemeKey): { geometry: Theme; mode: Colo
 
 export function combineTheme(theme: Theme, mode: ColorMode): ThemeKey {
   return `${theme}-${mode}` as ThemeKey;
-}
-
-export function isValidTheme(theme: unknown): theme is ThemeKey {
-  return typeof theme === 'string' && allThemeKeys.includes(theme as ThemeKey);
 }
 
 export function getSchemeColors(scheme: string) {

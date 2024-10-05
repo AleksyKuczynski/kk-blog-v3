@@ -1,4 +1,4 @@
-// /frontend/src/main/components/ThemeSwitcher/ColorThemeContext.tsx
+// /frontend/src/main/components/ThemeSwitcher/ColorContext.tsx
 'use client';
 
 import React, { createContext, useState, useContext } from 'react';
@@ -6,14 +6,14 @@ import { useRouter } from 'next/navigation';
 import { setColorScheme as setColorSchemeAction } from './themeActions';
 import { ColorScheme } from './themeTypes';
 
-interface ColorThemeContextType {
+interface ColorContextType {
   colorScheme: ColorScheme;
   setColorScheme: (scheme: ColorScheme) => Promise<void>;
 }
 
-const ColorThemeContext = createContext<ColorThemeContextType | undefined>(undefined);
+const ColorContext = createContext<ColorContextType | undefined>(undefined);
 
-export function ColorThemeProvider({ children, initialColorScheme }: { children: React.ReactNode; initialColorScheme: ColorScheme }) {
+export function ColorProvider({ children, initialColorScheme }: { children: React.ReactNode; initialColorScheme: ColorScheme }) {
   const [colorScheme, setColorSchemeState] = useState<ColorScheme>(initialColorScheme);
   const router = useRouter();
 
@@ -27,16 +27,16 @@ export function ColorThemeProvider({ children, initialColorScheme }: { children:
   };
 
   return (
-    <ColorThemeContext.Provider value={{ colorScheme, setColorScheme }}>
+    <ColorContext.Provider value={{ colorScheme, setColorScheme }}>
       {children}
-    </ColorThemeContext.Provider>
+    </ColorContext.Provider>
   );
 }
 
-export function useColorTheme() {
-  const context = useContext(ColorThemeContext);
+export function useColor() {
+  const context = useContext(ColorContext);
   if (context === undefined) {
-    throw new Error('useColorTheme must be used within a ColorThemeProvider');
+    throw new Error('useColor must be used within a ColorProvider');
   }
   return context;
 }

@@ -1,14 +1,13 @@
 // src/main/components/Navigation/DesktopNav.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ColorsTranslations, Lang, NavigationTranslations, SearchTranslations, ThemesTranslations } from '@/main/lib/dictionaries/types';
 import ExpandableSearchButton from '../Search/ExpandableSearchButton';
 import { ThemeDesktop } from '../ThemeSwitcher';
-import { ColorMode } from '../ThemeSwitcher/themeTypes';
 
 interface DesktopNavigationProps {
   lang: Lang;
@@ -19,7 +18,6 @@ interface DesktopNavigationProps {
     colors: ColorsTranslations;
   };
   isSearchPage: boolean;
-  initialColorMode: ColorMode;
 }
 
 export default function DesktopNavigation({

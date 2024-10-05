@@ -1,9 +1,8 @@
 // src/app/[lang]/layout.tsx
-import { fontSans, fontSerif, fontDisplay, fontCustom } from '@/app/fonts/fonts';
+
 import '@/app/globals.scss';
-import { ThemeProvider } from '@/main/components/ThemeSwitcher';
-import { ColorThemeProvider } from '@/main/components/ThemeSwitcher/ColorThemeContext';
-import { getColorMode, getColorScheme, getTheme } from '@/main/components/ThemeSwitcher/themeActions';
+import { fontSans, fontSerif, fontDisplay, fontCustom } from '@/app/fonts/fonts';
+import { ThemeProvider, ColorProvider, getColorMode, getColorScheme, getTheme } from '@/main/components/ThemeSwitcher';
 
 export default async function RootLayout({
   children,
@@ -19,11 +18,11 @@ export default async function RootLayout({
   return (
     <html lang={lang} data-theme={initialTheme} data-color-mode={initialColorMode} className={`${fontSans.variable} ${fontSerif.variable} ${fontDisplay.variable} ${fontCustom.variable}`}>
       <ThemeProvider initialTheme={initialTheme} initialColorMode={initialColorMode}>
-        <ColorThemeProvider initialColorScheme={initialColorScheme}>
+        <ColorProvider initialColorScheme={initialColorScheme}>
           <body data-color-scheme={initialColorScheme} className={`flex flex-col min-h-screen bg-bgcolor text-txcolor theme-${initialTheme} transition-colors duration-300`}>
             {children}
           </body>
-        </ColorThemeProvider>
+        </ColorProvider>
     </ThemeProvider>
     </html>
   );

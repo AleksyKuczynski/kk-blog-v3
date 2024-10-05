@@ -1,11 +1,10 @@
 // src/main/components/Navigation/Navigation.tsx
 'use client'
 
-import { ColorMode } from '../ThemeSwitcher/themeTypes'
+import { usePathname } from 'next/navigation'
 import DesktopNavigation from './DesktopNav'
 import MobileNavigation from './MobileNav'
 import { ColorsTranslations, Lang, NavigationTranslations, SearchTranslations, ThemesTranslations } from '@/main/lib/dictionaries/types'
-import { usePathname } from 'next/navigation'
 
 interface NavigationProps {
   lang: Lang
@@ -15,10 +14,9 @@ interface NavigationProps {
     themes: ThemesTranslations
     colors: ColorsTranslations
   }
-  initialColorMode: ColorMode
 }
 
-export default function Navigation({ lang, translations, initialColorMode }: NavigationProps) {
+export default function Navigation({ lang, translations }: NavigationProps) {
   const pathname = usePathname()
   const isSearchPage = pathname === `/${lang}/search`
 
@@ -29,7 +27,6 @@ export default function Navigation({ lang, translations, initialColorMode }: Nav
           lang={lang}
           translations={translations}
           isSearchPage={isSearchPage}
-          initialColorMode={initialColorMode}
         />
       </div>
       <div className="xl:hidden">

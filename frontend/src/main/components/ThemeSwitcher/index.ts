@@ -2,3 +2,5 @@
 export { ThemeDesktop } from './ThemeDesktop';
 export { ThemeMobile } from './ThemeMobile';
 export { ThemeProvider, useTheme } from './ThemeContext';
+export { ColorProvider } from './ColorContext';
+export * from './themeActions'

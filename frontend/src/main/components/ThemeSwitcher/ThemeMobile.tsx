@@ -5,7 +5,7 @@ import React from 'react';
 import { NavButton } from '../Navigation/NavButton';
 import { PaletteIcon } from '../Icons';
 import { useThemeLogic } from './useTheme';
-import { useColorTheme } from './ColorThemeContext';
+import { useColor } from './ColorContext';
 import { Theme, ColorScheme } from './themeTypes';
 import { ThemesTranslations, ColorsTranslations } from '@/main/lib/dictionaries/types';
 
@@ -16,7 +16,7 @@ interface ThemeMobileProps {
 
 export function ThemeMobile({ themeTranslations, colorTranslations }: ThemeMobileProps) {
   const { currentTheme, changeTheme } = useThemeLogic();
-  const { colorScheme, setColorScheme } = useColorTheme();
+  const { colorScheme, setColorScheme } = useColor();
 
   const themes: Theme[] = ['default', 'rounded', 'sharp'];
   const colorSchemes: ColorScheme[] = ['default', 'scheme1', 'scheme2'];
