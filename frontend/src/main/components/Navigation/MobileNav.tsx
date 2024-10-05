@@ -5,27 +5,16 @@ import { useState, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { MobileLanguageSwitcher } from './LanguageSwitcher'
-import { Lang, NavigationTranslations, SearchTranslations, ThemesTranslations, ColorsTranslations } from '@/main/lib/dictionaries/types'
 import SearchBarWrapper from '../Search/SearchBarWrapper'
 import { NavButton } from './NavButton'
 import { ThemeMobile } from '../ThemeSwitcher'
-
-interface MobileNavigationProps {
-  lang: Lang
-  translations: {
-    navigation: NavigationTranslations
-    search: SearchTranslations
-    themes: ThemesTranslations
-    colors: ColorsTranslations
-  }
-  isSearchPage: boolean
-}
+import { NavProps } from './Navigation'
 
 export default function MobileNavigation({
   lang,
   translations,
   isSearchPage,
-}: MobileNavigationProps) {
+}: NavProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 

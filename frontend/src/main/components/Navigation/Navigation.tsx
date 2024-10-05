@@ -4,17 +4,20 @@
 import { usePathname } from 'next/navigation'
 import DesktopNavigation from './DesktopNav'
 import MobileNavigation from './MobileNav'
-import { ColorsTranslations, Lang, NavigationTranslations, SearchTranslations, ThemesTranslations } from '@/main/lib/dictionaries/types'
+import { ColorsTranslations, Lang, NavigationTranslations, SearchTranslations, ThemesTranslations } from "@/main/lib/dictionaries/types";
 
 interface NavigationProps {
-  lang: Lang
-  translations: {
-    navigation: NavigationTranslations
-    search: SearchTranslations
-    themes: ThemesTranslations
-    colors: ColorsTranslations
+    lang: Lang
+    translations: {
+      navigation: NavigationTranslations
+      search: SearchTranslations
+      themes: ThemesTranslations
+      colors: ColorsTranslations
+    }
   }
-}
+export interface NavProps extends NavigationProps {
+    isSearchPage: boolean;
+  }
 
 export default function Navigation({ lang, translations }: NavigationProps) {
   const pathname = usePathname()

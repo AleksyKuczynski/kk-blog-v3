@@ -4,27 +4,16 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { LanguageSwitcher } from './LanguageSwitcher';
-import { ColorsTranslations, Lang, NavigationTranslations, SearchTranslations, ThemesTranslations } from '@/main/lib/dictionaries/types';
 import ExpandableSearchButton from '../Search/ExpandableSearchButton';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeDesktop } from '../ThemeSwitcher';
-
-interface DesktopNavigationProps {
-  lang: Lang;
-  translations: {
-    navigation: NavigationTranslations;
-    search: SearchTranslations;
-    themes: ThemesTranslations;
-    colors: ColorsTranslations;
-  };
-  isSearchPage: boolean;
-}
+import { NavProps } from './Navigation';
 
 export default function DesktopNavigation({
   lang,
   translations,
   isSearchPage,
-}: DesktopNavigationProps) {
+}: NavProps) {
 
   const NAVIGATION_LINKS = [
     { href: '/articles', name: translations.navigation.articles },
