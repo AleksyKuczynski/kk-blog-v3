@@ -13,7 +13,6 @@ export function useThemeLogic() {
 
   const changeTheme = useCallback((newTheme: Theme) => {
     handleThemeChange(newTheme);
-    setIsOpen(false);
   }, [handleThemeChange]);
 
   return {
@@ -21,5 +20,6 @@ export function useThemeLogic() {
     isOpen,
     toggleDropdown,
     changeTheme,
+    closeDropdown: useCallback(() => setIsOpen(false), []),
   };
 }

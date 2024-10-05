@@ -1,47 +1,43 @@
 // src/main/components/Search/SearchContext.tsx
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { SearchContextType } from './types';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
 
-interface SearchContextType {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-  isExpandable: boolean;
-  translations: SearchTranslations;
-}
-
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
+
+interface SearchProviderProps {
+  children: ReactNode;
+  initialSearch: string;
+  translations: SearchTranslations;
+  isExpandable?: boolean;
+}
 
 export function SearchProvider({ 
   children, 
   initialSearch = '', 
   translations,
   isExpandable = false
-}: { 
-  children: ReactNode; 
-  initialSearch?: string;
-  translations: SearchTranslations;
-  isExpandable?: boolean;
-}) {
+}: SearchProviderProps) {
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [isOpen, setIsOpen] = useState(!isExpandable);
 
+  const value: SearchContextType = {
+    searchQuery,
+    setSearchQuery,
+    isOpen,
+    setIsOpen,
+    isExpandable,
+    translations
+  };
+
   return (
-    <SearchContext.Provider value={{ 
-      searchQuery, 
-      setSearchQuery, 
-      isOpen, 
-      setIsOpen, 
-      isExpandable,
-      translations 
-    }}>
+    <SearchContext.Provider value={value}>
       {children}
     </SearchContext.Provider>
   );
 }
 
-export function useSearch() {
+export function useSearch(): SearchContextType {
   const context = useContext(SearchContext);
   if (context === undefined) {
     throw new Error('useSearch must be used within a SearchProvider');

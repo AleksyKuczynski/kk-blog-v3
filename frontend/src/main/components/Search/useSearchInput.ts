@@ -1,8 +1,16 @@
 // src/main/components/Search/useSearchInput.ts
-import { useState, useCallback, KeyboardEvent } from 'react';
-import { useSearch } from './useSearch';
 
-export function useSearchInput(onSubmit?: () => void) {
+import { useState, useCallback, KeyboardEvent, ChangeEvent } from 'react';
+import { useSearch } from './useSearch';
+import { 
+  UseSearchInputReturn, 
+  SearchState, 
+  SearchValidation, 
+  SearchHandlers, 
+} from './types';
+import { useDebounce } from '@/main/lib/hooks';
+
+export function useSearchInput(onSubmit?: () => void): UseSearchInputReturn {
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const {
     searchQuery,
@@ -14,10 +22,24 @@ export function useSearchInput(onSubmit?: () => void) {
     handleSearchSubmit
   } = useSearch(onSubmit);
 
+  const searchState: SearchState = {
+    searchQuery,
+    suggestions,
+    hasInteracted,
+    focusedIndex,
+    isSearching
+  };
+
   const isInputValid = searchQuery.length >= 3;
-  const showMinCharMessage = hasInteracted && !isInputValid;
-  const showSearchingMessage = isInputValid && isSearching;
-  const showNoResultsMessage = isInputValid && hasInteracted && !isSearching && suggestions.length === 0;
+  
+  const searchValidation: SearchValidation = {
+    isInputValid,
+    showMinCharMessage: hasInteracted && !isInputValid,
+    showSearchingMessage: isInputValid && isSearching,
+    showNoResultsMessage: isInputValid && hasInteracted && !isSearching && suggestions.length === 0
+  };
+
+  const debouncedHandleSearch = useDebounce(handleSearch, 300);
 
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
     if (suggestions.length > 0 && isInputValid) {
@@ -50,18 +72,21 @@ export function useSearchInput(onSubmit?: () => void) {
     }
   }, [suggestions, focusedIndex, handleSelect, handleSearchSubmit, isInputValid]);
 
-  return {
-    searchQuery,
-    suggestions,
-    hasInteracted,
-    focusedIndex,
-    isInputValid,
-    showMinCharMessage,
-    showSearchingMessage,
-    showNoResultsMessage,
+  const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    handleSearch(e.target.value);
+  }, [handleSearch]);
+
+  const searchHandlers: SearchHandlers = {
     handleSearch,
     handleSelect,
     handleSearchSubmit,
     handleKeyDown,
+    handleInputChange
+  };
+
+  return {
+    ...searchState,
+    ...searchValidation,
+    ...searchHandlers
   };
 }

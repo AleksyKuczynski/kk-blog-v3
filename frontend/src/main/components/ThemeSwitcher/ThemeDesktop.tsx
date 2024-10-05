@@ -17,12 +17,12 @@ interface ThemeDesktopProps {
 const themes: Theme[] = ['default', 'rounded', 'sharp'];
 
 export function ThemeDesktop({ themeTranslations, colorTranslations }: ThemeDesktopProps) {
-  const { currentTheme, isOpen, toggleDropdown, changeTheme } = useThemeLogic();
+  const { currentTheme, isOpen, toggleDropdown, changeTheme, closeDropdown } = useThemeLogic();
   const { colorScheme, setColorScheme } = useColor();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
-  useOutsideClick(dropdownRef, toggleRef, isOpen, () => toggleDropdown());
+  useOutsideClick(dropdownRef, toggleRef, isOpen, closeDropdown);
 
   return (
     <div className="relative">

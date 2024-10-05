@@ -16,7 +16,6 @@ export default function SearchPageWrapper({ initialSearch, translations }: Searc
       <SearchInput 
         showButton={true} 
         translations={translations}
-        isExpandable={false}
       />
     </SearchProvider>
   );

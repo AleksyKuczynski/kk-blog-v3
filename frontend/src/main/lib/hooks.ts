@@ -1,5 +1,5 @@
 // src/main/lib/hooks.ts
-import { useCallback, useEffect, RefObject } from 'react';
+import { useCallback, useEffect, RefObject, useState, useRef } from 'react';
 
 export function useOutsideClick<T extends HTMLElement>(
   ref: RefObject<T>,
@@ -49,4 +49,47 @@ export function useFocusInput(inputRef: RefObject<HTMLInputElement>, shouldFocus
       return () => clearTimeout(timeoutId);
     }
   }, [shouldFocus, delay, inputRef]);
+}
+
+export function useKeyboardNavigation<T>(
+  items: T[],
+  onSelect: (item: T) => void,
+  onSubmit: () => void
+) {
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setFocusedIndex(prev => (prev < items.length - 1 ? prev + 1 : prev));
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setFocusedIndex(prev => (prev > 0 ? prev - 1 : -1));
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (focusedIndex >= 0) {
+          onSelect(items[focusedIndex]);
+        } else {
+          onSubmit();
+        }
+        break;
+      // ... other cases
+    }
+  };
+
+  return { focusedIndex, handleKeyDown };
+}
+
+export function useDebounce(func: Function, delay: number) {
+  const timeoutRef = useRef<NodeJS.Timeout>();
+
+  return useCallback((...args: any[]) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => func(...args), delay);
+  }, [func, delay]);
 }

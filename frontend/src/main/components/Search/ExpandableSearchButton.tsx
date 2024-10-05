@@ -1,9 +1,10 @@
 // src/main/components/Search/ExpandableSearchButton.tsx
 import React, { useRef, useState } from 'react';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
-import SearchInput, { SearchInputHandle } from './SearchInput';
+import SearchInput from './SearchInput';
 import { NavButton } from '../Interface/NavButton';
 import { SearchIcon } from '../Interface/Icons';
+import { SearchInputHandle } from './types';
 
 interface ExpandableSearchButtonProps {
   searchTranslations: SearchTranslations;
