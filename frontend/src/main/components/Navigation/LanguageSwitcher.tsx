@@ -3,12 +3,12 @@
 
 import React, { createContext, useState, useContext, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { switchLanguage } from '@/main/lib/actions';
 import { Lang } from '@/main/lib/dictionaries/types';
+import { switchLanguage } from '@/main/lib/actions';
+import { useOutsideClick } from '@/main/lib/hooks';
 import { CheckIcon, LanguageIcon } from '../Icons';
 import { Dropdown } from '../Dropdown';
 import { NavButton } from './NavButton';
-import { useOutsideClick } from '@/main/lib/hooks';
 
 const languages: { [key in Lang]: string } = {
   en: 'English',
@@ -25,6 +25,14 @@ interface LanguageSwitcherContextType {
 }
 
 const LanguageSwitcherContext = createContext<LanguageSwitcherContextType | undefined>(undefined);
+
+function useLanguageSwitcher() {
+  const context = useContext(LanguageSwitcherContext);
+  if (context === undefined) {
+    throw new Error('useLanguageSwitcher must be used within a LanguageSwitcherProvider');
+  }
+  return context;
+}
 
 function LanguageSwitcherProvider({ children, currentLang }: { children: React.ReactNode; currentLang: Lang }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,14 +66,6 @@ function LanguageSwitcherProvider({ children, currentLang }: { children: React.R
       {children}
     </LanguageSwitcherContext.Provider>
   );
-}
-
-function useLanguageSwitcher() {
-  const context = useContext(LanguageSwitcherContext);
-  if (context === undefined) {
-    throw new Error('useLanguageSwitcher must be used within a LanguageSwitcherProvider');
-  }
-  return context;
 }
 
 function LanguageSwitcherContent() {
@@ -134,14 +134,6 @@ export function LanguageSwitcher({ currentLang }: { currentLang: Lang }) {
   );
 }
 
-export function MobileLanguageSwitcher({ currentLang }: { currentLang: Lang }) {
-  return (
-    <LanguageSwitcherProvider currentLang={currentLang}>
-      <MobileLanguageSwitcherContent />
-    </LanguageSwitcherProvider>
-  );
-}
-
 function MobileLanguageSwitcherContent() {
   const { currentLang, handleLanguageChange } = useLanguageSwitcher();
 
@@ -172,5 +164,13 @@ function MobileLanguageSwitcherContent() {
         ))}
       </div>
     </div>
+  );
+}
+
+export function MobileLanguageSwitcher({ currentLang }: { currentLang: Lang }) {
+  return (
+    <LanguageSwitcherProvider currentLang={currentLang}>
+      <MobileLanguageSwitcherContent />
+    </LanguageSwitcherProvider>
   );
 }

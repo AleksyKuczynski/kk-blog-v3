@@ -1,5 +1,4 @@
 // /frontend/src/main/components/ThemeSwitcher/themeActions.ts
-
 'use server'
 
 import { cookies } from 'next/headers'
