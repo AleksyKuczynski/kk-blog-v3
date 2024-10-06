@@ -8,6 +8,7 @@ interface ArticleListProps {
   slugInfos: ArticleSlugInfo[];
   lang: Lang;
   authorSlug?: string;
+  categorySlug?: string;
   rubricSlug?: string;
 }
 

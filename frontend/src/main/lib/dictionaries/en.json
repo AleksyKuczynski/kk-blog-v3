@@ -66,6 +66,10 @@
       "authorProfile": "Author Profile",
       "articlesWrittenBy": "Articles written by {author}"
     },
+    "categories": {
+      "allCategories": "All Categories",
+      "noArticlesFound": "No articles found in this category."
+    },
     "rubrics": {
       "allRubrics": "All Rubrics",
       "featuredRubric": "Featured Rubric",

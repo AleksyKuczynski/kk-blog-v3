@@ -1,34 +1,30 @@
 // /frontend/src/main/components/Main/SortingControl.tsx
 'use client';
 
-import { useState, useRef } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback } from 'react';
 import { SortingTranslations } from '@/main/lib/dictionaries/types';
-import { useOutsideClick } from '@/main/lib/hooks';
 import { ChevronDownIcon, CheckIcon, Dropdown, DropdownItem, NavButton } from '../Interface';
+import { useDropdown } from '@/main/lib/hooks';
 
 interface SortingControlProps {
   translations: SortingTranslations;
+  currentSort: string;
+  onSortChange: (newSort: string) => void;
 }
 
-export default function SortingControl({ translations }: SortingControlProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [isOpen, setIsOpen] = useState(false);
-  const currentSort = searchParams.get('sort') || 'desc';
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const toggleRef = useRef<HTMLButtonElement>(null);
+export default function SortingControl({ translations, currentSort, onSortChange }: SortingControlProps) {
+  const {
+    isOpen,
+    toggle: toggleDropdown,
+    close: closeDropdown,
+    dropdownRef,
+    toggleRef,
+  } = useDropdown();
 
-  useOutsideClick(dropdownRef, toggleRef, isOpen, () => setIsOpen(false));
-
-  const handleSortChange = (newSort: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('sort', newSort);
-    router.push(`?${params.toString()}`, { scroll: false });
-    setIsOpen(false);
-  };
-
-  const toggleDropdown = () => setIsOpen(!isOpen);
+  const handleSortChange = useCallback((newSort: string) => {
+    onSortChange(newSort);
+    closeDropdown();
+  }, [onSortChange, closeDropdown]);
 
   const sortOptions = [
     { value: 'desc', label: translations.newest },
@@ -55,7 +51,7 @@ export default function SortingControl({ translations }: SortingControlProps) {
         <Dropdown 
           ref={dropdownRef}
           isOpen={isOpen} 
-          onClose={() => setIsOpen(false)} 
+          onClose={closeDropdown} 
           width="wide" 
           align="right"
         >

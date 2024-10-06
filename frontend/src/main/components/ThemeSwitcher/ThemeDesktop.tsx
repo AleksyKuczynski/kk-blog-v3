@@ -1,13 +1,13 @@
-// src/main/components/ThemeSwitcher/ThemeDesktop.tsx
+// /frontend/src/main/components/ThemeSwitcher/ThemeDesktop.tsx
 'use client';
 
-import React, { useRef } from 'react';
+import React from 'react';
 import { useThemeLogic } from './useTheme';
 import { useColor } from './ColorContext';
-import { useOutsideClick } from '@/main/lib/hooks';
 import { Theme, ColorScheme } from './themeTypes';
 import { ThemesTranslations, ColorsTranslations } from '@/main/lib/dictionaries/types';
 import { CheckIcon, Dropdown, DropdownItem, NavButton, PaletteIcon } from '../Interface';
+import { useDropdown } from '@/main/lib/hooks';
 
 interface ThemeDesktopProps {
   themeTranslations: ThemesTranslations;
@@ -17,12 +17,15 @@ interface ThemeDesktopProps {
 const themes: Theme[] = ['default', 'rounded', 'sharp'];
 
 export function ThemeDesktop({ themeTranslations, colorTranslations }: ThemeDesktopProps) {
-  const { currentTheme, isOpen, toggleDropdown, changeTheme, closeDropdown } = useThemeLogic();
+  const { currentTheme, changeTheme } = useThemeLogic();
   const { colorScheme, setColorScheme } = useColor();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const toggleRef = useRef<HTMLButtonElement>(null);
-
-  useOutsideClick(dropdownRef, toggleRef, isOpen, closeDropdown);
+  const {
+    isOpen,
+    toggle: toggleDropdown,
+    close: closeDropdown,
+    dropdownRef,
+    toggleRef,
+  } = useDropdown(false);
 
   return (
     <div className="relative">
@@ -37,7 +40,7 @@ export function ThemeDesktop({ themeTranslations, colorTranslations }: ThemeDesk
       <Dropdown
         ref={dropdownRef}
         isOpen={isOpen} 
-        onClose={toggleDropdown} 
+        onClose={closeDropdown} 
         width="wide" 
         align="right"
       >
@@ -50,7 +53,10 @@ export function ThemeDesktop({ themeTranslations, colorTranslations }: ThemeDesk
               <li key={theme}>
                 <DropdownItem
                   state={theme === currentTheme ? 'selected' : 'normal'}
-                  onClick={() => changeTheme(theme)}
+                  onClick={() => {
+                    changeTheme(theme);
+                    closeDropdown();
+                  }}
                   withCheckmark
                 >
                   <span>{themeTranslations?.[theme] || theme}</span>
@@ -71,7 +77,10 @@ export function ThemeDesktop({ themeTranslations, colorTranslations }: ThemeDesk
               <li key={scheme}>
                 <DropdownItem
                   state={scheme === colorScheme ? 'selected' : 'normal'}
-                  onClick={() => setColorScheme(scheme as ColorScheme)}
+                  onClick={() => {
+                    setColorScheme(scheme as ColorScheme);
+                    closeDropdown();
+                  }}
                   withCheckmark
                 >
                   <span>{translation}</span>

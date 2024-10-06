@@ -66,6 +66,10 @@
       "authorProfile": "Профиль автора",
       "articlesWrittenBy": "Статьи, написанные автором {author}"
     },
+    "categories": {
+      "allCategories": "Все категории",
+      "noArticlesFound": "Статьи этой категории не найдены."
+    },
     "rubrics": {
       "allRubrics": "Все рубрики",
       "featuredRubric": "Рубрика в фокусе",

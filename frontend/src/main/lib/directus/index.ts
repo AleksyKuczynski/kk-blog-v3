@@ -1,3 +1,5 @@
+// src/main/lib/directus/index.ts
+
 export * from '@/main/lib/directus/constants';
 export * from '@/main/lib/directus/interfaces';
 export { fetchAllAuthors } from '@/main/lib/directus/fetchAllAuthors';

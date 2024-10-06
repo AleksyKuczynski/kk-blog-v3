@@ -1,11 +1,11 @@
 // src/main/components/Navigation/LanguageSwitcher.tsx
 'use client';
 
-import React, { createContext, useState, useContext, useRef } from 'react';
+import React, { createContext, useState, useContext, useCallback } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { switchLanguage } from '@/main/lib/actions';
-import { useOutsideClick } from '@/main/lib/hooks';
+import { useDropdown } from '@/main/lib/hooks';
 import { CheckIcon, Dropdown, DropdownItem, NavButton, LanguageIcon } from '../Interface';
 
 const languages: { [key in Lang]: string } = {
@@ -67,31 +67,34 @@ function LanguageSwitcherProvider({ children, currentLang }: { children: React.R
 }
 
 function LanguageSwitcherContent() {
-  const { isOpen, setIsOpen, currentLang, handleLanguageChange } = useLanguageSwitcher();
-  const menuRef = useRef<HTMLDivElement>(null);
-  const toggleRef = useRef<HTMLButtonElement>(null);
+  const { currentLang, handleLanguageChange } = useLanguageSwitcher();
+  const {
+    isOpen,
+    toggle: toggleDropdown,
+    close: closeDropdown,
+    dropdownRef,
+    toggleRef,
+  } = useDropdown();
 
-  useOutsideClick(menuRef, toggleRef, isOpen, () => setIsOpen(false));
-
-  const handleToggle = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsOpen(!isOpen);
-  };
+  const handleLanguageSelect = useCallback((lang: Lang) => {
+    handleLanguageChange(lang);
+    closeDropdown();
+  }, [handleLanguageChange, closeDropdown]);
   
   return (
     <div className="relative">
       <NavButton
-        context="desktop"
         ref={toggleRef}
-        onClick={handleToggle}
+        context="desktop"
+        onClick={toggleDropdown}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         icon={<LanguageIcon className="h-6 w-6" aria-hidden="true" />}
       />
       <Dropdown 
-        ref={menuRef}
+        ref={dropdownRef}
         isOpen={isOpen} 
-        onClose={() => setIsOpen(false)} 
+        onClose={closeDropdown} 
         width="icon" 
         align="right"
       >
@@ -103,7 +106,7 @@ function LanguageSwitcherContent() {
             <li key={lang}>
               <DropdownItem
                 state={lang === currentLang ? 'selected' : 'normal'}
-                onClick={() => handleLanguageChange(lang as Lang)}
+                onClick={() => handleLanguageSelect(lang as Lang)}
                 withCheckmark
               >
                 <span>{name}</span>

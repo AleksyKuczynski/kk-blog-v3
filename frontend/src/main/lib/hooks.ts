@@ -93,3 +93,34 @@ export function useDebounce(func: Function, delay: number) {
     timeoutRef.current = setTimeout(() => func(...args), delay);
   }, [func, delay]);
 }
+
+export function useDropdown(closeOnSelect: boolean = true) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  useOutsideClick(dropdownRef, toggleRef, isOpen, () => setIsOpen(false));
+
+  const toggle = useCallback(() => {
+    setIsOpen(prev => !prev);
+  }, []);
+
+  const close = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  const selectItem = useCallback(() => {
+    if (closeOnSelect) {
+      setIsOpen(false);
+    }
+  }, [closeOnSelect]);
+
+  return {
+    isOpen,
+    toggle,
+    close,
+    selectItem,
+    dropdownRef,
+    toggleRef,
+  };
+}

@@ -1,17 +1,15 @@
-// src/main/components/Main/FilterGroup.tsx
+// /frontend/src/main/components/Main/FilterGroup.tsx
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useCallback } from 'react';
 import { Category } from '@/main/lib/directus/interfaces';
 import { SortingTranslations, CategoryTranslations, Lang } from '@/main/lib/dictionaries/types';
-import { useOutsideClick } from '@/main/lib/hooks';
+import { useDropdown } from '@/main/lib/hooks';
+import { useFilterGroup } from './useFilterGroup';
 import SortingControl from './SortingControl';
 import { ChevronDownIcon, CustomButton, Dropdown, DropdownItem, NavButton, ResetIcon } from '../Interface';
 
 interface FilterGroupProps {
-  currentSort: string;
-  currentCategory: string;
   categories: Category[];
   sortingTranslations: SortingTranslations;
   categoryTranslations: CategoryTranslations;
@@ -20,38 +18,32 @@ interface FilterGroupProps {
 }
 
 export default function FilterGroup({
-  currentCategory,
   categories,
   sortingTranslations,
   categoryTranslations,
   resetText,
+  lang
 }: FilterGroupProps) {
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const {
+    currentCategory,
+    currentSort,
+    handleCategoryChange,
+    handleSortChange,
+    handleReset,
+  } = useFilterGroup(categories, lang);
 
-  const categoryDropdownRef = useRef<HTMLDivElement>(null);
-  const categoryToggleRef = useRef<HTMLButtonElement>(null);
+  const {
+    isOpen: isCategoryOpen,
+    toggle: toggleCategoryDropdown,
+    close: closeCategoryDropdown,
+    dropdownRef: categoryDropdownRef,
+    toggleRef: categoryToggleRef,
+  } = useDropdown();
 
-  useOutsideClick(categoryDropdownRef, categoryToggleRef, isCategoryOpen, () => setIsCategoryOpen(false));
-
-  const handleCategoryChange = useCallback((newCategory: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('category', newCategory);
-    params.set('page', '1');
-    router.push(`${pathname}?${params.toString()}`);
-    setIsCategoryOpen(false);
-  }, [searchParams, router, pathname]);
-
-  const handleReset = useCallback(() => {
-    router.push(pathname);
-  }, [router, pathname]);
-
-  const toggleCategoryDropdown = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsCategoryOpen(!isCategoryOpen);
-  }, [isCategoryOpen]);
+  const handleCategorySelect = useCallback((category: string) => {
+    handleCategoryChange(category);
+    closeCategoryDropdown();
+  }, [handleCategoryChange, closeCategoryDropdown]);
 
   return (
     <div className="mb-8 flex justify-center items-start space-x-8">
@@ -74,15 +66,15 @@ export default function FilterGroup({
           <Dropdown 
             ref={categoryDropdownRef}
             isOpen={isCategoryOpen} 
-            onClose={() => setIsCategoryOpen(false)} 
+            onClose={closeCategoryDropdown} 
             width="wide" 
             align="left"
           >
             <ul className="py-1">
               <li>
                 <DropdownItem
-                  state="normal"
-                  onClick={() => handleCategoryChange('')}
+                  state={currentCategory === '' ? 'selected' : 'normal'}
+                  onClick={() => handleCategorySelect('')}
                 >
                   {categoryTranslations.allCategories}
                 </DropdownItem>
@@ -91,7 +83,7 @@ export default function FilterGroup({
                 <li key={category.slug}>
                   <DropdownItem
                     state={category.slug === currentCategory ? 'selected' : 'normal'}
-                    onClick={() => handleCategoryChange(category.slug)}
+                    onClick={() => handleCategorySelect(category.slug)}
                   >
                     {category.name}
                   </DropdownItem>
@@ -102,7 +94,11 @@ export default function FilterGroup({
         </div>
       </div>
       <div className="flex flex-col items-center">
-        <SortingControl translations={sortingTranslations} />
+        <SortingControl 
+          translations={sortingTranslations}
+          currentSort={currentSort}
+          onSortChange={handleSortChange}
+        />
       </div>
       <div className="flex flex-col items-center">
         <span className="mb-2 text-sm font-medium">{resetText}</span>

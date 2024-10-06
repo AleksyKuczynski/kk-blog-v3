@@ -1,5 +1,5 @@
 // src/app/[lang]/(main)/(with-filter)/layout.tsx
-import FilterGroup from '@/main/components/Main/FilterGroup';
+import FilterGroup from '@/main/components/Navigation/FilterGroup';
 import { fetchAllCategories } from '@/main/lib/directus';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
@@ -17,8 +17,6 @@ export default async function WithFilterLayout({
   return (
     <>
       <FilterGroup
-        currentSort="desc"
-        currentCategory=""
         categories={categories}
         sortingTranslations={dict.sorting}
         categoryTranslations={dict.categories}

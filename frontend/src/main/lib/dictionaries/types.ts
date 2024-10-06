@@ -84,6 +84,11 @@ export interface AuthorTranslations {
   articlesWrittenBy: string;
 }
 
+export interface CategoriesTranslations {
+  allCategories: string;
+  noArticlesFound: string;
+}
+
 export interface RubricsTranslations {
   allRubrics: string;
   featuredRubric: string;
@@ -101,6 +106,7 @@ export interface SectionsTranslations {
   articles: ArticlesTranslations;
   authors: AuthorsTranslations;
   author: AuthorTranslations;
+  categories: CategoriesTranslations;
   rubrics: RubricsTranslations;
 }
 
