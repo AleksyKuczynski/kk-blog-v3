@@ -9,6 +9,7 @@ import { NavButton } from '../Interface/NavButton'
 import { ThemeMobile } from '../ThemeSwitcher'
 import { NavProps } from './Navigation'
 import Logo from '../Logo'
+import { useOutsideClick } from '@/main/lib/hooks'
 
 export default function MobileNavigation({
   lang,
@@ -17,6 +18,7 @@ export default function MobileNavigation({
 }: NavProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const toggleRef = useRef<HTMLButtonElement>(null)
 
   const { navigation, search, themes, colors } = translations
 
@@ -26,9 +28,12 @@ export default function MobileNavigation({
     { href: '/authors', name: navigation.authors },
   ]
 
+  useOutsideClick(menuRef, toggleRef, isMenuOpen, () => setIsMenuOpen(false))
+
   return (
     <div className="xl:hidden">
       <NavButton
+        ref={toggleRef}
         context="mobile"
         isHamburger={true}
         onClick={() => setIsMenuOpen(!isMenuOpen)}

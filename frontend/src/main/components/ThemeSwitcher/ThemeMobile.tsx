@@ -1,13 +1,14 @@
 // src/main/components/ThemeSwitcher/ThemeMobile.tsx
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { PaletteIcon } from '../Interface/Icons';
 import { Dropdown, DropdownItem, NavButton } from '../Interface';
 import { useThemeLogic } from './useTheme';
 import { useColor } from './ColorContext';
 import { Theme, ColorScheme } from './themeTypes';
 import { ThemesTranslations, ColorsTranslations } from '@/main/lib/dictionaries/types';
+import { useDropdown } from '@/main/lib/hooks';
 
 interface ThemeMobileProps {
   themeTranslations: ThemesTranslations;
@@ -17,8 +18,13 @@ interface ThemeMobileProps {
 export function ThemeMobile({ themeTranslations, colorTranslations }: ThemeMobileProps) {
   const { currentTheme, changeTheme } = useThemeLogic();
   const { colorScheme, setColorScheme } = useColor();
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleRef = useRef<HTMLButtonElement>(null);
+  const {
+    isOpen,
+    toggle: toggleDropdown,
+    close: closeDropdown,
+    dropdownRef,
+    toggleRef,
+  } = useDropdown();
 
   const themes: Theme[] = ['default', 'rounded', 'sharp'];
   const colorSchemes: ColorScheme[] = ['default', 'scheme1', 'scheme2'];
@@ -28,17 +34,17 @@ export function ThemeMobile({ themeTranslations, colorTranslations }: ThemeMobil
       <NavButton
         ref={toggleRef}
         context="mobile"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleDropdown}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         icon={<PaletteIcon className="h-6 w-6" />}
       />
       <Dropdown 
+        ref={dropdownRef}
         isOpen={isOpen} 
-        onClose={() => setIsOpen(false)} 
+        onClose={closeDropdown} 
         width="wide" 
         align="right"
-        parentRef={toggleRef}
       >
         <div className="grid grid-cols-2 gap-4 p-4">
           <div>
@@ -47,7 +53,10 @@ export function ThemeMobile({ themeTranslations, colorTranslations }: ThemeMobil
               <DropdownItem
                 key={theme}
                 state={currentTheme === theme ? 'selected' : 'normal'}
-                onClick={() => changeTheme(theme)}
+                onClick={() => {
+                  changeTheme(theme);
+                  closeDropdown();
+                }}
               >
                 {themeTranslations[theme]}
               </DropdownItem>
@@ -59,7 +68,10 @@ export function ThemeMobile({ themeTranslations, colorTranslations }: ThemeMobil
               <DropdownItem
                 key={scheme}
                 state={colorScheme === scheme ? 'selected' : 'normal'}
-                onClick={() => setColorScheme(scheme)}
+                onClick={() => {
+                  setColorScheme(scheme);
+                  closeDropdown();
+                }}
               >
                 {colorTranslations[scheme]}
               </DropdownItem>
