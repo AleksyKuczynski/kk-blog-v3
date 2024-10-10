@@ -1,7 +1,7 @@
 // src/main/components/Navigation/LanguageSwitcher.tsx
 'use client';
 
-import React, { createContext, useState, useContext, useCallback } from 'react';
+import React, { createContext, useState, useContext, useCallback, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { switchLanguage } from '@/main/lib/actions';
@@ -130,35 +130,41 @@ export function LanguageSwitcher({ currentLang }: { currentLang: Lang }) {
   );
 }
 
-function MobileLanguageSwitcherContent() {
+export function MobileLanguageSwitcherContent() {
+  const [isOpen, setIsOpen] = useState(false);
   const { currentLang, handleLanguageChange } = useLanguageSwitcher();
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className="relative">
       <NavButton
+        ref={toggleRef}
         context="mobile"
-        noHover={true}
-        className="pointer-events-none bg-transparent"
-        aria-hidden="true"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        icon={<LanguageIcon className="h-6 w-6" />}
+      />
+      <Dropdown 
+        isOpen={isOpen} 
+        onClose={() => setIsOpen(false)} 
+        width="narrow" 
+        align="left"
+        parentRef={toggleRef}
       >
-        <LanguageIcon className="h-6 w-6 text-text-primary dark:text-text-inverted" />
-      </NavButton>
-      <div className="flex flex-wrap gap-2">
         {Object.entries(languages).map(([lang, name]) => (
-          <NavButton
+          <DropdownItem
             key={lang}
-            context="mobile"
-            onClick={() => handleLanguageChange(lang as Lang)}
-            className={`${
-              currentLang === lang
-                ? 'bg-accent text-text-inverted'
-                : 'bg-background-light text-text-primary'
-            }`}
+            state={currentLang === lang ? 'selected' : 'normal'}
+            onClick={() => {
+              handleLanguageChange(lang as Lang);
+              setIsOpen(false);
+            }}
           >
-            {lang.toUpperCase()}
-          </NavButton>
+            {name}
+          </DropdownItem>
         ))}
-      </div>
+      </Dropdown>
     </div>
   );
 }

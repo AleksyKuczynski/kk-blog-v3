@@ -3,12 +3,12 @@
 
 import { useState, useRef } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { MobileLanguageSwitcher } from './LanguageSwitcher'
 import SearchBarWrapper from '../Search/SearchBarWrapper'
 import { NavButton } from '../Interface/NavButton'
 import { ThemeMobile } from '../ThemeSwitcher'
 import { NavProps } from './Navigation'
+import Logo from '../Logo'
 
 export default function MobileNavigation({
   lang,
@@ -34,7 +34,7 @@ export default function MobileNavigation({
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         aria-expanded={isMenuOpen}
         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-        className="fixed top-4 right-4 z-50 sm:landscape:top-2 sm:landscape:right-2"
+        className="fixed top-4 right-4 z-[70] sm:top-2 sm:right-2"
       >
         {isMenuOpen ? (
           <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -49,53 +49,34 @@ export default function MobileNavigation({
       
       <div 
         ref={menuRef}
-        className={`fixed top-0 right-0 bottom-0 w-[90vw] max-w-md 
-          sm:landscape:w-full sm:landscape:max-w-none
-          backdrop-blur-xl bg-bgcolor-alt/20 transition-all duration-300 overflow-y-auto 
+        className={`fixed inset-0 z-60 bg-bgcolor-alt/95 backdrop-blur-xl transition-all duration-300 
           ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
+          md:w-[400px] md:right-0 md:left-auto
+          sm:landscape:w-full md:landscape:w-full
         `}
       >
-        <div className="flex flex-col sm:landscape:flex-row h-full p-6 sm:landscape:p-4">
-          {/* First column / top section */}
-          <div className="sm:landscape:w-1/2 sm:landscape:pr-4 space-y-6 sm:landscape:space-y-4">
-            <div className="sm:landscape:hidden">
-              <MobileLanguageSwitcher currentLang={lang} />
-            </div>
-
-            <Link href={`/${lang}`} className="z-50 flex justify-center sm:landscape:justify-start">
-              <Image 
-                src="/e4m.svg" 
-                alt="Event4me Logo" 
-                width={240}
-                height={60}
-                className="w-60 h-auto sm:landscape:w-40"
-                priority
-              />
-            </Link>
-
+        <div className="h-full flex flex-col sm:landscape:grid sm:landscape:grid-cols-2 sm:landscape:grid-rows-[1fr_auto]">
+          {/* Left column - Search (for landscape) */}
+          <div className="sm:landscape:col-span-1 sm:landscape:row-span-2 p-4 flex items-center">
             {!isSearchPage && (
-              <div className="py-2 sm:landscape:py-1">
-                <SearchBarWrapper 
-                  translations={search}
-                  showButton={true}
-                />
-              </div>
+              <SearchBarWrapper 
+                translations={search}
+                showButton={true}
+              />
             )}
           </div>
 
-          {/* Second column / bottom section */}
-          <div className="sm:landscape:w-1/2 sm:landscape:pl-4 flex flex-col justify-between">
-            <div className="space-y-6 sm:landscape:space-y-4">
-              <div className="hidden sm:landscape:block">
-                <MobileLanguageSwitcher currentLang={lang} />
-              </div>
-
-              <nav className="space-y-4">
+          {/* Right column - Logo, Navigation, Language, and Theme */}
+          <div className="sm:landscape:col-start-2 sm:landscape:row-span-2 flex flex-col h-full">
+            {/* Middle section - Logo and Navigation */}
+            <div className="flex-grow flex flex-col items-center justify-center p-4 max-h-[800px] overflow-y-auto">
+              <Logo lang={lang} variant="mobile" />
+              <nav className="mt-8 space-y-4">
                 {NAVIGATION_LINKS.map((link) => (
                   <Link 
                     key={link.href}
                     href={`/${lang}${link.href}`}
-                    className="block text-2xl sm:landscape:text-xl font-bold text-text-primary dark:text-text-inverted"
+                    className="block text-2xl font-bold text-txcolor hover:text-prcolor transition-colors duration-200"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {link.name}
@@ -104,7 +85,9 @@ export default function MobileNavigation({
               </nav>
             </div>
 
-            <div className="mt-6 sm:landscape:mt-4">
+            {/* Bottom section - Language and Theme */}
+            <div className="p-4 flex justify-around">
+              <MobileLanguageSwitcher currentLang={lang} />
               <ThemeMobile themeTranslations={themes} colorTranslations={colors} />
             </div>
           </div>

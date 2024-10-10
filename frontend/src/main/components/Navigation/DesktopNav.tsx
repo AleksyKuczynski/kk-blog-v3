@@ -8,6 +8,7 @@ import ExpandableSearchButton from '../Search/ExpandableSearchButton';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeDesktop } from '../ThemeSwitcher';
 import { NavProps } from './Navigation';
+import Logo from '../Logo';
 
 export default function DesktopNavigation({
   lang,
@@ -37,16 +38,7 @@ export default function DesktopNavigation({
         </div>
 
         <div className="flex items-center justify-center">
-          <Link href={`/${lang}`} aria-label="Home">
-            <Image 
-              src="/e4m.svg" 
-              alt="Event4me Logo" 
-              width={16}
-              height={16}
-              className="w-40 h-auto"
-              priority
-            />
-          </Link>
+          <Logo lang={lang} variant="desktop" />
         </div>
         <div className="flex items-center justify-end space-x-4 pr-8">
           {!isSearchPage && <ExpandableSearchButton searchTranslations={translations.search} />}

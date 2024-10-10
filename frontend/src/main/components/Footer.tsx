@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import SearchBarWrapper from '@/main/components/Search/SearchBarWrapper';
 import { Lang, FooterTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
+import Logo from './Logo';
 
 interface FooterProps {
   lang: Lang;
@@ -22,11 +23,14 @@ export default function Footer({ lang, translations, searchTranslations }: Foote
   ];
 
   return (
-    <footer className="bg-gradient-to-t from-bgcolor to-bgcolor-alt text-txcolor-muted py-16 relative overflow-hidden z-60">
+    <footer className="bg-gradient-to-t from-bgcolor to-bgcolor-alt text-txcolor-muted py-16 relative overflow-hidden">
       {/* Background SVG Shapes remain the same */}
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <div className="mb-8">
+            <Logo lang={lang} variant="footer" />
+          </div>
           {/* Navigation Links */}
           <div className="space-y-4">
             <h3 className="text-2xl font-bold mb-4">{translations.quickLinks}</h3>

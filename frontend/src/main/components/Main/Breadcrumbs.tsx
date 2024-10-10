@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { ChevronRightIcon } from '@/main/components/Interface/Icons';
 import { RubricBasic } from '@/main/lib/directus/interfaces';
+import { Lang } from '@/main/lib/dictionaries/types';
 
 export interface BreadcrumbItem {
   label: string;
@@ -11,7 +12,7 @@ export interface BreadcrumbItem {
 interface BreadcrumbsProps {
   items: BreadcrumbItem[];
   rubrics: RubricBasic[];
-  lang: string;
+  lang: Lang;
   translations: {
     home: string;
     allRubrics: string;

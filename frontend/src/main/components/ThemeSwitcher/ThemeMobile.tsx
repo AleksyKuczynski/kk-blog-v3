@@ -1,9 +1,9 @@
 // src/main/components/ThemeSwitcher/ThemeMobile.tsx
 'use client';
 
-import React from 'react';
-import { NavButton } from '../Interface/NavButton';
+import React, { useState, useRef } from 'react';
 import { PaletteIcon } from '../Interface/Icons';
+import { Dropdown, DropdownItem, NavButton } from '../Interface';
 import { useThemeLogic } from './useTheme';
 import { useColor } from './ColorContext';
 import { Theme, ColorScheme } from './themeTypes';
@@ -17,58 +17,56 @@ interface ThemeMobileProps {
 export function ThemeMobile({ themeTranslations, colorTranslations }: ThemeMobileProps) {
   const { currentTheme, changeTheme } = useThemeLogic();
   const { colorScheme, setColorScheme } = useColor();
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   const themes: Theme[] = ['default', 'rounded', 'sharp'];
   const colorSchemes: ColorScheme[] = ['default', 'scheme1', 'scheme2'];
 
   return (
-    <div className="flex flex-col space-y-4">
-      <div className="flex items-center space-x-4">
-        <NavButton
-          context="mobile"
-          noHover={true}
-          className="pointer-events-none bg-transparent"
-          aria-hidden="true"
-        >
-          <PaletteIcon className="h-6 w-6 text-text-primary dark:text-text-inverted" />
-        </NavButton>
-        <span className="text-lg font-medium">{themeTranslations.name}</span>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {themes.map((theme) => (
-          <NavButton
-            key={theme}
-            context="mobile"
-            onClick={() => changeTheme(theme)}
-            className={`${
-              currentTheme === theme
-                ? 'bg-accent text-text-inverted'
-                : 'bg-background-light text-text-primary'
-            }`}
-          >
-            {themeTranslations[theme]}
-          </NavButton>
-        ))}
-      </div>
-      <div className="flex items-center space-x-4 mt-4">
-        <span className="text-lg font-medium">{colorTranslations.name}</span>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {colorSchemes.map((scheme) => (
-          <NavButton
-            key={scheme}
-            context="mobile"
-            onClick={() => setColorScheme(scheme)}
-            className={`${
-              colorScheme === scheme
-                ? 'bg-accent text-text-inverted'
-                : 'bg-background-light text-text-primary'
-            }`}
-          >
-            {colorTranslations[scheme]}
-          </NavButton>
-        ))}
-      </div>
+    <div className="relative">
+      <NavButton
+        ref={toggleRef}
+        context="mobile"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        icon={<PaletteIcon className="h-6 w-6" />}
+      />
+      <Dropdown 
+        isOpen={isOpen} 
+        onClose={() => setIsOpen(false)} 
+        width="wide" 
+        align="right"
+        parentRef={toggleRef}
+      >
+        <div className="grid grid-cols-2 gap-4 p-4">
+          <div>
+            <h3 className="text-sm font-medium mb-2">{themeTranslations.name}</h3>
+            {themes.map((theme) => (
+              <DropdownItem
+                key={theme}
+                state={currentTheme === theme ? 'selected' : 'normal'}
+                onClick={() => changeTheme(theme)}
+              >
+                {themeTranslations[theme]}
+              </DropdownItem>
+            ))}
+          </div>
+          <div>
+            <h3 className="text-sm font-medium mb-2">{colorTranslations.name}</h3>
+            {colorSchemes.map((scheme) => (
+              <DropdownItem
+                key={scheme}
+                state={colorScheme === scheme ? 'selected' : 'normal'}
+                onClick={() => setColorScheme(scheme)}
+              >
+                {colorTranslations[scheme]}
+              </DropdownItem>
+            ))}
+          </div>
+        </div>
+      </Dropdown>
     </div>
   );
 }
