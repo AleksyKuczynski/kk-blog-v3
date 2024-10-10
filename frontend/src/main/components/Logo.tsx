@@ -5,6 +5,7 @@ import { Lang } from '@/main/lib/dictionaries/types'
 interface LogoProps {
   lang: Lang
   variant: 'desktop' | 'mobile' | 'footer'
+  setIsMenuOpen?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const variantStyles = {
@@ -19,9 +20,16 @@ const containerStyles = {
   footer: 'flex items-center justify-center'
 }
 
-export default function Logo({ lang, variant }: LogoProps) {
+export default function Logo({ lang, variant, setIsMenuOpen }: LogoProps) {
+  const handleClick = (e: React.MouseEvent) => {
+    if (setIsMenuOpen) {
+      e.preventDefault()
+      setIsMenuOpen(false)
+    }
+  }
+
   return (
-    <Link href={`/${lang}`} aria-label="Home" className={containerStyles[variant]}>
+    <Link href={`/${lang}`} aria-label="Home" className={containerStyles[variant]} onClick={handleClick}>
       <div className={`relative ${variantStyles[variant]}`}>
         <svg 
           xmlns="http://www.w3.org/2000/svg" 

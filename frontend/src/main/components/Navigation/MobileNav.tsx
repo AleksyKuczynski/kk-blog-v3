@@ -55,41 +55,38 @@ export default function MobileNavigation({
           sm:landscape:w-full md:landscape:w-full
         `}
       >
-        <div className="h-full flex flex-col sm:landscape:grid sm:landscape:grid-cols-2 sm:landscape:grid-rows-[1fr_auto]">
-          {/* Left column - Search (for landscape) */}
-          <div className="sm:landscape:col-span-1 sm:landscape:row-span-2 p-4 flex items-center">
-            {!isSearchPage && (
-              <SearchBarWrapper 
-                translations={search}
-                showButton={true}
-              />
-            )}
-          </div>
-
-          {/* Right column - Logo, Navigation, Language, and Theme */}
-          <div className="sm:landscape:col-start-2 sm:landscape:row-span-2 flex flex-col h-full">
-            {/* Middle section - Logo and Navigation */}
-            <div className="flex-grow flex flex-col items-center justify-center p-4 max-h-[800px] overflow-y-auto">
-              <Logo lang={lang} variant="mobile" />
-              <nav className="mt-8 space-y-4">
-                {NAVIGATION_LINKS.map((link) => (
-                  <Link 
-                    key={link.href}
-                    href={`/${lang}${link.href}`}
-                    className="block text-2xl font-bold text-txcolor hover:text-prcolor transition-colors duration-200"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-              </nav>
+        <div className="h-full flex flex-col">
+          {/* Top section */}
+          <div className="flex flex-col sm:landscape:flex-row sm:landscape:justify-end items-end sm:landscape:items-center p-4 pt-16 sm:pt-4 sm:pr-16 space-y-4 sm:landscape:space-y-0 sm:landscape:space-x-4">
+            <div className="w-full sm:landscape:w-auto order-2 sm:landscape:order-1">
+              {!isSearchPage && (
+                <SearchBarWrapper 
+                  translations={search}
+                  showButton={true}
+                />
+              )}
             </div>
-
-            {/* Bottom section - Language and Theme */}
-            <div className="p-4 flex justify-around">
+            <div className="flex space-x-4 order-1 sm:landscape:order-2">
               <MobileLanguageSwitcher currentLang={lang} />
               <ThemeMobile themeTranslations={themes} colorTranslations={colors} />
             </div>
+          </div>
+
+          {/* Bottom section */}
+          <div className="flex-grow flex flex-col items-center justify-center p-4 overflow-y-auto">
+            <Logo lang={lang} variant="mobile" setIsMenuOpen={setIsMenuOpen} />
+            <nav className="mt-8 space-y-6">
+              {NAVIGATION_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={`/${lang}${link.href}`}
+                  className="block text-lg text-txcolor hover:text-prcolor transition-colors duration-200"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </nav>
           </div>
         </div>
       </div>
