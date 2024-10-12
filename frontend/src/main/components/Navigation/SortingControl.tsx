@@ -1,18 +1,20 @@
-// /frontend/src/main/components/Main/SortingControl.tsx
+// src/main/components/Navigation/SortingControl.tsx
 'use client';
 
 import { useCallback } from 'react';
-import { SortingTranslations } from '@/main/lib/dictionaries/types';
 import { ChevronDownIcon, CheckIcon, Dropdown, DropdownItem, NavButton } from '../Interface';
 import { useDropdown } from '@/main/lib/hooks';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { SortingTranslations } from '@/main/lib/dictionaries/types';
 
 interface SortingControlProps {
   translations: SortingTranslations;
   currentSort: string;
-  onSortChange: (newSort: string) => void;
+  onSortChange?: (newSort: string) => void;
+  lang?: string; // Make lang optional
 }
 
-export default function SortingControl({ translations, currentSort, onSortChange }: SortingControlProps) {
+export default function SortingControl({ translations, currentSort, onSortChange, lang }: SortingControlProps) {
   const {
     isOpen,
     toggle: toggleDropdown,
@@ -21,15 +23,26 @@ export default function SortingControl({ translations, currentSort, onSortChange
     toggleRef,
   } = useDropdown();
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const handleSortChange = useCallback((newSort: string) => {
-    onSortChange(newSort);
+    if (onSortChange) {
+      onSortChange(newSort);
+    } else if (lang) {
+      // If no onSortChange provided, handle routing internally
+      const params = new URLSearchParams(searchParams);
+      params.set('sort', newSort);
+      router.push(`/${lang}/search?${params.toString()}`, { scroll: false });
+    }
     closeDropdown();
-  }, [onSortChange, closeDropdown]);
+  }, [onSortChange, closeDropdown, lang, router, searchParams]);
 
   const sortOptions = [
     { value: 'desc', label: translations.newest },
     { value: 'asc', label: translations.oldest },
   ];
+
 
   return (
     <>

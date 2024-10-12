@@ -1,27 +1,27 @@
-// src/main/components/Interface/Dropdown.tsx
+// src/main/components/Interface/DropdownClient.tsx
 
-import React, { ReactNode, forwardRef, useRef, useImperativeHandle } from 'react';
+'use client';
+
+import React, { forwardRef, useRef } from 'react';
 import { useTheme } from '../ThemeSwitcher';
 import { useOutsideClick } from '@/main/lib/hooks';
 
-interface DropdownProps {
-  children: ReactNode;
+interface ClientDropdownProps {
+  children: React.ReactNode;
   isOpen: boolean;
   onClose: () => void;
   width?: 'icon' | 'narrow' | 'wide' | 'search';
   align?: 'left' | 'right';
   className?: string;
-  parentRef?: React.RefObject<HTMLElement>;
 }
 
-const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
-  ({ children, isOpen, onClose, width = 'narrow', align = 'left', className = '', parentRef }, forwardedRef) => {
+const ClientDropdown = forwardRef<HTMLDivElement, ClientDropdownProps>(
+  ({ children, isOpen, onClose, width = 'narrow', align = 'left', className = '' }, ref) => {
     const { currentTheme } = useTheme();
-    const innerRef = useRef<HTMLDivElement>(null);
+    const internalRef = useRef<HTMLDivElement>(null);
+    const dropdownRef = (ref as React.RefObject<HTMLDivElement>) || internalRef;
 
-    useImperativeHandle(forwardedRef, () => innerRef.current as HTMLDivElement);
-
-    useOutsideClick(innerRef, parentRef || null, isOpen, onClose);
+    useOutsideClick(dropdownRef, null, isOpen, onClose);
 
     if (!isOpen) return null;
 
@@ -49,7 +49,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
 
     return (
       <div
-        ref={innerRef}
+        ref={dropdownRef}
         className={`
           ${baseStyle}
           ${widthStyle[width]}
@@ -64,6 +64,6 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
   }
 );
 
-Dropdown.displayName = 'Dropdown';
+ClientDropdown.displayName = 'ClientDropdown';
 
-export default Dropdown;
+export default ClientDropdown;

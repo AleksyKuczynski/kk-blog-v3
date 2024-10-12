@@ -3,13 +3,15 @@
 import '@/app/globals.scss';
 import { fontSans, fontSerif, fontDisplay, fontCustom } from '@/app/fonts/fonts';
 import { ThemeProvider, ColorProvider, getColorMode, getColorScheme, getTheme } from '@/main/components/ThemeSwitcher';
+import { getDictionary } from '@/main/lib/dictionaries';
+import { Lang } from '@/main/lib/dictionaries/types';
 
 export default async function RootLayout({
   children,
   params: { lang },
 }: {
   children: React.ReactNode
-  params: { lang: string }
+  params: { lang: Lang }
 }) {
   const initialTheme = await getTheme();
   const initialColorMode = await getColorMode();

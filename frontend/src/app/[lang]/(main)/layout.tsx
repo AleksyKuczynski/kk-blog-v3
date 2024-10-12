@@ -4,6 +4,7 @@ import Footer from '@/main/components/Footer';
 import Navigation from '@/main/components/Navigation/Navigation'
 import { Lang, Dictionary } from '@/main/lib/dictionaries/types';
 import { Metadata } from 'next';
+import React from 'react';
 
 export const metadata: Metadata = {
   title: "My Blog",
@@ -33,7 +34,7 @@ export default async function MainLayout({
         />
       </header>
       <main className="flex-grow mt-16 md:mt-24 pt-4 md:pt-8" role="main">        
-        {children}
+        {React.cloneElement(children as React.ReactElement, { searchTranslations: dict.search, sortingTranslations: dict.sorting })}      
       </main>
       <Footer 
         lang={lang} 

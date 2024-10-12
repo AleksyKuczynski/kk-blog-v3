@@ -3,29 +3,28 @@ import { useCallback, useEffect, RefObject, useState, useRef } from 'react';
 
 export function useOutsideClick<T extends HTMLElement>(
   ref: RefObject<T>,
-  toggleRef: RefObject<HTMLElement>,
+  toggleRef: RefObject<HTMLElement> | null,
   isOpen: boolean,
   onClose: () => void
 ): void {
-  const handleClickOutside = useCallback((event: MouseEvent | TouchEvent) => {
-    if (
-      ref.current &&
-      !ref.current.contains(event.target as Node) &&
-      toggleRef.current &&
-      !toggleRef.current.contains(event.target as Node) &&
-      isOpen
-    ) {
-      onClose();
-    }
-  }, [ref, toggleRef, isOpen, onClose]);
-
-  const handleEscapeKey = useCallback((event: KeyboardEvent) => {
-    if (event.key === 'Escape' && isOpen) {
-      onClose();
-    }
-  }, [isOpen, onClose]);
-
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (
+        ref.current &&
+        !ref.current.contains(event.target as Node) &&
+        (!toggleRef || !toggleRef.current || !toggleRef.current.contains(event.target as Node)) &&
+        isOpen
+      ) {
+        onClose();
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('touchstart', handleClickOutside);
@@ -37,7 +36,7 @@ export function useOutsideClick<T extends HTMLElement>(
         document.removeEventListener('keydown', handleEscapeKey);
       };
     }
-  }, [isOpen, handleClickOutside, handleEscapeKey]);
+  }, [isOpen, onClose, ref, toggleRef]);
 }
 
 export function useFocusInput(inputRef: RefObject<HTMLInputElement>, shouldFocus: boolean, delay: number = 0): void {
