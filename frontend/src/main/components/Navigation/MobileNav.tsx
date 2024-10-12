@@ -9,6 +9,8 @@ import { NavButton } from '../Interface/NavButton'
 import { ThemeMobile } from '../ThemeSwitcher'
 import { NavProps } from './Navigation'
 import Logo from '../Logo'
+import { useOutsideClick } from '@/main/lib/hooks'
+import NavLinks from './NavLinks'
 
 export default function MobileNavigation({
   lang,
@@ -17,6 +19,7 @@ export default function MobileNavigation({
 }: NavProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const toggleRef = useRef<HTMLButtonElement>(null)
 
   const { navigation, search, themes, colors } = translations
 
@@ -25,6 +28,8 @@ export default function MobileNavigation({
     { href: '/rubrics', name: navigation.rubrics },
     { href: '/authors', name: navigation.authors },
   ]
+
+  useOutsideClick(menuRef, toggleRef, isMenuOpen, () => setIsMenuOpen(false))
 
   return (
     <div className="xl:hidden">
@@ -76,16 +81,7 @@ export default function MobileNavigation({
           <div className="flex-grow flex flex-col items-center justify-center p-4 overflow-y-auto">
             <Logo lang={lang} variant="mobile" setIsMenuOpen={setIsMenuOpen} />
             <nav className="mt-8 space-y-6">
-              {NAVIGATION_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={`/${lang}${link.href}`}
-                  className="block text-lg text-txcolor hover:text-prcolor transition-colors duration-200"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              ))}
+              <NavLinks lang={lang} translations={translations.navigation} />
             </nav>
           </div>
         </div>

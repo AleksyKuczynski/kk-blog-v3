@@ -1,10 +1,10 @@
 // src/app/[lang]/(main)/layout.tsx
 import { getDictionary } from '@/main/lib/dictionaries';
-import Footer from '@/main/components/Footer';
 import Navigation from '@/main/components/Navigation/Navigation'
 import { Lang, Dictionary } from '@/main/lib/dictionaries/types';
 import { Metadata } from 'next';
 import React from 'react';
+import Footer from '@/main/components/Footer/Footer';
 
 export const metadata: Metadata = {
   title: "My Blog",
@@ -44,6 +44,7 @@ export default async function MainLayout({
           authors: dict.navigation.authors,
         }}
         searchTranslations={dict.search}
+        navTranslations={dict.navigation}
       />
     </>
   );

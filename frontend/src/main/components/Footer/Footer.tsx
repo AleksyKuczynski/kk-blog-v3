@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import SearchBarWrapper from '@/main/components/Search/SearchBarWrapper';
 import { Lang, FooterTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
-import Logo from './Logo';
+import Logo from '../Logo';
 
 interface FooterProps {
   lang: Lang;

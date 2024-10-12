@@ -2,39 +2,23 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import ExpandableSearchButton from '../Search/ExpandableSearchButton';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeDesktop } from '../ThemeSwitcher';
 import { NavProps } from './Navigation';
 import Logo from '../Logo';
+import NavLinks from './NavLinks';
 
 export default function DesktopNavigation({
   lang,
   translations,
   isSearchPage,
 }: NavProps) {
-
-  const NAVIGATION_LINKS = [
-    { href: '/articles', name: translations.navigation.articles },
-    { href: '/rubrics', name: translations.navigation.rubrics },
-    { href: '/authors', name: translations.navigation.authors },
-  ];
-
   return (
     <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-bgcolor-alt/20 transition-all duration-300">
       <div className="grid grid-cols-3 items-center h-24">
         <div className="flex items-center justify-start pl-8">
-          {NAVIGATION_LINKS.map((link) => (
-            <Link 
-              key={link.href} 
-              href={`/${lang}${link.href}`} 
-              className="text-txcolor-secondary hover:text-txcolor hover:bg-prcolor px-3 py-2 text-sm font-medium uppercase tracking-wider transition duration-300"
-            >
-              {link.name}
-            </Link>
-          ))}
+          <NavLinks lang={lang} translations={translations.navigation} />
         </div>
 
         <div className="flex items-center justify-center">
