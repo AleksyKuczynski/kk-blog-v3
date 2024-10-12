@@ -131,31 +131,26 @@ export function LanguageSwitcher({ currentLang }: { currentLang: Lang }) {
 }
 
 export function MobileLanguageSwitcherContent() {
+  const [isOpen, setIsOpen] = useState(false);
   const { currentLang, handleLanguageChange } = useLanguageSwitcher();
-  const {
-    isOpen,
-    toggle: toggleDropdown,
-    close: closeDropdown,
-    dropdownRef,
-    toggleRef,
-  } = useDropdown();
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   return (
     <div className="relative">
       <NavButton
         ref={toggleRef}
         context="mobile"
-        onClick={toggleDropdown}
+        onClick={() => setIsOpen(!isOpen)}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         icon={<LanguageIcon className="h-6 w-6" />}
       />
       <Dropdown 
-        ref={dropdownRef}
         isOpen={isOpen} 
-        onClose={closeDropdown} 
+        onClose={() => setIsOpen(false)} 
         width="narrow" 
         align="left"
+        parentRef={toggleRef}
       >
         {Object.entries(languages).map(([lang, name]) => (
           <DropdownItem
@@ -163,7 +158,7 @@ export function MobileLanguageSwitcherContent() {
             state={currentLang === lang ? 'selected' : 'normal'}
             onClick={() => {
               handleLanguageChange(lang as Lang);
-              closeDropdown();
+              setIsOpen(false);
             }}
           >
             {name}

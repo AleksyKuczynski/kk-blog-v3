@@ -23,6 +23,7 @@ const containerStyles = {
 export default function Logo({ lang, variant, setIsMenuOpen }: LogoProps) {
   const handleClick = (e: React.MouseEvent) => {
     if (setIsMenuOpen) {
+      e.preventDefault()
       setIsMenuOpen(false)
     }
   }
