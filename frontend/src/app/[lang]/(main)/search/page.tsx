@@ -1,4 +1,4 @@
-// /frontend/src/app/[lang]/(main)/(with-search)/search/page.tsx
+// /frontend/src/app/[lang]/(main)/search/page.tsx
 import { Suspense } from 'react';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';

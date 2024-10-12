@@ -2,7 +2,6 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import Link from 'next/link'
 import { MobileLanguageSwitcher } from './LanguageSwitcher'
 import SearchBarWrapper from '../Search/SearchBarWrapper'
 import { NavButton } from '../Interface/NavButton'
@@ -21,19 +20,14 @@ export default function MobileNavigation({
   const menuRef = useRef<HTMLDivElement>(null)
   const toggleRef = useRef<HTMLButtonElement>(null)
 
-  const { navigation, search, themes, colors } = translations
-
-  const NAVIGATION_LINKS = [
-    { href: '/articles', name: navigation.articles },
-    { href: '/rubrics', name: navigation.rubrics },
-    { href: '/authors', name: navigation.authors },
-  ]
+  const { search, themes, colors } = translations
 
   useOutsideClick(menuRef, toggleRef, isMenuOpen, () => setIsMenuOpen(false))
 
   return (
     <div className="xl:hidden">
       <NavButton
+        ref={toggleRef}
         context="mobile"
         isHamburger={true}
         onClick={() => setIsMenuOpen(!isMenuOpen)}

@@ -14,6 +14,7 @@ export default function DesktopNavigation({
   translations,
   isSearchPage,
 }: NavProps) {
+
   return (
     <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-bgcolor-alt/20 transition-all duration-300">
       <div className="grid grid-cols-3 items-center h-24">
