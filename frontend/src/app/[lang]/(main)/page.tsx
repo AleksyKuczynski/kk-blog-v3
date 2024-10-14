@@ -8,6 +8,7 @@ import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/ind
 import HeroArticles from '@/main/components/Main/HeroArticles';
 import RubricCard from '@/main/components/Main/RubricCard';
 import Section from '@/main/components/Main/Section';
+import CardGrid from '@/main/components/Main/CardGrid';
 
 export const dynamic = 'force-dynamic';
 
@@ -65,22 +66,24 @@ export default async function Home({ params: { lang } }: { params: { lang: Lang 
         ariaLabel={dict.sections.home.exploreRubrics}
         title={dict.sections.home.exploreRubrics}
       >
-        {rubrics.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {rubrics.slice(0, 6).map((rubric) => {
-              return <RubricCard key={rubric.slug} rubric={rubric} lang={lang} />;
-            })}
-          </div>
-        ) : (
-          <p className="text-center text-txcolor-secondary">No rubrics available</p>
-        )}
-        {rubrics.length > 6 && (
-          <div className="text-center mt-8">
-            <Link href={`/${lang}/rubrics`} className="text-prcolor hover:text-prcolor-dark transition-colors duration-200">
-              {dict.sections.home.viewAllRubrics}
-            </Link>
-          </div>
-        )}
+        <CardGrid>
+          {rubrics.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {rubrics.slice(0, 6).map((rubric) => {
+                return <RubricCard key={rubric.slug} rubric={rubric} lang={lang} />;
+              })}
+            </div>
+          ) : (
+            <p className="text-center text-txcolor-secondary">No rubrics available</p>
+          )}
+          {rubrics.length > 6 && (
+            <div className="text-center mt-8">
+              <Link href={`/${lang}/rubrics`} className="text-prcolor hover:text-prcolor-dark transition-colors duration-200">
+                {dict.sections.home.viewAllRubrics}
+              </Link>
+            </div>
+          )}
+        </CardGrid>
       </Section>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{

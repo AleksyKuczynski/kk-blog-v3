@@ -1,90 +1,102 @@
-// src/main/components/Footer.tsx
-'use client';
+// src/main/components/Footer/FooterNew.tsx
+import { Dictionary, Lang } from '@/main/lib/dictionaries/types';
+import AboutUsSection from './AboutUsSection';
+import QuickLinksSection from './QuickLinksSection';
+import ContactSection from './ContactSection';
+import SocialLinks from './SocialLinks';
+import CredentialsSection from './CredentialsSection';
+import SearchSection from './SearchSection';
+import KuKraftSection from './KuKraftSection';
+import { socialLinks } from './socialLinksData';
+import dynamic from 'next/dynamic';
 
-import Link from 'next/link';
-import SearchBarWrapper from '@/main/components/Search/SearchBarWrapper';
-import { Lang, FooterTranslations, SearchTranslations } from '@/main/lib/dictionaries/types';
-import Logo from '../Logo';
+const SurpriseSection = dynamic(() => import('./SurpriseSection'), { ssr: false });
+const NewsletterSection = dynamic(() => import('./NewsletterSection'), { ssr: false });
+const FeedbackSection = dynamic(() => import('./FeedbackSection'), { ssr: false });
 
 interface FooterProps {
   lang: Lang;
-  translations: FooterTranslations & {
-    articles: string;
-    authors: string;
-  };
-  searchTranslations: SearchTranslations;
+  translations: Dictionary;
 }
 
-export default function Footer({ lang, translations, searchTranslations }: FooterProps) {
-  const FOOTER_LINKS = [
-    { href: '/articles', name: translations.articles },
-    { href: '/authors', name: translations.authors },
-    { href: '/about', name: translations.about },
-  ];
+export default function Footer({ lang, translations }: FooterProps) {
+  const { footer, navigation, search } = translations;
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "EventForMe",
+    "url": `https://event4me.eu/${lang}`,
+    "logo": "https://event4me.eu/logo.png",
+    "sameAs": socialLinks.map(link => link.url),
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@event4me.eu",
+      "contactType": "customer support"
+    }
+  };
 
   return (
-    <footer className="bg-gradient-to-t from-bgcolor to-bgcolor-alt text-txcolor-muted py-16 relative overflow-hidden">
-      {/* Background SVG Shapes remain the same */}
+    <footer className="bg-bgcolor-alt text-txcolor-muted py-16">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+					<SurpriseSection
+            translations={footer.surprise}
+          />
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          <div className="mb-8">
-            <Logo lang={lang} variant="footer" />
-          </div>
-          {/* Navigation Links */}
-          <div className="space-y-4">
-            <h3 className="text-2xl font-bold mb-4">{translations.quickLinks}</h3>
-            {FOOTER_LINKS.map((link) => (
-              <Link 
-                key={link.href} 
-                href={`/${lang}${link.href}`} 
-                className="block text-lg hover:text-accent-light transition duration-300"
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
-
-          {/* Search Bar */}
-          <div>
-            <h3 className="text-2xl font-bold mb-4">{translations.findWhatYouNeed}</h3>
-            <SearchBarWrapper translations={searchTranslations} />
-          </div>
-
-          {/* KuKraft Link */}
-          <div className="space-y-4">
-            <h3 className="text-2xl font-bold mb-4">{translations.designedWithLove}</h3>
-            <a 
-              href="https://kukraft.com" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="inline-block bg-accent text-text-primary px-6 py-3 rounded-full text-lg font-semibold hover:bg-accent-dark transition duration-300 transform hover:scale-105"
-            >
-              {translations.visitKuKraft}
-            </a>
-          </div>
+          <AboutUsSection 
+            lang={lang} 
+            about={footer.about}
+          />
+          
+          <QuickLinksSection 
+            lang={lang} 
+            quickLinks={footer.quickLinks}
+            navigationTranslations={navigation}
+          />
         </div>
-
-        {/* Fun Interactive Element */}
-        <div className="text-center mb-12">
-          <button 
-            className="bg-prcolor-dark hover:bg-prcolor-light px-8 py-4 rounded-full text-xl font-bold transition duration-300 transform hover:rotate-3 hover:scale-110"
-            onClick={() => alert('Thanks for visiting our crazy footer!')}
-          >
-            {translations.clickForSurprise}
-          </button>
+        
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+					<ContactSection 
+            lang={lang} 
+            translations={footer.contact}
+          />
+          
+          <NewsletterSection
+            translations={footer.newsletter}
+          />
+          
+          <FeedbackSection
+            translations={footer.feedback}
+          />
         </div>
+        
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">        
+					<SocialLinks 
+            lang={lang} 
+            translations={footer.socialLinks}
+          />
+          
+          <SearchSection
+            lang={lang}
+            translations={footer.search}
+            searchTranslations={search}
+          />         
 
-        {/* Social Media Icons remain the same */}
-
-        {/* Copyright */}
-        <div className="text-center text-sm opacity-75">
-          <p>{translations.copyright.replace('{year}', new Date().getFullYear().toString())}</p>
-          <p className="mt-2">{translations.poweredBy}</p>
+          <KuKraftSection
+            translations={footer.kuKraft}
+          />
         </div>
+        
+        <CredentialsSection 
+          lang={lang} 
+          translations={footer.credentials}
+        />
       </div>
-
-      {/* Animated Elements remain the same */}
+      <script 
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
     </footer>
   );
 }

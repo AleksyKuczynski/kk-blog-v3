@@ -1,33 +1,45 @@
-// src/main/components/SocialLinks.tsx
-import { FacebookIcon, TwitterIcon, InstagramIcon, VKIcon, TelegramIcon, WhatsAppIcon } from './SocialIcons';
+// src/main/components/Footer/SocialLinks.tsx
+import React from 'react';
+import Link from 'next/link';
+import { socialLinks, SocialLink } from './socialLinksData';
+import { Lang, FooterTranslations } from '@/main/lib/dictionaries/types';
 
-export default function SocialLinks() {
-  const socialLinks = [
-    { Icon: FacebookIcon, href: 'https://facebook.com', label: 'Facebook' },
-    { Icon: TwitterIcon, href: 'https://twitter.com', label: 'Twitter' },
-    { Icon: InstagramIcon, href: 'https://instagram.com', label: 'Instagram' },
-    { Icon: VKIcon, href: 'https://vk.com', label: 'VKontakte' },
-    { Icon: TelegramIcon, href: 'https://telegram.org', label: 'Telegram' },
-    { Icon: WhatsAppIcon, href: 'https://whatsapp.com', label: 'WhatsApp' },
-  ];
+interface SocialLinksProps {
+    lang: Lang;
+    translations: {
+      title: string;
+      description: string;
+      facebook: string;
+      twitter: string;
+      instagram: string;
+      vk: string;
+      telegram: string;
+      whatsapp: string;
+    };
+  }
 
+const SocialLinks: React.FC<SocialLinksProps> = ({ translations }) => {
   return (
-    <div>
-      <h3 className="text-2xl font-bold mb-4">Follow Us</h3>
-      <div className="flex space-x-4">
-        {socialLinks.map(({ Icon, href, label }) => (
-          <a 
-            key={href} 
-            href={href} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="text-txcolor-muted hover:text-prcolor transition-colors"
-            aria-label={label}
-          >
-            <Icon className="w-6 h-6" />
-          </a>
+    <div className="mt-8">
+      <h2 className="text-xl font-semibold mb-4">{translations.title}</h2>
+      <p className="mb-4">{translations.description}</p>
+      <ul className="flex space-x-4">
+        {socialLinks.map((link: SocialLink) => (
+          <li key={link.name}>
+            <Link
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-txcolor-muted hover:text-prcolor transition-colors duration-300"
+            >
+              <span className="sr-only">{translations[link.name]}</span>
+              <link.Icon className="w-6 h-6" aria-hidden="true" />
+            </Link>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
-}
+};
+
+export default SocialLinks;

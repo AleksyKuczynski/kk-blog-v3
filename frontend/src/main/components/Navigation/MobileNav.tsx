@@ -23,6 +23,9 @@ export default function MobileNavigation({
   const { search, themes, colors } = translations
 
   useOutsideClick(menuRef, toggleRef, isMenuOpen, () => setIsMenuOpen(false))
+  const handleLinkClick = () => {
+    setIsMenuOpen(false)
+  }
 
   return (
     <div className="xl:hidden">
@@ -72,8 +75,8 @@ export default function MobileNavigation({
           </div>
 
           {/* Bottom section */}
-          <div className="flex-grow flex flex-col items-center justify-center p-4 overflow-y-auto">
-            <Logo lang={lang} variant="mobile" setIsMenuOpen={setIsMenuOpen} />
+          <div className="flex-grow flex flex-col items-center justify-center p-4 overflow-y-auto"  onClick={handleLinkClick}>
+            <Logo lang={lang} variant="mobile" />
             <nav className="mt-8 space-y-6">
               <NavLinks lang={lang} translations={translations.navigation} />
             </nav>

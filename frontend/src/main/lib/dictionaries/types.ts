@@ -9,15 +9,65 @@ export interface NavigationTranslations {
 }
 
 export interface FooterTranslations {
-  quickLinks: string;
-  about: string;
-  contact: string;
-  copyright: string;
-  findWhatYouNeed: string;
-  designedWithLove: string;
-  visitKuKraft: string;
-  clickForSurprise: string;
-  poweredBy: string;
+  about: {
+    title: string;
+    description: string;
+    companyDescription: string;
+  };
+  quickLinks: {
+    title: string;
+  };
+  contact: {
+    title: string;
+    emailUs: string;
+    faq: string;
+    helpCenter: string;
+    form: {
+      button: string;
+      emailPlaceholder: string;
+      messagePlaceholder: string;
+      sendButton: string;
+    };
+  };
+  socialLinks: {
+    title: string;
+    description: string;
+    facebook: string;
+    twitter: string;
+    instagram: string;
+    vk: string;
+    telegram: string;
+    whatsapp: string;
+  };
+  newsletter: {
+    title: string;
+    placeholder: string;
+    submitButton: string;
+    successMessage: string;
+  };
+  feedback: {
+    title: string;
+    namePlaceholder: string;
+    emailPlaceholder: string;
+    messagePlaceholder: string;
+    submitButton: string;
+    successMessage: string;
+  };
+  search: {
+    title: string;
+  };
+  kuKraft: {
+    designedWithLove: string;
+    visitKuKraft: string;
+  };
+  surprise: {
+    clickForSurprise: string;
+  };
+  credentials: {
+    copyright: string;
+    privacyPolicy: string;
+    termsOfService: string;
+  };
 }
 
 export interface CommonTranslations {

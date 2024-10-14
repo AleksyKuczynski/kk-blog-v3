@@ -6,6 +6,7 @@ import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { Rubric } from '@/main/lib/directus/interfaces';
 import Section from '@/main/components/Main/Section';
+import CardGrid from '@/main/components/Main/CardGrid';
 
 interface AllRubricsPageProps {
   params: {
@@ -36,18 +37,19 @@ export default async function AllRubricsPage({ params: { lang } }: AllRubricsPag
           allAuthors: dict.sections.authors.ourAuthors,
         }}
       />
-      <h1 className="text-4xl font-bold mb-8">{dict.sections.rubrics.allRubrics}</h1>
       <Section 
-        isOdd={true}
+        title={dict.sections.rubrics.allRubrics}
         ariaLabel={dict.sections.rubrics.allRubrics}
       >
-        {rubrics.map((rubric: Rubric) => (
-          <RubricCard 
-            key={rubric.slug} 
-            rubric={rubric}
-            lang={lang} 
-          />
-        ))}
+        <CardGrid>
+          {rubrics.map((rubric: Rubric) => (
+            <RubricCard 
+              key={rubric.slug} 
+              rubric={rubric}
+              lang={lang} 
+            />
+          ))}
+        </CardGrid>
       </Section>
     </>
   );

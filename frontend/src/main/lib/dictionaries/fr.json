@@ -7,15 +7,65 @@
     "search": "Recherche"
   },
   "footer": {
-    "quickLinks": "Liens Rapides",
-    "about": "À Propos",
-    "contact": "Contact",
-    "copyright": "© {year} Mon Blog. Tous droits réservés.",
-    "findWhatYouNeed": "Trouvez ce dont vous avez besoin",
-    "designedWithLove": "Designed with Love",
-    "visitKuKraft": "Visit KuKraft",
-    "clickForSurprise": "Cliquez pour une surprise !",
-    "poweredBy": "Alimenté par l'imagination et une pincée de magie ✨"
+    "about": {
+      "title": "À propos d'EventForMe",
+      "description": "Votre destination en ligne de premier choix pour la planification et la gestion d'événements.",
+      "companyDescription": "EventForMe est une entreprise entièrement virtuelle dédiée à révolutionner la planification et la gestion d'événements grâce à des solutions en ligne innovantes."
+    },
+    "quickLinks": {
+      "title": "Liens rapides"
+    },
+    "contact": {
+      "title": "Contactez-nous",
+      "emailUs": "Contactez-nous par e-mail",
+      "faq": "FAQ",
+      "helpCenter": "Centre d'aide",
+      "form": {
+        "button": "Écrivez-nous",
+        "emailPlaceholder": "Votre email",
+        "messagePlaceholder": "Votre message",
+        "sendButton": "Envoyer"
+      }
+    },
+    "socialLinks": {
+      "title": "Suivez-nous",
+      "description": "Restez connecté avec nous sur les réseaux sociaux pour les dernières mises à jour et nouvelles.",
+      "facebook": "Facebook",
+      "twitter": "Twitter",
+      "instagram": "Instagram",
+      "vk": "VK",
+      "telegram": "Telegram",
+      "whatsapp": "WhatsApp"
+    },
+    "newsletter": {
+      "title": "Abonnez-vous à notre newsletter",
+      "placeholder": "Entrez votre email",
+      "submitButton": "S'abonner",
+      "successMessage": "Merci de vous être abonné !"
+    },
+    "feedback": {
+      "title": "Nous aimerions avoir votre avis",
+      "namePlaceholder": "Votre nom",
+      "emailPlaceholder": "Votre email",
+      "messagePlaceholder": "Votre message",
+      "submitButton": "Envoyer",
+      "successMessage": "Merci pour votre retour !"
+    },
+    "search": {
+      "title": "Trouvez ce dont vous avez besoin"
+    },
+    "kuKraft": {
+      "designedWithLove": "Conçu avec amour",
+      "visitKuKraft": "Visitez KuKraft"
+    },
+    "surprise": {
+      "clickForSurprise": "Cliquez pour une surprise !"
+    },
+    "credentials": {
+      "copyright": "Tous droits réservés.",
+      "privacyPolicy": "Politique de confidentialité",
+      "termsOfService": "Conditions d'utilisation"
+    }
   },
   "common": {
     "readMore": "Lire la suite",

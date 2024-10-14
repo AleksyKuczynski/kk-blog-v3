@@ -12,6 +12,7 @@ interface AuthorCardProps {
 
 const authorCardStyles = {
   container: `
+    h-full  
     relative 
     overflow-hidden
     bg-bgcolor-alt 

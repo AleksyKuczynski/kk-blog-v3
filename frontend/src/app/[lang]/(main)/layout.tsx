@@ -36,15 +36,9 @@ export default async function MainLayout({
       <main className="flex-grow mt-16 md:mt-24 pt-4 md:pt-8" role="main">        
         {React.cloneElement(children as React.ReactElement, { searchTranslations: dict.search, sortingTranslations: dict.sorting })}      
       </main>
-      <Footer 
+      <Footer
         lang={lang} 
-        translations={{
-          ...dict.footer,
-          articles: dict.navigation.articles,
-          authors: dict.navigation.authors,
-        }}
-        searchTranslations={dict.search}
-        navTranslations={dict.navigation}
+        translations={dict}
       />
     </>
   );

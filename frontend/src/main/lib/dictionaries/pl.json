@@ -7,15 +7,65 @@
     "search": "Szukaj"
   },
   "footer": {
-    "quickLinks": "Szybkie linki",
-    "about": "O nas",
-    "contact": "Kontakt",
-    "copyright": "© {year} Mój Blog. Wszelkie prawa zastrzeżone.",
-    "findWhatYouNeed": "Znajdź to, czego potrzebujesz",
-    "designedWithLove": "Designed with Love",
-    "visitKuKraft": "Visit KuKraft",
-    "clickForSurprise": "Kliknij, aby zobaczyć niespodziankę!",
-    "poweredBy": "Napędzane wyobraźnią i odrobiną magii ✨"
+    "about": {
+      "title": "O EventForMe",
+      "description": "Twoje najlepsze internetowe miejsce do planowania i zarządzania wydarzeniami.",
+      "companyDescription": "EventForMe to w pełni wirtualna firma zajmująca się rewolucjonizowaniem planowania i zarządzania wydarzeniami poprzez innowacyjne rozwiązania online."
+    },
+    "quickLinks": {
+      "title": "Szybkie linki"
+    },
+    "contact": {
+      "title": "Skontaktuj się z nami",
+      "emailUs": "Napisz do nas",
+      "faq": "FAQ",
+      "helpCenter": "Centrum pomocy",
+      "form": {
+        "button": "Napisz do nas",
+        "emailPlaceholder": "Twój email",
+        "messagePlaceholder": "Twoja wiadomość",
+        "sendButton": "Wyślij"
+      }
+    },
+    "socialLinks": {
+      "title": "Obserwuj nas",
+      "description": "Bądź z nami w kontakcie w mediach społecznościowych, aby otrzymywać najnowsze aktualizacje i wiadomości.",
+      "facebook": "Facebook",
+      "twitter": "Twitter",
+      "instagram": "Instagram",
+      "vk": "VK",
+      "telegram": "Telegram",
+      "whatsapp": "WhatsApp"
+    },
+    "newsletter": {
+      "title": "Zapisz się do naszego newslettera",
+      "placeholder": "Wpisz swój email",
+      "submitButton": "Zapisz się",
+      "successMessage": "Dziękujemy za subskrypcję!"
+    },
+    "feedback": {
+      "title": "Chcielibyśmy usłyszeć Twoją opinię",
+      "namePlaceholder": "Twoje imię",
+      "emailPlaceholder": "Twój email",
+      "messagePlaceholder": "Twoja wiadomość",
+      "submitButton": "Wyślij opinię",
+      "successMessage": "Dziękujemy za Twoją opinię!"
+    },
+    "search": {
+      "title": "Znajdź to, czego potrzebujesz"
+    },
+    "kuKraft": {
+      "designedWithLove": "Zaprojektowane z miłością",
+      "visitKuKraft": "Odwiedź KuKraft"
+    },
+    "surprise": {
+      "clickForSurprise": "Kliknij, aby zobaczyć niespodziankę!"
+    },
+    "credentials": {
+      "copyright": "Wszelkie prawa zastrzeżone.",
+      "privacyPolicy": "Polityka prywatności",
+      "termsOfService": "Warunki korzystania z usługi"
+    }
   },
   "common": {
     "readMore": "Czytaj więcej",

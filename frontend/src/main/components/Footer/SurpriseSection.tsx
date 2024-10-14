@@ -1,16 +1,17 @@
-// src/main/components/SurpriseSection.tsx
-import { CustomButton } from '../Interface/CustomButton';
+// src/main/components/Footer/SurpriseSection.tsx
+import SurpriseSectionClient from './SurpriseSectionClient';
 
-export default function SurpriseSection({ translations }) {
+interface SurpriseSectionProps {
+  translations: {
+    clickForSurprise: string;
+  };
+}
+
+export default function SurpriseSection({ translations }: SurpriseSectionProps) {
   return (
     <div>
       <h3 className="text-2xl font-bold mb-4">{translations.clickForSurprise}</h3>
-      <CustomButton
-        color="primary"
-        onClick={() => alert('Thanks for visiting our crazy footer!')}
-      >
-        {translations.clickForSurprise}
-      </CustomButton>
+      <SurpriseSectionClient translations={translations} />
     </div>
   );
 }

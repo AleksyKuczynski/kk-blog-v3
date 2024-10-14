@@ -7,15 +7,65 @@
     "search": "Поиск"
   },
   "footer": {
-    "quickLinks": "Быстрые ссылки",
-    "about": "О нас",
-    "contact": "Контакты",
-    "copyright": "© {year} Мой Блог. Все права защищены.",
-    "findWhatYouNeed": "Найдите то, что вам нужно",
-    "designedWithLove": "Дизайн с любовью",
-    "visitKuKraft": "Visit KuKraft",
-    "clickForSurprise": "Нажмите для сюрприза!",
-    "poweredBy": "При поддержке воображения и щепотки магии ✨"
+    "about": {
+      "title": "О EventForMe",
+      "description": "Ваш главный онлайн-ресурс для планирования и управления мероприятиями.",
+      "companyDescription": "EventForMe - это полностью виртуальная компания, посвященная революционизации планирования и управления мероприятиями с помощью инновационных онлайн-решений."
+    },
+    "quickLinks": {
+      "title": "Быстрые ссылки"
+    },
+    "contact": {
+      "title": "Свяжитесь с нами",
+      "emailUs": "Напишите нам",
+      "faq": "ЧАВО",
+      "helpCenter": "Центр поддержки",
+      "form": {
+        "button": "Напишите нам",
+        "emailPlaceholder": "Ваш email",
+        "messagePlaceholder": "Ваше сообщение",
+        "sendButton": "Отправить"
+      }
+    },
+    "socialLinks": {
+      "title": "Подписывайтесь на нас",
+      "description": "Оставайтесь на связи с нами в социальных сетях, чтобы получать последние обновления и новости.",
+      "facebook": "Facebook",
+      "twitter": "Twitter",
+      "instagram": "Instagram",
+      "vk": "VK",
+      "telegram": "Telegram",
+      "whatsapp": "WhatsApp"
+    },
+    "newsletter": {
+      "title": "Подпишитесь на нашу рассылку",
+      "placeholder": "Введите ваш email",
+      "submitButton": "Подписаться",
+      "successMessage": "Спасибо за подписку!"
+    },
+    "feedback": {
+      "title": "Мы хотели бы услышать ваше мнение",
+      "namePlaceholder": "Ваше имя",
+      "emailPlaceholder": "Ваш email",
+      "messagePlaceholder": "Ваше сообщение",
+      "submitButton": "Отправить отзыв",
+      "successMessage": "Спасибо за ваш отзыв!"
+    },
+    "search": {
+      "title": "Найдите то, что вам нужно"
+    },
+    "kuKraft": {
+      "designedWithLove": "Создано с любовью",
+      "visitKuKraft": "Посетите KuKraft"
+    },
+    "surprise": {
+      "clickForSurprise": "Нажмите для сюрприза!"
+    },
+    "credentials": {
+      "copyright": "Все права защищены.",
+      "privacyPolicy": "Политика конфиденциальности",
+      "termsOfService": "Условия использования"
+    }
   },
   "common": {
     "readMore": "Читать далее",
