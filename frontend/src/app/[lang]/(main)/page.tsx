@@ -8,7 +8,12 @@ import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/ind
 import HeroArticles from '@/main/components/Main/HeroArticles';
 import RubricCard from '@/main/components/Main/RubricCard';
 import Section from '@/main/components/Main/Section';
+import { getTheme } from '@/main/components/ThemeSwitcher/themeActions';
 import CardGrid from '@/main/components/Main/CardGrid';
+
+interface HomeProps {
+  params: { lang: Lang };
+}
 
 export const dynamic = 'force-dynamic';
 
@@ -20,28 +25,24 @@ export async function generateMetadata({ params: { lang } }: { params: { lang: L
   };
 }
 
-export default async function Home({ params: { lang } }: { params: { lang: Lang } }) {
-  const dict = await getDictionary(lang);
-  
-  let heroSlugs: string[] = [];
-  let rubrics: Rubric[] = [];
-
-  try {
-    heroSlugs = await fetchHeroSlugs(lang);
-  } catch (error) {
-    console.error('Error fetching hero articles:', error);
-  }
-
-  try {
-    rubrics = await fetchAllRubrics(lang);
-  } catch (error) {
-    console.error('Error fetching rubrics:', error);
-  }
+export default async function Home({ params: { lang } }: HomeProps) {
+  const [dict, theme, heroSlugs, rubrics] = await Promise.all([
+    getDictionary(lang),
+    getTheme(),
+    fetchHeroSlugs(lang).catch(error => {
+      console.error('Error fetching hero articles:', error);
+      return [];
+    }),
+    fetchAllRubrics(lang).catch(error => {
+      console.error('Error fetching rubrics:', error);
+      return [];
+    })
+  ]);
 
   return (
     <>
       <Section isOdd={true}>
-      <h1 className="text-4xl md:text-6xl font-bold text-prcolor mb-4 text-center">
+        <h1 className="text-4xl md:text-6xl font-bold text-prcolor mb-4 text-center">
           {dict.sections.home.welcomeTitle}
         </h1>
         <p className="text-xl text-accolor text-center mb-8">
@@ -54,7 +55,7 @@ export default async function Home({ params: { lang } }: { params: { lang: Lang 
       >
         <Suspense fallback={<div>{dict.common.loading}</div>}>
           {heroSlugs.length > 0 ? (
-            <HeroArticles heroSlugs={heroSlugs} lang={lang} />
+            <HeroArticles heroSlugs={heroSlugs} lang={lang} theme={theme} />
           ) : (
             <div>{dict.sections.articles.noFeaturedArticles}</div>
           )}

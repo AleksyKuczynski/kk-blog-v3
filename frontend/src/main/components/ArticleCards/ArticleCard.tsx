@@ -8,9 +8,19 @@ import { ArticleCardProps } from './interfaces';
 import { DIRECTUS_URL } from '@/main/lib/directus';
 
 
-export default async function ArticleCard({ slug, lang, authorSlug, rubricSlug, layout, cardStyles }: ArticleCardProps) {
+export default async function ArticleCard({ 
+  slug, 
+  lang, 
+  authorSlug, 
+  rubricSlug, 
+  layout, 
+  cardStyles,
+  theme 
+}: ArticleCardProps) {
   const article = await getArticleCardData(slug, lang);
   const dict = await getDictionary(lang);
+
+  
 
   if (!article || !article.translations[0]) {
     return null;
@@ -46,6 +56,7 @@ export default async function ArticleCard({ slug, lang, authorSlug, rubricSlug, 
         imageProps={imageProps}
         layout={cardLayout}
         lang={lang}
+        theme={theme}
       />
     </Suspense>
   );

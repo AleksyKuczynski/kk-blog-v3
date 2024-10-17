@@ -1,5 +1,6 @@
 // src/middleware.ts
 import { NextRequest, NextResponse } from 'next/server'
+import { Theme } from './main/components/ThemeSwitcher/themeTypes'
 
 const PUBLIC_FILE = /\.(.*)$/
 
@@ -33,6 +34,12 @@ export function middleware(request: NextRequest) {
     colorMode = prefersDark ? 'dark' : 'light'
   }
 
+    // Get the geometric theme from the cookie or default to 'default'
+    let theme = request.cookies.get('theme')?.value as Theme
+    if (!theme || !['default', 'rounded', 'sharp'].includes(theme)) {
+      theme = 'default'
+    }
+
   // Create a new response
   const response = pathnameHasLanguage
     ? NextResponse.next()
@@ -41,6 +48,11 @@ export function middleware(request: NextRequest) {
   // Set the color mode cookie if it doesn't exist
   if (!request.cookies.get('colorMode')) {
     response.cookies.set('colorMode', colorMode)
+  }
+
+  // Set the theme cookie if it doesn't exist
+  if (!request.cookies.get('theme')) {
+    response.cookies.set('theme', theme)
   }
 
   return response

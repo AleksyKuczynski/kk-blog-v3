@@ -29,7 +29,6 @@ export default function ContactSectionClient({ lang, translations }: ContactSect
       <li>
         <CustomButton
           color="primary"
-          style="outlined"
           onClick={() => setShowEmailForm(!showEmailForm)}
         >
           {translations.emailUs}

@@ -1,20 +1,6 @@
 // src/main/components/ThemeSwitcher/themeUtils.ts
 
-import { ColorMode, Theme, ThemeKey } from "./themeTypes";
-
-export type CardThemeStyles = {
-  container: string;
-  imageWrapper: string;
-  image: string;
-  contentWrapper: string;
-  content: string;
-  title: string;
-  date: string;
-  description: string;
-  readMore: string;
-  authorWrapper: string;
-  authorLink: string;   
-};
+import { CardThemeStyles, ColorMode, Theme, ThemeKey } from "./themeTypes";
 
 export function getCardThemeClasses(theme: Theme, styles: Record<Theme, CardThemeStyles>) {
   return Object.entries(styles[theme]).reduce((acc, [key, value]) => {

@@ -2,8 +2,26 @@
 
 import { Lang } from "@/main/lib/dictionaries/types";
 import { ArticleCardType } from "@/main/lib/directus";
-import { CardThemeStyles } from "@/main/components/ThemeSwitcher/themeUtils";
+import { Theme, CardThemeStyles } from "../ThemeSwitcher/themeTypes";
 
+interface GridStyles {
+  outer: string;
+  inner: string;
+  promotedWrapper: string;
+}
+
+export interface CardStyles {
+  common: CardThemeStyles;
+  themeSensitive: Record<Theme, CardThemeStyles>;
+}
+
+export interface HeroStyles {
+  grid: {
+    common: GridStyles;
+    themeSensitive: Record<Theme, GridStyles>;
+  };
+  cards: CardStyles;
+}
 
 export interface ArticleCardProps {
   slug: string;
@@ -12,11 +30,7 @@ export interface ArticleCardProps {
   rubricSlug?: string;
   layout?: ArticleCardType['layout'];
   cardStyles: CardStyles;
-}
-
-interface CardStyles {
-  container: string;
-  imageWrapper: string;
+  theme: Theme;
 }
 
 interface ImageProps {
@@ -37,6 +51,7 @@ export interface ArticleCardVariantProps extends BaseArticleCard {
   cardStyles: CardStyles;
   imageProps: ImageProps | null;
   layout: ArticleCardType['layout'];
+  theme: Theme;
 }
 
 export interface NewsCardProps extends BaseArticleCard {

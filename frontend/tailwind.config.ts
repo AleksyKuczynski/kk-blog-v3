@@ -13,15 +13,15 @@ const config: Config = {
         '60': '60',
       },
       borderRadius: {
-        DEFAULT: 'var(--border-radius)',
-      },
-      margin: {
-        DEFAULT: 'var(--content-margin)',
-      },
-      padding: {
-        card: 'var(--card-padding)',
-        'button-x': 'var(--button-padding-x)',
-        'button-y': 'var(--button-padding-y)',
+        'none': 'var(--border-radius-none)',
+        'sm': 'var(--border-radius-sm)',
+        DEFAULT: 'var(--border-radius-default)',
+        'md': 'var(--border-radius-md)',
+        'lg': 'var(--border-radius-lg)',
+        'xl': 'var(--border-radius-xl)',
+        '2xl': 'var(--border-radius-2xl)',
+        '3xl': 'var(--border-radius-3xl)',
+        'full': 'var(--border-radius-full)',
       },
       fontSize: {
         base: 'var(--font-size-base)',

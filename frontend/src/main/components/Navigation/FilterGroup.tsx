@@ -101,15 +101,13 @@ export default function FilterGroup({
         />
       </div>
       <div className="flex flex-col items-center">
-        <span className="mb-2 text-sm font-medium">{resetText}</span>
         <CustomButton
           color="primary"
-          content="icon"
-          style="filled"
           onClick={handleReset}
-          icon={<ResetIcon className="h-5 w-5" />}
           aria-label={resetText}
-        />
+        >
+          {resetText}
+        </CustomButton>
       </div>
     </div>
   );

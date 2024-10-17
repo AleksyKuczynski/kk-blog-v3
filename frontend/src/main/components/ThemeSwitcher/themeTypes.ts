@@ -11,3 +11,17 @@ export interface ThemeState {
   colorMode: ColorMode;
   colorScheme: ColorScheme;
 }
+
+export interface CardThemeStyles {
+  container?: string;
+  contentWrapper?: string;
+  imageWrapper?: string;
+  image?: string;
+  content?: string;
+  title?: string;
+  date?: string;
+  description?: string;
+  readMore?: string;
+  authorWrapper?: string;
+  authorLink?: string;   
+};

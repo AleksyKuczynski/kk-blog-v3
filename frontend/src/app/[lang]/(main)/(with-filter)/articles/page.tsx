@@ -9,6 +9,7 @@ import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import HeroArticles from '@/main/components/Main/HeroArticles';
 import Section from '@/main/components/Main/Section';
+import { getTheme } from '@/main/components/ThemeSwitcher';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +18,7 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
   searchParams: { page?: string, sort?: string, category?: string, search?: string } 
 }) {
   const dict = await getDictionary(lang);
+  const theme = await getTheme();
   const currentPage = Number(searchParams.page) || 1;
   const currentSort = searchParams.sort || 'desc';
   const currentCategory = searchParams.category || '';
@@ -60,7 +62,7 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
         >
           <Suspense fallback={<div>{dict.common.loading}</div>}>
             {heroSlugs.length > 0 ? (
-              <HeroArticles heroSlugs={heroSlugs} lang={lang} />
+              <HeroArticles heroSlugs={heroSlugs} lang={lang} theme={theme} />
             ) : (
               <div>{dict.sections.articles.noFeaturedArticles}</div>
             )}

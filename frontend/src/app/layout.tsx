@@ -3,7 +3,6 @@
 import '@/app/globals.scss';
 import { fontSans, fontSerif, fontDisplay, fontCustom } from '@/app/fonts/fonts';
 import { ThemeProvider, ColorProvider, getColorMode, getColorScheme, getTheme } from '@/main/components/ThemeSwitcher';
-import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
 
 export default async function RootLayout({
@@ -18,7 +17,12 @@ export default async function RootLayout({
   const initialColorScheme = await getColorScheme();
   
   return (
-    <html lang={lang} data-theme={initialTheme} data-color-mode={initialColorMode} className={`${fontSans.variable} ${fontSerif.variable} ${fontDisplay.variable} ${fontCustom.variable}`}>
+    <html 
+      lang={lang} 
+      data-theme={initialTheme} 
+      data-color-mode={initialColorMode} 
+      className={`${fontSans.variable} ${fontSerif.variable} ${fontDisplay.variable} ${fontCustom.variable}`}
+    >
       <ThemeProvider initialTheme={initialTheme} initialColorMode={initialColorMode}>
         <ColorProvider initialColorScheme={initialColorScheme}>
           <body data-color-scheme={initialColorScheme} className={`flex flex-col min-h-screen bg-bgcolor text-txcolor theme-${initialTheme} transition-colors duration-300`}>
