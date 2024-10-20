@@ -2,14 +2,13 @@
 import { Suspense } from 'react';
 import { Lang } from '@/main/lib/dictionaries/types';
 import ArticleCard from '../ArticleCards/ArticleCard';
-import { Theme } from '@/main/components/ThemeSwitcher/themeTypes';
 import { HeroStyles, CardStyles } from '../ArticleCards/interfaces';
+import { getTheme } from '../ThemeSwitcher';
 
 interface HeroArticlesProps {
   heroSlugs: string[];
   lang: Lang;
   rubricSlug?: string;
-  theme: Theme;
 }
 
 
@@ -109,7 +108,7 @@ const heroStyles: HeroStyles = {
       },
       sharp: {
         container: '',
-        contentWrapper: 'gap-2 bg-gradient-to-br from-bgcolor-alt via-bgcolor-accent to-bgcolor border-2 p-1',
+        contentWrapper: 'gap-2 bg-gradient-to-br from-bgcolor-alt via-bgcolor-accent to-bgcolor border-4 p-1',
         imageWrapper: `
         `,
         image: '',
@@ -125,7 +124,8 @@ const heroStyles: HeroStyles = {
   },
 };
 
-export default function HeroArticles({ heroSlugs, lang, rubricSlug, theme }: HeroArticlesProps) {
+export default async function HeroArticles({ heroSlugs, lang, rubricSlug }: HeroArticlesProps) {
+  const theme = await getTheme();
   if (heroSlugs.length === 0) {
     return null;
   }

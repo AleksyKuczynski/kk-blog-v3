@@ -9,7 +9,6 @@ import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import HeroArticles from '@/main/components/Main/HeroArticles';
 import Section from '@/main/components/Main/Section';
-import { getTheme } from '@/main/components/ThemeSwitcher';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,7 +17,6 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
   searchParams: { page?: string, sort?: string, category?: string, search?: string } 
 }) {
   const dict = await getDictionary(lang);
-  const theme = await getTheme();
   const currentPage = Number(searchParams.page) || 1;
   const currentSort = searchParams.sort || 'desc';
   const currentCategory = searchParams.category || '';
@@ -65,7 +63,6 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
               <HeroArticles 
                 heroSlugs={heroSlugs} 
                 lang={lang} 
-                theme={theme} 
               />
             ) : (
               <div>{dict.sections.articles.noFeaturedArticles}</div>
@@ -83,7 +80,6 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
           <ArticleList 
             slugInfos={allSlugs}
             lang={lang}
-            theme={theme} 
           />
           {hasMore && (
             <div className="mt-8 flex justify-center">

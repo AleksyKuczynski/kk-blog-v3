@@ -8,7 +8,6 @@ import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/ind
 import HeroArticles from '@/main/components/Main/HeroArticles';
 import RubricCard from '@/main/components/Main/RubricCard';
 import Section from '@/main/components/Main/Section';
-import { getTheme } from '@/main/components/ThemeSwitcher/themeActions';
 import CardGrid from '@/main/components/Main/CardGrid';
 
 interface HomeProps {
@@ -26,9 +25,8 @@ export async function generateMetadata({ params: { lang } }: { params: { lang: L
 }
 
 export default async function Home({ params: { lang } }: HomeProps) {
-  const [dict, theme, heroSlugs, rubrics] = await Promise.all([
+  const [dict, heroSlugs, rubrics] = await Promise.all([
     getDictionary(lang),
-    getTheme(),
     fetchHeroSlugs(lang).catch(error => {
       console.error('Error fetching hero articles:', error);
       return [];
@@ -55,7 +53,7 @@ export default async function Home({ params: { lang } }: HomeProps) {
       >
         <Suspense fallback={<div>{dict.common.loading}</div>}>
           {heroSlugs.length > 0 ? (
-            <HeroArticles heroSlugs={heroSlugs} lang={lang} theme={theme} />
+            <HeroArticles heroSlugs={heroSlugs} lang={lang} />
           ) : (
             <div>{dict.sections.articles.noFeaturedArticles}</div>
           )}

@@ -71,7 +71,11 @@ export default async function RubricPage({
           isOdd={true}
           ariaLabel={rubricName}
         >
-          <ArticleList slugInfos={allSlugs} lang={params.lang} rubricSlug={params.rubric} />
+          <ArticleList 
+          slugInfos={allSlugs} 
+          lang={params.lang} 
+          rubricSlug={params.rubric} 
+          />
           {hasMore && (
             <div className="mt-8 flex justify-center">
               <LoadMoreButton

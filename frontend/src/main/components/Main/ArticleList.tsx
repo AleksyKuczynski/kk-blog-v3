@@ -5,6 +5,7 @@ import { ArticleSlugInfo } from '@/main/lib/directus/interfaces';
 import ArticleCard from '../ArticleCards/ArticleCard';
 import { Theme } from '@/main/components/ThemeSwitcher/themeTypes';
 import { CardStyles } from '../ArticleCards/interfaces';
+import { getTheme } from '../ThemeSwitcher';
 
 interface ArticleListProps {
   slugInfos: ArticleSlugInfo[];
@@ -12,7 +13,6 @@ interface ArticleListProps {
   authorSlug?: string;
   categorySlug?: string;
   rubricSlug?: string;
-  theme: Theme;
 }
 
 const listStyles = {
@@ -66,7 +66,9 @@ const cardStyles: CardStyles = {
   },
 };
 
-async function ArticleListContent({ slugInfos, lang, authorSlug, rubricSlug, theme }: ArticleListProps) {
+async function ArticleListContent({ slugInfos, lang, authorSlug, rubricSlug }: ArticleListProps) {
+  const theme = await getTheme();
+
   if (slugInfos.length === 0) {
     return <p className="text-txcolor-secondary">No articles found.</p>;
   }
