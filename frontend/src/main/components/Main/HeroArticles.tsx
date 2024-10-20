@@ -109,7 +109,7 @@ const heroStyles: HeroStyles = {
       },
       sharp: {
         container: '',
-        contentWrapper: 'gap-2 bg-gradient-to-br from-bgcolor-alt via-bgcolor-accent to-bgcolor border p-1',
+        contentWrapper: 'gap-2 bg-gradient-to-br from-bgcolor-alt via-bgcolor-accent to-bgcolor border-2 p-1',
         imageWrapper: `
         `,
         image: '',

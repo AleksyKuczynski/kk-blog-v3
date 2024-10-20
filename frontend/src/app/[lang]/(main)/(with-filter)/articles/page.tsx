@@ -62,7 +62,11 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
         >
           <Suspense fallback={<div>{dict.common.loading}</div>}>
             {heroSlugs.length > 0 ? (
-              <HeroArticles heroSlugs={heroSlugs} lang={lang} theme={theme} />
+              <HeroArticles 
+                heroSlugs={heroSlugs} 
+                lang={lang} 
+                theme={theme} 
+              />
             ) : (
               <div>{dict.sections.articles.noFeaturedArticles}</div>
             )}
@@ -78,7 +82,8 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
         <Suspense fallback={<div>{dict.common.loading}</div>}>
           <ArticleList 
             slugInfos={allSlugs}
-            lang={lang} 
+            lang={lang}
+            theme={theme} 
           />
           {hasMore && (
             <div className="mt-8 flex justify-center">
