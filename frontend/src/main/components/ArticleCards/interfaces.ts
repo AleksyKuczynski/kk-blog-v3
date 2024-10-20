@@ -51,7 +51,6 @@ export interface ArticleCardVariantProps extends BaseArticleCard {
   cardStyles: CardStyles;
   imageProps: ImageProps | null;
   layout: ArticleCardType['layout'];
-  theme: Theme;
 }
 
 export interface NewsCardProps extends BaseArticleCard {

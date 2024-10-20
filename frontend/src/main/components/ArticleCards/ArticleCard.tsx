@@ -6,6 +6,7 @@ import { generateArticleLink, generateArticleLinkAsync } from '@/main/lib/utils'
 import { getDictionary } from '@/main/lib/dictionaries';
 import { ArticleCardProps } from './interfaces';
 import { DIRECTUS_URL } from '@/main/lib/directus';
+import { getTheme } from '../ThemeSwitcher';
 
 
 export default async function ArticleCard({ 
@@ -15,12 +16,10 @@ export default async function ArticleCard({
   rubricSlug, 
   layout, 
   cardStyles,
-  theme 
 }: ArticleCardProps) {
   const article = await getArticleCardData(slug, lang);
   const dict = await getDictionary(lang);
-
-  
+  const theme = await getTheme();
 
   if (!article || !article.translations[0]) {
     return null;
@@ -56,7 +55,6 @@ export default async function ArticleCard({
         imageProps={imageProps}
         layout={cardLayout}
         lang={lang}
-        theme={theme}
       />
     </Suspense>
   );

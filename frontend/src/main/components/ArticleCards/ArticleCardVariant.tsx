@@ -9,6 +9,7 @@ import { promotedCardStyles } from './promotedCardStyles';
 import { latestCardStyles } from './latestCardStyles';
 import { regularCardStyles } from './regularCardStyles';
 import { CardThemeStyles } from '../ThemeSwitcher/themeTypes';
+import { useTheme } from '../ThemeSwitcher';
 
 // Helper function to merge classes
 const mergeClasses = (...classes: (string | undefined)[]) => {
@@ -16,8 +17,8 @@ const mergeClasses = (...classes: (string | undefined)[]) => {
 };
 
 export function ArticleCardVariant(props: ArticleCardVariantProps) {
-  const { cardStyles, theme, layout } = props;
-
+  const { cardStyles, layout } = props;
+  const { currentTheme } = useTheme();
   
 
   const getCardComponent = () => {
@@ -38,8 +39,8 @@ export function ArticleCardVariant(props: ArticleCardVariantProps) {
 const mergeStylesForProp = (prop: keyof CardThemeStyles) => 
   mergeClasses(
     cardStyles.common[prop],
-    cardStyles.themeSensitive[theme][prop],
-    layoutStyles[theme][prop]
+    cardStyles.themeSensitive[currentTheme][prop],
+    layoutStyles[currentTheme][prop]
   );
 
 // Merge the styles
