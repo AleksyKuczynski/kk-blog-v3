@@ -3,10 +3,10 @@ import { Theme, CardThemeStyles } from "../ThemeSwitcher/themeTypes";
 
 const commonStyles = {
   container: 'px-2 sm:px-0',
-  contentWrapper: 'lg:h-full sm:max-lg:grid xl:grid grid-cols-3',
+  contentWrapper: 'lg:h-full sm:max-md:grid xl:grid grid-cols-3',
   imageWrapper: 'xl:h-full xl:aspect-[11/12]',
   content: 'col-span-2',
-  title: '',
+  title: 'line-clamp-3',
   date: 'sm:max-lg:grow xl:grow',
   description: '',
   readMore: 'xl:grow',
@@ -52,11 +52,10 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
     ...commonStyles,
     contentWrapper: `
       ${commonStyles.contentWrapper}
-      border-b-8 border-prcolor-light
+      border-prcolor
     `,
     imageWrapper: `
       ${commonStyles.imageWrapper}
-      px-4
     `,
     content: `
       ${commonStyles.content}

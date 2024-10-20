@@ -46,6 +46,7 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
     ...commonStyles,
     contentWrapper: `
       ${commonStyles.contentWrapper}
+      border-accolor
     `,
     imageWrapper: `
       ${commonStyles.imageWrapper}
@@ -58,7 +59,7 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
     `,
     readMore: `
       ${commonStyles.readMore}
-      text-prcolor hover:text-prcolor-dark
+      text-accolor hover:text-accolor-dark
        
     `,
   },

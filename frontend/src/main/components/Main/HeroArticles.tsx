@@ -109,15 +109,15 @@ const heroStyles: HeroStyles = {
       },
       sharp: {
         container: '',
-        contentWrapper: 'gap-4 2xl:gap-6 bg-gradient-to-br from-bgcolor-alt via-bgcolor-accent to-bgcolor',
+        contentWrapper: 'gap-2 bg-gradient-to-br from-bgcolor-alt via-bgcolor-accent to-bgcolor border p-1',
         imageWrapper: `
         `,
         image: '',
-        content: 'm-4',
+        content: 'p-2',
         title: 'font-custom',
         date: '',
         description: '',
-        readMore: 'underline underline-offset-2',
+        readMore: '',
         authorWrapper: '',
         authorLink: '',
       },
