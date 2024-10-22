@@ -6,7 +6,6 @@ import NavLinksClient from './NavLinksClient';
 interface NavLinksProps {
   lang: Lang;
   translations: NavigationTranslations;
-  className?: string;
   linkStyles: string;
 }
 
@@ -21,14 +20,14 @@ const NAVIGATION_LINKS: NavigationLink[] = [
   { href: '/authors', translationKey: 'authors' },
 ];
 
-export default function NavLinks({ lang, translations, className = '', linkStyles }: NavLinksProps) {
+export default function NavLinks({ lang, translations, linkStyles }: NavLinksProps) {
   return (
     <>
       {NAVIGATION_LINKS.map((link) => (
         <li key={link.href}>
           <Link 
             href={`/${lang}${link.href}`} 
-            className={`nav-link theme-styles ${linkStyles}`} 
+            className={`nav-link ${linkStyles}`}
             data-href={link.href}
           >
             {translations[link.translationKey]}

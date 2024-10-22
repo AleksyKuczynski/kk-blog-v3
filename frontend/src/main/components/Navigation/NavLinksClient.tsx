@@ -1,61 +1,77 @@
 // src/main/components/Navigation/NavLinksClient.tsx
 'use client';
 
+import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/main/components/ThemeSwitcher/ThemeContext';
 import { Lang, NavigationTranslations } from '@/main/lib/dictionaries/types';
-import { useCallback, useEffect } from 'react';
 
 interface NavLinksClientProps {
   lang: Lang;
   translations: NavigationTranslations;
 }
 
+// Define classes that indicate state
+const stateClasses = {
+  text: ['text-txcolor-secondary', 'text-prcolor'],
+  background: ['bg-bgcolor-accent'],
+  font: ['font-bold'],
+  border: ['border-transparent', 'border-accolor', 'border-b-2'],
+  hover: ['hover:text-txcolor'],
+  transition: ['transition-colors', 'duration-200'],
+  rounded: ['rounded-full']
+};
+
+// All classes that should be removed when changing state
+const cleanupClasses = Object.values(stateClasses).flat();
+
 const themeStyles = {
   default: {
-    normal: 'text-txcolor-secondary hover:text-txcolor hover:bg-prcolor',
-    active: 'text-prcolor bg-bgcolor'
+    normal: 'text-txcolor-secondary hover:text-txcolor transition-colors duration-200',
+    active: 'text-prcolor bg-bgcolor-accent font-bold'
   },
   rounded: {
-    normal: 'text-txcolor-secondary hover:text-txcolor hover:bg-prcolor',
-    active: 'text-prcolor bg-bgcolor'
+    normal: 'text-txcolor-secondary hover:text-txcolor transition-colors duration-200',
+    active: 'text-prcolor bg-bgcolor-accent font-bold rounded-full'
   },
   sharp: {
-    normal: 'text-txcolor-secondary hover:text-txcolor hover:bg-prcolor hover:border-accolor',
-    active: 'text-prcolor bg-bgcolor border-accolor'
+    normal: 'text-txcolor-secondary hover:text-txcolor border-b-2 border-transparent transition-colors duration-200',
+    active: 'text-prcolor bg-bgcolor-accent font-bold border-b-2 border-accolor'
   },
-};
+} as const;
 
 export default function NavLinksClient({ lang }: NavLinksClientProps) {
   const { currentTheme } = useTheme();
   const pathname = usePathname();
 
-  const updateLinkStyles = useCallback(() => {
+  useEffect(() => {
+    const cleanClasses = (className: string) => {
+      return className
+        .split(' ')
+        .filter(cls => !cleanupClasses.includes(cls))
+        .join(' ');
+    };
+
+    const getLinkStyle = (href: string) => {
+      const isActive = pathname.startsWith(`/${lang}${href}`);
+      return isActive ? themeStyles[currentTheme].active : themeStyles[currentTheme].normal;
+    };
+
     const links = document.querySelectorAll('.nav-link');
     links.forEach((link) => {
       const href = link.getAttribute('data-href');
-      const isActive = pathname.startsWith(`/${lang}${href}`);
-      const stateClass = isActive ? themeStyles[currentTheme].active : themeStyles[currentTheme].normal;
-      
-      // Update data attribute with current state class
-      link.setAttribute('data-state-class', stateClass);
-      
-      // Combine theme styles, inherited styles, and state class
-      link.className = `nav-link theme-styles ${link.getAttribute('data-inherited-class') || ''} ${stateClass}`;
-    });
-  }, [currentTheme, lang, pathname]);
+      if (!href) return;
 
-  useEffect(() => {
-    // Store inherited classes on first render
-    document.querySelectorAll('.nav-link').forEach((link) => {
-      const inheritedClasses = link.className.split(' ')
-        .filter(cls => cls !== 'nav-link' && cls !== 'theme-styles')
-        .join(' ');
-      link.setAttribute('data-inherited-class', inheritedClasses);
+      // Clean existing theme classes
+      const baseClasses = cleanClasses(link.className);
+      
+      // Add new theme classes
+      const newThemeClasses = getLinkStyle(href);
+      
+      // Combine and set
+      link.className = `${baseClasses} ${newThemeClasses}`.trim();
     });
-
-    updateLinkStyles();
-  }, [updateLinkStyles]);
+  }, [pathname, currentTheme, lang]);
 
   return null;
 }

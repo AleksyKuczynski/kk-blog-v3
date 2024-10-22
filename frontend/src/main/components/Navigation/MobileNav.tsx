@@ -2,6 +2,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import { useTheme } from '../ThemeSwitcher/ThemeContext'
 import { NavProps } from './Navigation'
 import { useOutsideClick } from '@/main/lib/hooks'
@@ -27,27 +28,35 @@ export default function MobileNavigation({
   const menuRef = useRef<HTMLDivElement>(null)
   const toggleRef = useRef<HTMLButtonElement>(null)
   const { currentTheme } = useTheme()
+  const pathname = usePathname()
+  const lastPathRef = useRef(pathname)
+
+  // Check if actual navigation occurred
+  if (pathname !== lastPathRef.current) {
+    lastPathRef.current = pathname
+    isMenuOpen && setIsMenuOpen(false)
+  }
 
   useOutsideClick(menuRef, toggleRef, isMenuOpen, () => setIsMenuOpen(false))
-  const handleMenuClick = (e: React.MouseEvent) => {
-    const clickedElement = e.target as HTMLElement;
-    // Check specifically for navigation links and logo
-    const isMainNavLink = clickedElement.closest('.nav-link');
-    const isLogo = clickedElement.closest('[aria-label="Home"]');
-    
-    if (isMainNavLink || isLogo) {
-      setIsMenuOpen(false);
-    }
-  };
 
-  
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
+
+  const handleNavClick = (e: React.MouseEvent) => {
+    // Only process actual link clicks
+    const link = (e.target as HTMLElement).closest('a')
+    if (link?.classList.contains('nav-link')) {
+      // Let the navigation complete first
+      setTimeout(() => setIsMenuOpen(false), 0)
+    }
+  }
+
   return (
     <nav className="xl:hidden" role="navigation">
       <NavButton
         ref={toggleRef}
         context="mobile"
         isHamburger={true}
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        onClick={toggleMenu}
         aria-expanded={isMenuOpen}
         aria-controls="mobile-menu"
         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -106,7 +115,10 @@ export default function MobileNavigation({
           </div>
         </div>
 
-        <div className="flex-grow flex flex-col items-center p-4 pt-24 overflow-y-auto" onClick={handleMenuClick} >
+        <div 
+          className="flex-grow flex flex-col items-center p-4 pt-24 overflow-y-auto"
+          onClick={handleNavClick}
+        >
           <Logo lang={lang} variant="mobile" />
           <ul className="mt-8 flex flex-col space-y-4 sm:landscape:flex-row sm:landscape:space-y-0 sm:landscape:space-x-4 items-center">
             <NavLinks 
@@ -118,5 +130,5 @@ export default function MobileNavigation({
         </div>
       </div>
     </nav>
-  );
+  )
 }
