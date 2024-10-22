@@ -8,13 +8,13 @@ interface LogoProps {
 }
 
 const variantStyles = {
-  desktop: 'w-60 h-28',
+  desktop: 'h-20',
   mobile: 'w-80 h-[37.33px] sm:landscape:h-14 portrait:h-20',
   footer: 'w-60 h-28'
 }
 
 const containerStyles = {
-  desktop: 'flex items-center justify-center',
+  desktop: 'flex items-center justify-center py-2',
   mobile: 'z-50 flex justify-center sm:landscape:justify-start',
   footer: 'flex items-center justify-center'
 }

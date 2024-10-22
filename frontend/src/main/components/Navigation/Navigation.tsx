@@ -19,26 +19,22 @@ export interface NavProps extends NavigationProps {
     isSearchPage: boolean;
   }
 
-export default function Navigation({ lang, translations }: NavigationProps) {
-  const pathname = usePathname()
-  const isSearchPage = pathname === `/${lang}/search`
-
-  return (
-    <nav className="w-full" aria-label="Main Navigation">
-      <div className="hidden xl:block">
+  export default function Navigation({ lang, translations }: NavigationProps) {
+    const pathname = usePathname()
+    const isSearchPage = pathname === `/${lang}/search`
+  
+    return (
+      <>
         <DesktopNavigation
           lang={lang}
           translations={translations}
           isSearchPage={isSearchPage}
         />
-      </div>
-      <div className="xl:hidden">
         <MobileNavigation
           lang={lang}
           translations={translations}
           isSearchPage={isSearchPage}
         />
-      </div>
-    </nav>
-  )
-}
+      </>
+    );
+  }

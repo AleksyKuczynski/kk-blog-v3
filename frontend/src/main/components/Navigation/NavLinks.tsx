@@ -7,12 +7,13 @@ interface NavLinksProps {
   lang: Lang;
   translations: NavigationTranslations;
   className?: string;
+  linkStyles: string;
 }
 
 type NavigationLink = {
-    href: string;
-    translationKey: keyof NavigationTranslations;
-  };
+  href: string;
+  translationKey: keyof NavigationTranslations;
+};
 
 const NAVIGATION_LINKS: NavigationLink[] = [
   { href: '/articles', translationKey: 'articles' },
@@ -20,19 +21,21 @@ const NAVIGATION_LINKS: NavigationLink[] = [
   { href: '/authors', translationKey: 'authors' },
 ];
 
-export default function NavLinks({ lang, translations, className = '' }: NavLinksProps) {
+export default function NavLinks({ lang, translations, className = '', linkStyles }: NavLinksProps) {
   return (
-    <nav className={className}>
-      <ul>
-        {NAVIGATION_LINKS.map((link) => (
-          <li key={link.href}>
-            <Link href={`/${lang}${link.href}`} className="nav-link" data-href={link.href}>
-              {translations[link.translationKey]}
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <>
+      {NAVIGATION_LINKS.map((link) => (
+        <li key={link.href}>
+          <Link 
+            href={`/${lang}${link.href}`} 
+            className={`nav-link theme-styles ${linkStyles}`} 
+            data-href={link.href}
+          >
+            {translations[link.translationKey]}
+          </Link>
+        </li>
+      ))}
       <NavLinksClient lang={lang} translations={translations} />
-    </nav>
+    </>
   );
 }

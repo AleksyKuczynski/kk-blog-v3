@@ -13,16 +13,16 @@ interface NavLinksClientProps {
 
 const themeStyles = {
   default: {
-    normal: 'text-txcolor-secondary hover:text-txcolor hover:bg-prcolor px-3 py-2 text-sm font-medium uppercase tracking-wider',
-    active: 'text-prcolor bg-bgcolor px-3 py-2 text-sm font-medium uppercase tracking-wider'
+    normal: 'text-txcolor-secondary hover:text-txcolor hover:bg-prcolor',
+    active: 'text-prcolor bg-bgcolor'
   },
   rounded: {
-    normal: 'text-txcolor-secondary hover:text-txcolor hover:bg-prcolor rounded-full px-4 py-2 text-sm font-medium',
-    active: 'text-prcolor bg-bgcolor rounded-full px-4 py-2 text-sm font-medium'
+    normal: 'text-txcolor-secondary hover:text-txcolor hover:bg-prcolor',
+    active: 'text-prcolor bg-bgcolor'
   },
   sharp: {
-    normal: 'text-txcolor-secondary hover:text-txcolor hover:bg-prcolor border-b-2 border-transparent hover:border-accolor px-3 py-2 text-sm font-semibold',
-    active: 'text-prcolor bg-bgcolor border-b-2 border-accolor px-3 py-2 text-sm font-semibold'
+    normal: 'text-txcolor-secondary hover:text-txcolor hover:bg-prcolor hover:border-accolor',
+    active: 'text-prcolor bg-bgcolor border-accolor'
   },
 };
 
@@ -35,14 +35,27 @@ export default function NavLinksClient({ lang }: NavLinksClientProps) {
     links.forEach((link) => {
       const href = link.getAttribute('data-href');
       const isActive = pathname.startsWith(`/${lang}${href}`);
-      const style = isActive ? themeStyles[currentTheme].active : themeStyles[currentTheme].normal;
-      link.className = `nav-link ${style}`;
+      const stateClass = isActive ? themeStyles[currentTheme].active : themeStyles[currentTheme].normal;
+      
+      // Update data attribute with current state class
+      link.setAttribute('data-state-class', stateClass);
+      
+      // Combine theme styles, inherited styles, and state class
+      link.className = `nav-link theme-styles ${link.getAttribute('data-inherited-class') || ''} ${stateClass}`;
     });
   }, [currentTheme, lang, pathname]);
 
   useEffect(() => {
+    // Store inherited classes on first render
+    document.querySelectorAll('.nav-link').forEach((link) => {
+      const inheritedClasses = link.className.split(' ')
+        .filter(cls => cls !== 'nav-link' && cls !== 'theme-styles')
+        .join(' ');
+      link.setAttribute('data-inherited-class', inheritedClasses);
+    });
+
     updateLinkStyles();
   }, [updateLinkStyles]);
 
-  return null; // This component doesn't render anything, it just applies styles
+  return null;
 }
