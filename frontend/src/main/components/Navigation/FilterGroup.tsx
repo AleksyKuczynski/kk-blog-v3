@@ -46,15 +46,15 @@ export default function FilterGroup({
   }, [handleCategoryChange, closeCategoryDropdown]);
 
   return (
-    <div className="mb-8 flex justify-center items-start space-x-8">
-      <div className="flex flex-col items-center">
-        <span className="mb-2 text-sm font-medium">{categoryTranslations.categories}</span>
+    <div className="mb-8 flex justify-center space-x-6">
+      <div className="flex flex-col">
+        <span className="mb-2 text-sm font-medium text-prcolor">{categoryTranslations.categories}</span>
         <div className="relative">
           <NavButton
             ref={categoryToggleRef}
             context="desktop"
             onClick={toggleCategoryDropdown}
-            className="flex items-center justify-between w-40 px-4 py-2"
+            className="flex items-center justify-between capitalize px-4 py-2 border-2 border-prcolor rounded-md"
             aria-haspopup="listbox"
             aria-expanded={isCategoryOpen}
           >
@@ -93,14 +93,14 @@ export default function FilterGroup({
           </Dropdown>
         </div>
       </div>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col">
         <SortingControl 
           translations={sortingTranslations}
           currentSort={currentSort}
           onSortChange={handleSortChange}
         />
       </div>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col justify-end">
         <CustomButton
           color="primary"
           onClick={handleReset}

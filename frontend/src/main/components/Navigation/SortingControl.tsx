@@ -46,13 +46,13 @@ export default function SortingControl({ translations, currentSort, onSortChange
 
   return (
     <>
-      <span className="mb-2 text-sm font-medium">{translations.sortOrder}</span>
+      <span className="mb-2 text-sm font-medium text-prcolor">{translations.sortOrder}</span>
       <div className="relative">
         <NavButton
           ref={toggleRef}
           context="desktop"
           onClick={toggleDropdown}
-          className="flex items-center justify-between w-40 px-4 py-2"
+          className="flex items-center justify-between px-4 py-2 border-2 border-prcolor rounded-md"
           aria-haspopup="listbox"
           aria-expanded={isOpen}
         >
