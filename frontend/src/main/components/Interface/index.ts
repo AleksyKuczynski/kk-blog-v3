@@ -1,4 +1,5 @@
 export { CustomButton } from './CustomButton';
-export { default as Dropdown } from './Dropdown';export { DropdownItem } from './DropdownItem';
+export { default as Dropdown } from './Dropdown';
+export * from './Dropdown';
 export * from './Icons';
 export { NavButton } from './NavButton';

@@ -1,69 +1,107 @@
 // src/main/components/Interface/Dropdown.tsx
-
-import React, { ReactNode, forwardRef, useRef, useImperativeHandle } from 'react';
+import React, { ReactNode, createContext, useContext, useCallback, useState, useRef } from 'react';
 import { useTheme } from '../ThemeSwitcher';
 import { useOutsideClick } from '@/main/lib/hooks';
 
-interface DropdownProps {
-  children: ReactNode;
+interface DropdownContextType {
   isOpen: boolean;
-  onClose: () => void;
+  toggle: () => void;
+  close: () => void;
+}
+
+const DropdownContext = createContext<DropdownContextType | undefined>(undefined);
+
+interface DropdownTriggerProps {
+  children: ReactNode;
+}
+
+export function DropdownTrigger({ children }: DropdownTriggerProps) {
+  const context = useContext(DropdownContext);
+  if (!context) throw new Error('DropdownTrigger must be used within Dropdown');
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    context.toggle();
+  };
+
+  // Clone child element to inject onClick handler
+  return React.cloneElement(children as React.ReactElement, {
+    onClick: handleClick,
+  });
+}
+
+interface DropdownContentProps {
+  children: ReactNode;
   width?: 'icon' | 'narrow' | 'wide' | 'search';
   align?: 'left' | 'right';
   className?: string;
-  parentRef?: React.RefObject<HTMLElement>;
 }
 
-const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
-  ({ children, isOpen, onClose, width = 'narrow', align = 'left', className = '', parentRef }, forwardedRef) => {
-    const { currentTheme } = useTheme();
-    const innerRef = useRef<HTMLDivElement>(null);
+export function DropdownContent({ 
+  children,
+  width = 'narrow',
+  align = 'left',
+  className = ''
+}: DropdownContentProps) {
+  const context = useContext(DropdownContext);
+  const { currentTheme } = useTheme();
+  if (!context) throw new Error('DropdownContent must be used within Dropdown');
+  if (!context.isOpen) return null;
 
-    useImperativeHandle(forwardedRef, () => innerRef.current as HTMLDivElement);
+  const baseStyle = `
+    absolute z-60 bg-bgcolor-alt shadow-lg border border-txcolor-muted
+    rounded-md
+    transition-all duration-200 ease-in-out
+  `;
 
-    useOutsideClick(innerRef, parentRef || null, isOpen, onClose);
+  const widthStyle = {
+    icon: 'w-40',
+    narrow: 'w-48',
+    wide: 'w-64',
+    search: 'w-full',
+  };
 
-    if (!isOpen) return null;
+  const alignStyle = {
+    left: 'left-0',
+    right: 'right-0',
+  };
 
-    const baseStyle = `
-      absolute z-60 bg-bgcolor-alt shadow-lg border border-tx-color-muted
-      rounded-[var(--border-radius)]
-      transition-all duration-200 ease-in-out
-    `;
-    const widthStyle = {
-      icon: 'w-40',
-      narrow: 'w-48',
-      wide: 'w-64',
-      search: 'w-full',
-    };
-    const alignStyle = {
-      left: 'left-0',
-      right: 'right-0',
-    };
+  return (
+    <div className={`
+      ${baseStyle}
+      ${widthStyle[width]}
+      ${alignStyle[align]}
+      ${className}
+    `}>
+      {children}
+    </div>
+  );
+}
 
-    const themeStyles = {
-      default: 'theme-default:bg-white theme-default:text-gray-900',
-      rounded: 'theme-rounded:rounded-xl',
-      sharp: 'theme-sharp:rounded-none',
-    };
+interface DropdownProps {
+  children: ReactNode;
+  closeOnSelect?: boolean;
+}
 
-    return (
-      <div
-        ref={innerRef}
-        className={`
-          ${baseStyle}
-          ${widthStyle[width]}
-          ${alignStyle[align]}
-          ${themeStyles[currentTheme]}
-          ${className}
-        `}
-      >
+export default function Dropdown({ children, closeOnSelect = true }: DropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick(containerRef, null, isOpen, () => setIsOpen(false));
+
+  const toggle = useCallback(() => {
+    setIsOpen(current => !current);
+  }, []);
+
+  const close = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  return (
+    <DropdownContext.Provider value={{ isOpen, toggle, close }}>
+      <div ref={containerRef} className="relative">
         {children}
       </div>
-    );
-  }
-);
-
-Dropdown.displayName = 'Dropdown';
-
-export default Dropdown;
+    </DropdownContext.Provider>
+  );
+}

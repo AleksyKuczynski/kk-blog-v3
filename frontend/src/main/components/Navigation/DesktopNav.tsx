@@ -4,7 +4,7 @@
 import React from 'react';
 import ExpandableSearchButton from '../Search/ExpandableSearchButton';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { ThemeDesktop, useTheme } from '../ThemeSwitcher';
+import { ThemeSwitcher, useTheme } from '../ThemeSwitcher';
 import { NavProps } from './Navigation';
 import Logo from '../Logo';
 import NavLinks from './NavLinks';
@@ -40,7 +40,7 @@ export default function DesktopNavigation({
         <div className="flex items-center justify-end space-x-4 pr-8">
           {!isSearchPage && <ExpandableSearchButton searchTranslations={translations.search} />}
           <LanguageSwitcher currentLang={lang} />
-          <ThemeDesktop 
+          <ThemeSwitcher 
             themeTranslations={translations.themes} 
             colorTranslations={translations.colors} 
           />

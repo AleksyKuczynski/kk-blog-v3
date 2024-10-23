@@ -10,8 +10,8 @@ import { NavButton } from '../Interface'
 import Logo from '../Logo'
 import NavLinks from './NavLinks'
 import SearchBarWrapper from '../Search/SearchBarWrapper'
-import { MobileLanguageSwitcher } from './LanguageSwitcher'
-import { ThemeMobile } from '../ThemeSwitcher'
+import { LanguageSwitcher } from './LanguageSwitcher'
+import { ThemeSwitcher } from '../ThemeSwitcher'
 
 const linkStylesValues = {
   default: 'px-3 py-2 text-sm font-medium uppercase tracking-wider',
@@ -107,8 +107,8 @@ export default function MobileNavigation({
             </div>
           )}
           <div className="flex pr-16 space-x-2 order-1 sm:landscape:order-2">
-            <MobileLanguageSwitcher currentLang={lang} />
-            <ThemeMobile 
+            <LanguageSwitcher currentLang={lang} />
+            <ThemeSwitcher 
               themeTranslations={translations.themes} 
               colorTranslations={translations.colors} 
             />

@@ -1,27 +1,32 @@
 // src/main/components/Search/types.ts
-
-import { KeyboardEvent, ChangeEvent } from 'react';
+import { KeyboardEvent, ChangeEvent, RefObject } from 'react';
 import { SearchProposition } from '@/main/lib/directus';
-import { SearchTranslations } from '@/main/lib/dictionaries/types';
+import { Lang, SearchTranslations } from '@/main/lib/dictionaries/types';
 
-// Base search state
+// Core search state
 export interface SearchState {
   searchQuery: string;
   suggestions: SearchProposition[];
   hasInteracted: boolean;
-  focusedIndex: number;
   isSearching: boolean;
 }
 
-// Search validation state
-export interface SearchValidation {
+// UI State
+export interface SearchUIState {
+  isOpen: boolean;
+  focusedIndex: number;
+  inputRef: RefObject<HTMLInputElement>;
+}
+
+// Validation State
+export interface ValidationState {
   isInputValid: boolean;
   showMinCharMessage: boolean;
   showSearchingMessage: boolean;
   showNoResultsMessage: boolean;
 }
 
-// Search event handlers
+// Event Handlers
 export interface SearchHandlers {
   handleSearch: (query: string) => void;
   handleSelect: (slug: string, rubricSlug: string) => void;
@@ -30,60 +35,63 @@ export interface SearchHandlers {
   handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-// Combined search input state and handlers
-export interface UseSearchInputReturn extends SearchState, SearchValidation, SearchHandlers {}
+// Combined state and handlers for hook
+export interface UseSearchInputReturn extends SearchState, SearchUIState, ValidationState, SearchHandlers {}
 
-// Search input component props
+// Component Props
 export interface SearchInputProps {
-  className?: string;
-  onSubmit?: () => void;
-  showButton?: boolean;
   translations: SearchTranslations;
-  autoFocus?: boolean;
+  initialValue?: string;
+  showButton?: boolean;
+  className?: string;
   isExpandable?: boolean;
-  initiallyExpanded?: boolean;
+  autoFocus?: boolean;
+  onSubmit?: () => void;
   onClose?: () => void;
 }
 
-// Search input ref handle
+// Ref Handle type for SearchInput
 export interface SearchInputHandle {
   getInputValue: () => string;
   focus: () => void;
   close: () => void;
 }
 
-// Search input state (for more precise state management)
-export type SearchInputState = 
-  | { status: 'idle' }
-  | { status: 'minChars' }
-  | { status: 'searching' }
-  | { status: 'noResults' }
-  | { status: 'hasResults', suggestions: SearchProposition[] };
-
-// Props for search-related components
-export interface SearchBarWrapperProps {
-  initialSearch?: string;
-  translations: SearchTranslations;
-  showButton?: boolean;
-}
-
-export interface SearchPageWrapperProps {
-  initialSearch: string;
-  translations: SearchTranslations;
-}
-
-export interface SearchButtonProps {
-  onClick: () => void;
-  className?: string;
-  context: 'desktop' | 'mobile';
-}
-
-// Context type for SearchContext
-export interface SearchContextType {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
+export interface SearchFieldProps {
+  inputRef: RefObject<HTMLInputElement>;
+  query: string;
   isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-  isExpandable: boolean;
   translations: SearchTranslations;
+  showButton: boolean;
+  handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
+  handleSubmit: (searchQuery?: string) => void;
+}
+
+export interface SuggestionsListProps {
+  suggestions: SearchProposition[];
+  focusedIndex: number;
+  handleSuggestionClick: (suggestion: SearchProposition) => void;
+}
+
+// Context type
+export interface SearchContextType extends SearchState {
+  setQuery: (query: string) => void;
+  setIsOpen: (isOpen: boolean) => void;
+  translations: SearchTranslations;
+}
+
+// Current SearchContextType:
+export interface SearchContextType extends SearchState {
+  setQuery: (query: string) => void;
+  setIsOpen: (isOpen: boolean) => void;
+  translations: SearchTranslations;
+}
+
+// Current SearchState:
+export interface SearchState {
+  searchQuery: string;
+  suggestions: SearchProposition[];
+  hasInteracted: boolean;
+  isSearching: boolean;
 }

@@ -1,178 +1,99 @@
 // src/main/components/Navigation/LanguageSwitcher.tsx
 'use client';
 
-import React, { createContext, useState, useContext, useCallback, useRef } from 'react';
+import React from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { switchLanguage } from '@/main/lib/actions';
-import { useDropdown } from '@/main/lib/hooks';
-import { CheckIcon, Dropdown, DropdownItem, NavButton, LanguageIcon } from '../Interface';
+import { 
+  Dropdown,
+  DropdownTrigger,
+  DropdownContent,
+  NavButton,
+  CheckIcon,
+  LanguageIcon 
+} from '../Interface';
 
-const languages: { [key in Lang]: string } = {
+const languages: Record<Lang, string> = {
   en: 'English',
   fr: 'Français',
   pl: 'Polski',
   ru: 'Русский',
 };
 
-interface LanguageSwitcherContextType {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+interface LanguageSwitcherProps {
   currentLang: Lang;
-  handleLanguageChange: (newLang: Lang) => Promise<void>;
+  context?: 'mobile' | 'desktop';
 }
 
-const LanguageSwitcherContext = createContext<LanguageSwitcherContextType | undefined>(undefined);
-
-function useLanguageSwitcher() {
-  const context = useContext(LanguageSwitcherContext);
-  if (context === undefined) {
-    throw new Error('useLanguageSwitcher must be used within a LanguageSwitcherProvider');
-  }
-  return context;
-}
-
-function LanguageSwitcherProvider({ children, currentLang }: { children: React.ReactNode; currentLang: Lang }) {
-  const [isOpen, setIsOpen] = useState(false);
+export function LanguageSwitcher({ 
+  currentLang, 
+  context = 'desktop' 
+}: LanguageSwitcherProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const handleLanguageChange = async (newLang: Lang) => {
-    if (newLang !== currentLang) {
-      const currentParams = new URLSearchParams(searchParams);
-      const context = currentParams.get('context');
-      const author = currentParams.get('author');
+    if (newLang === currentLang) return;
 
-      let newPath = pathname.replace(`/${currentLang}`, `/${newLang}`);
-      
-      if (context) {
-        newPath += `?context=${context}`;
-        if (author) {
-          newPath += `&author=${author}`;
-        }
+    const currentParams = new URLSearchParams(searchParams);
+    const context = currentParams.get('context');
+    const author = currentParams.get('author');
+
+    let newPath = pathname.replace(`/${currentLang}`, `/${newLang}`);
+    
+    if (context) {
+      newPath += `?context=${context}`;
+      if (author) {
+        newPath += `&author=${author}`;
       }
-
-      await switchLanguage(newLang, newPath);
-      router.refresh();
     }
-    setIsOpen(false);
+
+    await switchLanguage(newLang, newPath);
+    router.refresh();
   };
 
   return (
-    <LanguageSwitcherContext.Provider value={{ isOpen, setIsOpen, currentLang, handleLanguageChange }}>
-      {children}
-    </LanguageSwitcherContext.Provider>
-  );
-}
+    <Dropdown>
+      <DropdownTrigger>
+        <NavButton
+          context={context}
+          icon={<LanguageIcon className="h-6 w-6" aria-hidden="true" />}
+          aria-label="Select language"
+        />
+      </DropdownTrigger>
 
-function LanguageSwitcherContent() {
-  const { currentLang, handleLanguageChange } = useLanguageSwitcher();
-  const {
-    isOpen,
-    toggle: toggleDropdown,
-    close: closeDropdown,
-    dropdownRef,
-    toggleRef,
-  } = useDropdown();
-
-  const handleLanguageSelect = useCallback((lang: Lang) => {
-    handleLanguageChange(lang);
-    closeDropdown();
-  }, [handleLanguageChange, closeDropdown]);
-  
-  return (
-    <div className="relative">
-      <NavButton
-        ref={toggleRef}
-        context="desktop"
-        onClick={toggleDropdown}
-        aria-haspopup="listbox"
-        aria-expanded={isOpen}
-        icon={<LanguageIcon className="h-6 w-6" aria-hidden="true" />}
-      />
-      <Dropdown 
-        ref={dropdownRef}
-        isOpen={isOpen} 
-        onClose={closeDropdown} 
-        width="icon" 
-        align="right"
+      <DropdownContent 
+        width={context === 'mobile' ? 'wide' : 'icon'} 
+        align={context === 'mobile' ? 'left' : 'right'}
       >
-        <ul
-          className="py-1 text-base focus:outline-none sm:text-sm"
-          role="listbox"
+        <ul 
+          className="py-1" 
+          role="listbox" 
+          aria-label="Select language"
         >
           {Object.entries(languages).map(([lang, name]) => (
-            <li key={lang}>
-              <DropdownItem
-                state={lang === currentLang ? 'selected' : 'normal'}
-                onClick={() => handleLanguageSelect(lang as Lang)}
-                withCheckmark
-              >
-                <span>{name}</span>
-                {lang === currentLang && (
-                  <CheckIcon className="h-4 w-4 ml-2" aria-hidden="true" />
-                )}
-              </DropdownItem>
+            <li 
+              key={lang}
+              role="option" 
+              aria-selected={currentLang === lang}
+              className={`
+                flex items-center justify-between px-4 py-2 cursor-pointer
+                ${currentLang === lang 
+                  ? 'bg-prcolor text-txcolor-inverted' 
+                  : 'text-txcolor hover:bg-bgcolor-accent'}
+              `}
+              onClick={() => handleLanguageChange(lang as Lang)}
+            >
+              <span>{name}</span>
+              {currentLang === lang && (
+                <CheckIcon className="h-4 w-4 ml-2" aria-hidden="true" />
+              )}
             </li>
           ))}
         </ul>
-      </Dropdown>
-    </div>
-  );
-}
-
-export function LanguageSwitcher({ currentLang }: { currentLang: Lang }) {
-  return (
-    <LanguageSwitcherProvider currentLang={currentLang}>
-      <LanguageSwitcherContent />
-    </LanguageSwitcherProvider>
-  );
-}
-
-export function MobileLanguageSwitcherContent() {
-  const [isOpen, setIsOpen] = useState(false);
-  const { currentLang, handleLanguageChange } = useLanguageSwitcher();
-  const toggleRef = useRef<HTMLButtonElement>(null);
-
-  return (
-    <div className="relative">
-      <NavButton
-        ref={toggleRef}
-        context="mobile"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-haspopup="listbox"
-        aria-expanded={isOpen}
-        icon={<LanguageIcon className="h-6 w-6" />}
-      />
-      <Dropdown 
-        isOpen={isOpen} 
-        onClose={() => setIsOpen(false)} 
-        width="narrow" 
-        align="left"
-        parentRef={toggleRef}
-      >
-        {Object.entries(languages).map(([lang, name]) => (
-          <DropdownItem
-            key={lang}
-            state={currentLang === lang ? 'selected' : 'normal'}
-            onClick={() => {
-              handleLanguageChange(lang as Lang);
-              setIsOpen(false);
-            }}
-          >
-            {name}
-          </DropdownItem>
-        ))}
-      </Dropdown>
-    </div>
-  );
-}
-
-export function MobileLanguageSwitcher({ currentLang }: { currentLang: Lang }) {
-  return (
-    <LanguageSwitcherProvider currentLang={currentLang}>
-      <MobileLanguageSwitcherContent />
-    </LanguageSwitcherProvider>
+      </DropdownContent>
+    </Dropdown>
   );
 }

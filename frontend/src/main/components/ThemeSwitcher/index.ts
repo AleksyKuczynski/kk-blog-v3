@@ -1,6 +1,5 @@
 // /frontend/src/main/components/ThemeSwitcher/index.ts
-export { ThemeDesktop } from './ThemeDesktop';
-export { ThemeMobile } from './ThemeMobile';
+export { ThemeSwitcher } from './ThemeSwitcher';
 export { ThemeProvider, useTheme } from './ThemeContext';
 export { ColorProvider } from './ColorContext';
 export * from './themeActions'

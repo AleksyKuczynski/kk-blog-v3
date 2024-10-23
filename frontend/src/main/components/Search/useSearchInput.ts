@@ -1,17 +1,13 @@
 // src/main/components/Search/useSearchInput.ts
+'use client';
 
-import { useState, useCallback, KeyboardEvent, ChangeEvent } from 'react';
+import { useState, useCallback, useRef, ChangeEvent, KeyboardEvent } from 'react';
 import { useSearch } from './useSearch';
-import { 
-  UseSearchInputReturn, 
-  SearchState, 
-  SearchValidation, 
-  SearchHandlers, 
-} from './types';
+import { UseSearchInputReturn, SearchUIState, ValidationState } from './types';
 import { useDebounce } from '@/main/lib/hooks';
 
 export function useSearchInput(onSubmit?: () => void): UseSearchInputReturn {
-  const [focusedIndex, setFocusedIndex] = useState(-1);
+  // Core search functionality from useSearch
   const {
     searchQuery,
     suggestions,
@@ -22,40 +18,47 @@ export function useSearchInput(onSubmit?: () => void): UseSearchInputReturn {
     handleSearchSubmit
   } = useSearch(onSubmit);
 
-  const searchState: SearchState = {
-    searchQuery,
-    suggestions,
-    hasInteracted,
-    focusedIndex,
-    isSearching
-  };
+  // UI State
+  const [uiState, setUIState] = useState<SearchUIState>({
+    isOpen: false,
+    focusedIndex: -1,
+    inputRef: useRef<HTMLInputElement>(null)
+  });
 
+  // Validation
   const isInputValid = searchQuery.length >= 3;
-  
-  const searchValidation: SearchValidation = {
+  const validationState: ValidationState = {
     isInputValid,
     showMinCharMessage: hasInteracted && !isInputValid,
     showSearchingMessage: isInputValid && isSearching,
     showNoResultsMessage: isInputValid && hasInteracted && !isSearching && suggestions.length === 0
   };
 
+  // Debounced search
   const debouncedHandleSearch = useDebounce(handleSearch, 300);
 
+  // Event handlers
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
     if (suggestions.length > 0 && isInputValid) {
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setFocusedIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : prev));
+          setUIState(prev => ({
+            ...prev,
+            focusedIndex: prev.focusedIndex < suggestions.length - 1 ? prev.focusedIndex + 1 : prev.focusedIndex
+          }));
           break;
         case 'ArrowUp':
           e.preventDefault();
-          setFocusedIndex(prev => (prev > 0 ? prev - 1 : -1));
+          setUIState(prev => ({
+            ...prev,
+            focusedIndex: prev.focusedIndex > 0 ? prev.focusedIndex - 1 : -1
+          }));
           break;
         case 'Enter':
           e.preventDefault();
-          if (focusedIndex >= 0) {
-            const selectedSuggestion = suggestions[focusedIndex];
+          if (uiState.focusedIndex >= 0) {
+            const selectedSuggestion = suggestions[uiState.focusedIndex];
             handleSelect(selectedSuggestion.slug, selectedSuggestion.rubric_slug);
           } else {
             handleSearchSubmit();
@@ -63,30 +66,35 @@ export function useSearchInput(onSubmit?: () => void): UseSearchInputReturn {
           break;
         case 'Escape':
           e.preventDefault();
-          // Close suggestions or clear input
+          setUIState(prev => ({ ...prev, isOpen: false }));
           break;
       }
     } else if (e.key === 'Enter' && isInputValid) {
       e.preventDefault();
       handleSearchSubmit();
     }
-  }, [suggestions, focusedIndex, handleSelect, handleSearchSubmit, isInputValid]);
+  }, [suggestions, uiState.focusedIndex, handleSelect, handleSearchSubmit, isInputValid]);
 
   const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    handleSearch(e.target.value);
-  }, [handleSearch]);
+    debouncedHandleSearch(e.target.value);
+    setUIState(prev => ({ ...prev, isOpen: true, focusedIndex: -1 }));
+  }, [debouncedHandleSearch]);
 
-  const searchHandlers: SearchHandlers = {
+  return {
+    // Core search state
+    searchQuery,
+    suggestions,
+    hasInteracted,
+    isSearching,
+    // UI state
+    ...uiState,
+    // Validation state
+    ...validationState,
+    // Handlers
     handleSearch,
     handleSelect,
     handleSearchSubmit,
     handleKeyDown,
     handleInputChange
-  };
-
-  return {
-    ...searchState,
-    ...searchValidation,
-    ...searchHandlers
   };
 }

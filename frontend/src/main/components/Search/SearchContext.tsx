@@ -1,32 +1,43 @@
 // src/main/components/Search/SearchContext.tsx
-import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { SearchContextType } from './types';
+'use client';
+
+import React, { createContext, useContext, useState } from 'react';
+import { SearchContextType, SearchState } from './types';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
+import { SearchProposition } from '@/main/lib/directus/interfaces';
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
 interface SearchProviderProps {
-  children: ReactNode;
+  children: React.ReactNode;
   initialSearch: string;
   translations: SearchTranslations;
-  isExpandable?: boolean;
 }
 
 export function SearchProvider({ 
   children, 
   initialSearch = '', 
   translations,
-  isExpandable = false
 }: SearchProviderProps) {
-  const [searchQuery, setSearchQuery] = useState(initialSearch);
-  const [isOpen, setIsOpen] = useState(!isExpandable);
+  // Match SearchState interface
+  const [state, setState] = useState<SearchState>({
+    searchQuery: initialSearch,
+    suggestions: [],
+    hasInteracted: false,
+    isSearching: false
+  });
 
   const value: SearchContextType = {
-    searchQuery,
-    setSearchQuery,
-    isOpen,
-    setIsOpen,
-    isExpandable,
+    ...state,
+    setQuery: (query: string) => setState(prev => ({ 
+      ...prev, 
+      searchQuery: query,
+      hasInteracted: true 
+    })),
+    setIsOpen: (isOpen: boolean) => setState(prev => ({ 
+      ...prev, 
+      suggestions: isOpen ? prev.suggestions : [] 
+    })),
     translations
   };
 
@@ -37,9 +48,9 @@ export function SearchProvider({
   );
 }
 
-export function useSearch(): SearchContextType {
+export function useSearch() {
   const context = useContext(SearchContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useSearch must be used within a SearchProvider');
   }
   return context;

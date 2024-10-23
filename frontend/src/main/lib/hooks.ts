@@ -94,31 +94,55 @@ export function useDebounce(func: Function, delay: number) {
 }
 
 export function useDropdown(closeOnSelect: boolean = true) {
+  // Debug mounted state
+  const isMounted = useRef(false);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
-  useOutsideClick(dropdownRef, toggleRef, isOpen, () => setIsOpen(false));
-
-  const toggle = useCallback(() => {
-    setIsOpen(prev => !prev);
+  // Track mounted state
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
   }, []);
 
-  const close = useCallback(() => {
-    setIsOpen(false);
-  }, []);
+  const toggle = () => {
+    // Only update if component is mounted
+    if (isMounted.current) {
+      console.log('Pre-toggle state:', isOpen);
+      // Use functional update to ensure we have latest state
+      setIsOpen(prevState => {
+        console.log('Toggling from', prevState, 'to', !prevState);
+        return !prevState;
+      });
+    }
+  };
 
-  const selectItem = useCallback(() => {
-    if (closeOnSelect) {
+  const close = () => {
+    if (isMounted.current) {
       setIsOpen(false);
     }
-  }, [closeOnSelect]);
+  };
+
+  // Use same pattern for outside click
+  useOutsideClick(dropdownRef, toggleRef, isOpen, () => {
+    if (isMounted.current) {
+      setIsOpen(false);
+    }
+  });
+
+  // Debug state changes
+  useEffect(() => {
+    console.log('Dropdown state changed to:', isOpen);
+  }, [isOpen]);
 
   return {
     isOpen,
     toggle,
     close,
-    selectItem,
+    selectItem: () => closeOnSelect && close(),
     dropdownRef,
     toggleRef,
   };
