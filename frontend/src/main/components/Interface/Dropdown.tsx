@@ -9,11 +9,24 @@ interface DropdownContextType {
   close: () => void;
 }
 
-const DropdownContext = createContext<DropdownContextType | undefined>(undefined);
-
 interface DropdownTriggerProps {
   children: ReactNode;
 }
+
+interface DropdownContentProps {
+  children: ReactNode;
+  width?: 'icon' | 'narrow' | 'wide' | 'search';
+  align?: 'left' | 'right';
+  className?: string;
+}
+
+interface DropdownProps {
+  children: ReactNode;
+  closeOnSelect?: boolean;
+  forceOpen?: boolean;
+}
+
+const DropdownContext = createContext<DropdownContextType | undefined>(undefined);
 
 export function DropdownTrigger({ children }: DropdownTriggerProps) {
   const context = useContext(DropdownContext);
@@ -28,13 +41,6 @@ export function DropdownTrigger({ children }: DropdownTriggerProps) {
   return React.cloneElement(children as React.ReactElement, {
     onClick: handleClick,
   });
-}
-
-interface DropdownContentProps {
-  children: ReactNode;
-  width?: 'icon' | 'narrow' | 'wide' | 'search';
-  align?: 'left' | 'right';
-  className?: string;
 }
 
 export function DropdownContent({ 
@@ -78,24 +84,30 @@ export function DropdownContent({
   );
 }
 
-interface DropdownProps {
-  children: ReactNode;
-  closeOnSelect?: boolean;
-}
-
-export default function Dropdown({ children, closeOnSelect = true }: DropdownProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function Dropdown({ children, closeOnSelect = true, forceOpen }: DropdownProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useOutsideClick(containerRef, null, isOpen, () => setIsOpen(false));
+  
+  // Use forceOpen if provided, otherwise use internal state
+  const isOpen = forceOpen !== undefined ? forceOpen : internalOpen;
 
   const toggle = useCallback(() => {
-    setIsOpen(current => !current);
-  }, []);
+    if (forceOpen === undefined) {
+      setInternalOpen(current => !current);
+    }
+  }, [forceOpen]);
 
   const close = useCallback(() => {
-    setIsOpen(false);
-  }, []);
+    if (forceOpen === undefined) {
+      setInternalOpen(false);
+    }
+  }, [forceOpen]);
+
+  useOutsideClick(containerRef, null, isOpen, () => {
+    if (forceOpen === undefined) {
+      setInternalOpen(false);
+    }
+  });
 
   return (
     <DropdownContext.Provider value={{ isOpen, toggle, close }}>

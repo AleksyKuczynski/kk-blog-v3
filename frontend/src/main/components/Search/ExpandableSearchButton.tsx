@@ -1,36 +1,37 @@
 // src/main/components/Search/ExpandableSearchButton.tsx
-import React, { useRef, useState } from 'react';
-import { SearchTranslations } from '@/main/lib/dictionaries/types';
-import SearchInput from './SearchInput';
-import { NavButton } from '../Interface/NavButton';
-import { SearchIcon } from '../Interface/Icons';
-import { SearchInputHandle } from './types';
+import React, { useRef } from 'react'
+import { SearchTranslations } from '@/main/lib/dictionaries/types'
+import SearchInput from './SearchInput'
+import { NavButton } from '../Interface/NavButton'
+import { SearchIcon } from '../Interface/Icons'
+import { SearchInputHandle } from './types'
 
 interface ExpandableSearchButtonProps {
-  searchTranslations: SearchTranslations;
+  searchTranslations: SearchTranslations
 }
 
 export default function ExpandableSearchButton({ searchTranslations }: ExpandableSearchButtonProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const searchInputRef = useRef<SearchInputHandle>(null);
+  const [isExpanded, setIsExpanded] = React.useState(false)
+  const searchInputRef = useRef<SearchInputHandle>(null)
 
-  const toggleExpand = () => {
-    setIsExpanded(prev => !prev);
-  };
+  const handleExpand = () => {
+    setIsExpanded(true)
+    // We'll handle focus directly in SearchInput
+  }
 
   const handleClose = () => {
-    setIsExpanded(false);
-  };
+    setIsExpanded(false)
+  }
 
   if (!isExpanded) {
     return (
       <NavButton
         context="desktop"
-        onClick={toggleExpand}
+        onClick={handleExpand}
         aria-label="Open search"
         icon={<SearchIcon className="h-6 w-6" />}
       />
-    );
+    )
   }
 
   return (
@@ -42,5 +43,5 @@ export default function ExpandableSearchButton({ searchTranslations }: Expandabl
       autoFocus={true}
       onClose={handleClose}
     />
-  );
+  )
 }

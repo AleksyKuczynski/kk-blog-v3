@@ -1,97 +1,75 @@
 // src/main/components/Search/types.ts
-import { KeyboardEvent, ChangeEvent, RefObject } from 'react';
-import { SearchProposition } from '@/main/lib/directus';
-import { Lang, SearchTranslations } from '@/main/lib/dictionaries/types';
+import { KeyboardEvent, ChangeEvent, RefObject } from 'react'
+import { SearchProposition } from '@/main/lib/directus'
+import { SearchTranslations } from '@/main/lib/dictionaries/types'
 
-// Core search state
-export interface SearchState {
-  searchQuery: string;
-  suggestions: SearchProposition[];
-  hasInteracted: boolean;
-  isSearching: boolean;
+/** Core search functionality state and handlers */
+export interface UseSearchInputReturn {
+  // State
+  searchQuery: string
+  suggestions: SearchProposition[]
+  hasInteracted: boolean
+  isSearching: boolean
+  focusedIndex: number
+  isInputValid: boolean
+  
+  // UI State flags
+  showMinCharMessage: boolean
+  showSearchingMessage: boolean
+  showNoResultsMessage: boolean
+  
+  // Handlers
+  handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void
+  handleKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void
+  handleSelect: (slug: string, rubricSlug: string) => void
+  handleSearchSubmit: () => void
 }
 
-// UI State
-export interface SearchUIState {
-  isOpen: boolean;
-  focusedIndex: number;
-  inputRef: RefObject<HTMLInputElement>;
-}
-
-// Validation State
-export interface ValidationState {
-  isInputValid: boolean;
-  showMinCharMessage: boolean;
-  showSearchingMessage: boolean;
-  showNoResultsMessage: boolean;
-}
-
-// Event Handlers
-export interface SearchHandlers {
-  handleSearch: (query: string) => void;
-  handleSelect: (slug: string, rubricSlug: string) => void;
-  handleSearchSubmit: () => void;
-  handleKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
-  handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
-}
-
-// Combined state and handlers for hook
-export interface UseSearchInputReturn extends SearchState, SearchUIState, ValidationState, SearchHandlers {}
-
-// Component Props
+/** SearchInput component props */
 export interface SearchInputProps {
-  translations: SearchTranslations;
-  initialValue?: string;
-  showButton?: boolean;
-  className?: string;
-  isExpandable?: boolean;
-  autoFocus?: boolean;
-  onSubmit?: () => void;
-  onClose?: () => void;
+  className?: string
+  translations: SearchTranslations
+  showButton?: boolean
+  autoFocus?: boolean
+  isExpandable?: boolean
+  onSubmit?: () => void
+  onClose?: () => void
+  initialFocus?: boolean
 }
 
-// Ref Handle type for SearchInput
+/** SearchInput ref interface */
 export interface SearchInputHandle {
-  getInputValue: () => string;
-  focus: () => void;
-  close: () => void;
+  getInputValue: () => string
+  focus: () => void
+  close: () => void
 }
 
-export interface SearchFieldProps {
-  inputRef: RefObject<HTMLInputElement>;
-  query: string;
-  isOpen: boolean;
-  translations: SearchTranslations;
-  showButton: boolean;
-  handleInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
-  handleSubmit: (searchQuery?: string) => void;
-}
+/** Search status for UI management */
+export type SearchInputState = 
+  | { status: 'idle' }
+  | { status: 'minChars' }
+  | { status: 'searching' }
+  | { status: 'noResults' }
+  | { status: 'hasResults', suggestions: SearchProposition[] }
 
-export interface SuggestionsListProps {
-  suggestions: SearchProposition[];
-  focusedIndex: number;
-  handleSuggestionClick: (suggestion: SearchProposition) => void;
-}
-
-// Context type
-export interface SearchContextType extends SearchState {
-  setQuery: (query: string) => void;
-  setIsOpen: (isOpen: boolean) => void;
-  translations: SearchTranslations;
-}
-
-// Current SearchContextType:
-export interface SearchContextType extends SearchState {
-  setQuery: (query: string) => void;
-  setIsOpen: (isOpen: boolean) => void;
-  translations: SearchTranslations;
-}
-
-// Current SearchState:
-export interface SearchState {
-  searchQuery: string;
-  suggestions: SearchProposition[];
-  hasInteracted: boolean;
-  isSearching: boolean;
+/** Search Context type */
+export interface SearchContextType {
+  // Search state
+  searchQuery: string
+  suggestions: SearchProposition[]
+  hasInteracted: boolean
+  isSearching: boolean
+  
+  // UI state
+  isOpen: boolean
+  isExpandable: boolean
+  
+  // Actions
+  setSearchQuery: (query: string) => void
+  setIsOpen: (isOpen: boolean) => void
+  handleSelect: (slug: string, rubricSlug: string) => void
+  handleSearchSubmit: () => void
+  
+  // Translations
+  translations: SearchTranslations
 }

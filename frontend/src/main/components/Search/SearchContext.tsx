@@ -1,57 +1,75 @@
 // src/main/components/Search/SearchContext.tsx
-'use client';
+'use client'
 
-import React, { createContext, useContext, useState } from 'react';
-import { SearchContextType, SearchState } from './types';
-import { SearchTranslations } from '@/main/lib/dictionaries/types';
-import { SearchProposition } from '@/main/lib/directus/interfaces';
-
-const SearchContext = createContext<SearchContextType | undefined>(undefined);
+import React, { createContext, useState, useContext } from 'react'
+import { useRouter } from 'next/navigation'
+import { SearchContextType } from './types'
+import { SearchTranslations } from '@/main/lib/dictionaries/types'
+import { useSearch } from './useSearch'
 
 interface SearchProviderProps {
-  children: React.ReactNode;
-  initialSearch: string;
-  translations: SearchTranslations;
+  children: React.ReactNode
+  initialSearch: string
+  translations: SearchTranslations
+  isExpandable?: boolean
 }
+
+const SearchContext = createContext<SearchContextType | undefined>(undefined)
 
 export function SearchProvider({ 
   children, 
   initialSearch = '', 
   translations,
+  isExpandable = false
 }: SearchProviderProps) {
-  // Match SearchState interface
-  const [state, setState] = useState<SearchState>({
-    searchQuery: initialSearch,
-    suggestions: [],
-    hasInteracted: false,
-    isSearching: false
-  });
+  const [isOpen, setIsOpen] = useState(!isExpandable)
+  
+  const {
+    searchQuery,
+    suggestions,
+    hasInteracted,
+    isSearching,
+    handleSearch,
+    handleSelect,
+    handleSearchSubmit
+  } = useSearch()
+
+  const setSearchQuery = (query: string) => {
+    handleSearch(query)
+  }
 
   const value: SearchContextType = {
-    ...state,
-    setQuery: (query: string) => setState(prev => ({ 
-      ...prev, 
-      searchQuery: query,
-      hasInteracted: true 
-    })),
-    setIsOpen: (isOpen: boolean) => setState(prev => ({ 
-      ...prev, 
-      suggestions: isOpen ? prev.suggestions : [] 
-    })),
+    // Search state
+    searchQuery,
+    suggestions,
+    hasInteracted,
+    isSearching,
+    
+    // UI state
+    isOpen,
+    isExpandable,
+    
+    // Actions
+    setSearchQuery,
+    setIsOpen,
+    handleSelect,
+    handleSearchSubmit,
+    
+    // Translations
     translations
-  };
+  }
 
   return (
     <SearchContext.Provider value={value}>
       {children}
     </SearchContext.Provider>
-  );
+  )
 }
 
-export function useSearch() {
-  const context = useContext(SearchContext);
-  if (!context) {
-    throw new Error('useSearch must be used within a SearchProvider');
+export function useSearchContext(): SearchContextType {
+  const context = useContext(SearchContext)
+  if (context === undefined) {
+    throw new Error('useSearchContext must be used within a SearchProvider')
   }
-  return context;
+  return context
 }
