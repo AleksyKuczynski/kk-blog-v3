@@ -61,17 +61,26 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
     }
   }
 
-
-  
-  // Determine current search state
-  const searchState: SearchInputState = hasInteracted 
-    ? showMinCharMessage ? { status: 'minChars' }
-    : showSearchingMessage ? { status: 'searching' }
-    : showNoResultsMessage ? { status: 'noResults' }
-    : suggestions.length > 0 ? { status: 'hasResults', suggestions }
-    : { status: 'idle' }
-    : { status: 'idle' }
-
+  // Get current search state
+  const searchState: SearchInputState = (() => {
+    if (!hasInteracted && !autoFocus) {
+      return { status: 'idle' };
+    }
+    if (!isInputValid) {
+      return { status: 'minChars' };
+    }
+    if (isSearching) {
+      return { status: 'searching' };
+    }
+    // Only show noResults if we're not searching and have no suggestions
+    if (!isSearching && suggestions.length === 0) {
+      return { status: 'noResults' };
+    }
+    return { 
+      status: 'hasResults', 
+      suggestions 
+    };
+  })();
 
   const containerStyles = {
     wrapper: `relative w-full`,

@@ -10,26 +10,37 @@ export function useSearchInput(autoFocus: boolean = false, onSubmit?: () => void
   const [isInitialFocus, setIsInitialFocus] = useState(autoFocus)
   
   const {
-    searchQuery,
     suggestions,
     hasInteracted,
     isSearching,
+    setSearchQuery,
+    setSuggestions,
+    setIsSearching,
+    setHasInteracted,
     handleSearch,
     handleSelect,
     handleSearchSubmit
   } = useSearch(onSubmit)
 
-  // Debounce the API call, not the input update
-  const debouncedSearch = useDebounce((value: string) => {
-    handleSearch(value)
+  const debouncedSearch = useDebounce(async (value: string) => {
+    await handleSearch(value)
   }, 300)
 
   const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setInputValue(value)
-    setIsInitialFocus(false)
-    debouncedSearch(value)
-  }, [debouncedSearch])
+    setSearchQuery(value)
+    setHasInteracted(true)
+    
+    if (value.length >= 3) {
+      setIsSearching(true)
+      setSuggestions([])  // Clear old results
+      debouncedSearch(value)
+    } else {
+      setIsSearching(false)
+      setSuggestions([])
+    }
+  }, [setSearchQuery, setSuggestions, setHasInteracted, setIsSearching, debouncedSearch])
 
   const isInputValid = inputValue.length >= 3
   const effectiveHasInteracted = hasInteracted || (isInitialFocus && isInputValid)

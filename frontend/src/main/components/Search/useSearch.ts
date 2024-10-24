@@ -14,11 +14,7 @@ export function useSearch(onSubmit?: () => void) {
   const pathname = usePathname()
 
   const handleSearch = useCallback(async (term: string) => {
-    setSearchQuery(term)
-    setHasInteracted(true)
-    
     if (term.length >= 3) {
-      setIsSearching(true)
       try {
         const results = await getSearchSuggestions(term, pathname.split('/')[1] as Lang)
         setSuggestions(results)
@@ -26,6 +22,7 @@ export function useSearch(onSubmit?: () => void) {
         setIsSearching(false)
       }
     } else {
+      setIsSearching(false)
       setSuggestions([])
     }
   }, [pathname])
@@ -53,6 +50,10 @@ export function useSearch(onSubmit?: () => void) {
     suggestions,
     hasInteracted,
     isSearching,
+    setSearchQuery,
+    setSuggestions,
+    setIsSearching,
+    setHasInteracted,
     handleSearch,
     handleSelect,
     handleSearchSubmit,
