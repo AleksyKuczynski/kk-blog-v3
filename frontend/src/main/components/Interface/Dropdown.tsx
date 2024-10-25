@@ -21,9 +21,10 @@ interface DropdownContentProps {
 }
 
 interface DropdownProps {
-  children: ReactNode;
-  closeOnSelect?: boolean;
-  forceOpen?: boolean;
+  children: ReactNode
+  closeOnSelect?: boolean
+  forceOpen?: boolean
+  onOutsideClick?: () => void
 }
 
 const DropdownContext = createContext<DropdownContextType | undefined>(undefined);
@@ -84,30 +85,32 @@ export function DropdownContent({
   );
 }
 
-export default function Dropdown({ children, closeOnSelect = true, forceOpen }: DropdownProps) {
-  const [internalOpen, setInternalOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+export default function Dropdown({ 
+  children, 
+  closeOnSelect = true, 
+  forceOpen, 
+  onOutsideClick 
+}: DropdownProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
   
   // Use forceOpen if provided, otherwise use internal state
-  const isOpen = forceOpen !== undefined ? forceOpen : internalOpen;
+  const isOpen = forceOpen !== undefined ? forceOpen : internalOpen
 
   const toggle = useCallback(() => {
     if (forceOpen === undefined) {
-      setInternalOpen(current => !current);
+      setInternalOpen(prev => !prev)
     }
-  }, [forceOpen]);
+  }, [forceOpen])
 
   const close = useCallback(() => {
     if (forceOpen === undefined) {
-      setInternalOpen(false);
+      setInternalOpen(false)
     }
-  }, [forceOpen]);
+    onOutsideClick?.()
+  }, [forceOpen, onOutsideClick])
 
-  useOutsideClick(containerRef, null, isOpen, () => {
-    if (forceOpen === undefined) {
-      setInternalOpen(false);
-    }
-  });
+  useOutsideClick(containerRef, null, isOpen, close)
 
   return (
     <DropdownContext.Provider value={{ isOpen, toggle, close }}>
@@ -115,5 +118,5 @@ export default function Dropdown({ children, closeOnSelect = true, forceOpen }: 
         {children}
       </div>
     </DropdownContext.Provider>
-  );
+  )
 }

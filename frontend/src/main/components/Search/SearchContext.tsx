@@ -1,74 +1,66 @@
 // src/main/components/Search/SearchContext.tsx
 'use client'
 
-import React, { createContext, useState, useContext } from 'react'
-import { useRouter } from 'next/navigation'
-import { SearchContextType } from './types'
-import { SearchTranslations } from '@/main/lib/dictionaries/types'
-import { useSearch } from './useSearch'
-
-interface SearchProviderProps {
-  children: React.ReactNode
-  initialSearch: string
-  translations: SearchTranslations
-  isExpandable?: boolean
-}
+import React, { createContext, useContext } from 'react'
+import { SearchContextType, SearchProviderProps } from './types'
+import { useSearchInput } from './useSearchInput'
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined)
 
 export function SearchProvider({ 
   children, 
-  initialSearch = '', 
+  initialSearch,
   translations,
-  isExpandable = false
 }: SearchProviderProps) {
-  const [isOpen, setIsOpen] = useState(!isExpandable)
-  
-  const {
-    searchQuery,
-    suggestions,
-    hasInteracted,
-    isSearching,
-    handleSearch,
-    handleSelect,
-    handleSearchSubmit
-  } = useSearch()
+  const searchState = useSearchInput(translations, {
+    isExpandable: false,
+    onSubmit: undefined,
+    onClose: undefined
+  })
 
-  const setSearchQuery = (query: string) => {
-    handleSearch(query)
-  }
-
-  const value: SearchContextType = {
-    // Search state
-    searchQuery,
-    suggestions,
-    hasInteracted,
-    isSearching,
+  // Combine local search state with context requirements
+  const contextValue: SearchContextType = {
+    // Core search state from useSearchInput
+    ...searchState,
     
-    // UI state
-    isOpen,
-    isExpandable,
+    // Context-specific state
+    mode: 'standard',
+    isActive: searchState.showDropdown,
+    isExpanded: false,
+    hasInteracted: searchState.query.length > 0,
+    isSearching: searchState.searchStatus.type === 'searching',
+    totalResults: searchState.suggestions.length,
     
-    // Actions
-    setSearchQuery,
-    setIsOpen,
-    handleSelect,
-    handleSearchSubmit,
+    // Action handlers for consumers
+    setQuery: (query: string) => {
+      const event = {
+        target: { value: query }
+      } as React.ChangeEvent<HTMLInputElement>
+      searchState.handlers.handleInputChange(event)
+    },
+    setShowDropdown: (show: boolean) => {
+      if (!show) {
+        searchState.handlers.handleOutsideClick()
+      }
+    },
+    setHasInteracted: () => {/* no-op as it's derived from query */},
     
-    // Translations
-    translations
+    // Search result handlers
+    handleSelect: searchState.handlers.handleSelect,
+    handleSubmit: () => searchState.controls.submit(),
+    handleClose: searchState.controls.close,
   }
 
   return (
-    <SearchContext.Provider value={value}>
+    <SearchContext.Provider value={contextValue}>
       {children}
     </SearchContext.Provider>
   )
 }
 
-export function useSearchContext(): SearchContextType {
+export function useSearchContext() {
   const context = useContext(SearchContext)
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useSearchContext must be used within a SearchProvider')
   }
   return context
