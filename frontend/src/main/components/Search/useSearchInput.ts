@@ -2,9 +2,8 @@
 import { useRef, useCallback, useState, useMemo } from 'react'
 import { 
   SearchInputConfig, 
+  SearchInputHandle, 
   SearchStateManagement,
-  SearchUIHandlers,
-  SearchInputHandle,
   SearchStatus
 } from './types'
 import { useSearch } from './useSearch'
@@ -27,37 +26,59 @@ export function useSearchInput(
 
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const [showDropdown, setShowDropdown] = useState(false)
+  const [searchState, setSearchState] = useState<'idle' | 'pending' | 'searching' | 'complete'>('idle')
   const inputRef = useRef<HTMLInputElement>(null)
+  const searchIdRef = useRef(0)
 
-  // First, create the search callback
-  const triggerSearch = useCallback((value: string) => {
+  const handleFocus = useCallback(() => {
+    setShowDropdown(true)
+  }, [])
+
+  const handleBlur = useCallback(() => {
+    // Keep the timeout to allow click events to process
+    setTimeout(() => {
+      if (!config.isExpandable) {
+        setShowDropdown(false)
+      }
+    }, 200)
+  }, [config.isExpandable])
+
+  const triggerSearch = useCallback(async (value: string) => {
+    const currentSearchId = ++searchIdRef.current
+    
     if (value.length >= 3) {
-      handleSearch(value)
+      setSearchState('searching')
+      await handleSearch(value)
+      
+      // Only update if this is still the current search
+      if (currentSearchId === searchIdRef.current) {
+        setSearchState('complete')
+      }
     }
   }, [handleSearch])
 
-  // Then debounce it
-  const debouncedSearch = useDebounce(triggerSearch, 300)
+  const debouncedSearch = useDebounce((value: string) => {
+    if (value.length >= 3) {
+      setSearchState('pending')
+      triggerSearch(value)
+    } else {
+      setSearchState('idle')
+    }
+  }, 300)
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchQuery(value)
     setShowDropdown(true)
     setFocusedIndex(-1)
+    
+    // Reset search ID and trigger new search
+    searchIdRef.current++
+    if (value.length < 3) {
+      setSearchState('idle')
+    }
     debouncedSearch(value)
   }, [setSearchQuery, debouncedSearch])
-
-  const handleFocus = useCallback(() => {
-    setShowDropdown(true);
-  }, []);
-
-  const handleBlur = useCallback(() => {
-    setTimeout(() => {
-      if (!config.isExpandable) {
-        setShowDropdown(false);
-      }
-    }, 200);
-  }, [config.isExpandable]);
 
   const handleSelect = useCallback((slug: string, rubricSlug: string) => {
     handleSelectFromHook(slug, rubricSlug)
@@ -66,34 +87,34 @@ export function useSearchInput(
   }, [handleSelectFromHook])
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!showDropdown) return;
+    if (!showDropdown) return
 
     switch (e.key) {
       case 'ArrowDown':
-        e.preventDefault();
+        e.preventDefault()
         setFocusedIndex(prev => (
           prev < suggestions.length - 1 ? prev + 1 : prev
-        ));
-        break;
+        ))
+        break
       case 'ArrowUp':
-        e.preventDefault();
-        setFocusedIndex(prev => (prev > 0 ? prev - 1 : -1));
-        break;
+        e.preventDefault()
+        setFocusedIndex(prev => (prev > 0 ? prev - 1 : -1))
+        break
       case 'Enter':
-        e.preventDefault();
+        e.preventDefault()
         if (focusedIndex >= 0 && suggestions[focusedIndex]) {
-          const selected = suggestions[focusedIndex];
-          handleSelect(selected.slug, selected.rubric_slug);
+          const selected = suggestions[focusedIndex]
+          handleSelect(selected.slug, selected.rubric_slug)
         } else {
-          handleSubmitFromHook();
+          handleSubmitFromHook()
         }
-        break;
+        break
       case 'Escape':
-        setShowDropdown(false);
-        setFocusedIndex(-1);
-        break;
+        setShowDropdown(false)
+        setFocusedIndex(-1)
+        break
     }
-  }, [suggestions, focusedIndex, handleSelect, handleSubmitFromHook, showDropdown]);
+  }, [suggestions, focusedIndex, handleSelect, handleSubmitFromHook, showDropdown])
 
   const handleSearchClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
@@ -109,27 +130,24 @@ export function useSearchInput(
     if (!query || query.length < 3) {
       return { 
         type: 'minChars',
-        current: query.length,
+        current: query?.length || 0,
         required: 3
-      } as const;
+      }
     }
-    // Check isSearching first before no results
-    if (isSearching) {
-      return { type: 'searching' } as const;
+
+    switch (searchState) {
+      case 'pending':
+        return { type: 'pending' }
+      case 'searching':
+        return { type: 'searching' }
+      case 'complete':
+        return suggestions.length > 0 
+          ? { type: 'success', count: suggestions.length }
+          : { type: 'noResults' }
+      default:
+        return { type: 'idle' }
     }
-    // Only show noResults when we're not searching and have no suggestions
-    if (!isSearching && query.length >= 3 && (!suggestions || suggestions.length === 0)) {
-      return { type: 'noResults' } as const;
-    }
-    if (!isSearching && suggestions && suggestions.length > 0) {
-      return { 
-        type: 'success',
-        count: suggestions.length
-      } as const;
-    }
-    // Fallback to searching while waiting for results
-    return { type: 'searching' } as const;
-  }, [query, isSearching, suggestions]);
+  }, [query, searchState, suggestions])
 
   const controls: SearchInputHandle = {
     getValue: () => query,
@@ -138,6 +156,8 @@ export function useSearchInput(
       setSearchQuery('')
       setShowDropdown(false)
       setFocusedIndex(-1)
+      setSearchState('idle')
+      searchIdRef.current++
     },
     expand: () => {
       setShowDropdown(true)
@@ -154,6 +174,8 @@ export function useSearchInput(
           setSearchQuery('')
           setShowDropdown(false)
           setFocusedIndex(-1)
+          setSearchState('idle')
+          searchIdRef.current++
           break
         case 'submit':
           handleSubmitFromHook()

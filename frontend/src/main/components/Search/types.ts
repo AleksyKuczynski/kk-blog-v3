@@ -110,6 +110,7 @@ export interface SearchURLParams {
 export type SearchStatus = 
   | { type: 'idle' }
   | { type: 'minChars'; current: number; required: number }
+  | { type: 'pending' }
   | { type: 'searching' }
   | { type: 'noResults' }
   | { type: 'error'; message: string }
