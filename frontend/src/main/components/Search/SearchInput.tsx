@@ -1,9 +1,8 @@
 // src/main/components/Search/SearchInput.tsx
-import React, { forwardRef, useImperativeHandle } from 'react'
+import React, { forwardRef } from 'react'
 import { 
-  SearchInputProps, 
+  SearchInputProps,
   SearchInputHandle,
-  SearchInputConfig
 } from './types'
 import { 
   Dropdown, 
@@ -11,44 +10,26 @@ import {
   NavButton, 
   SearchIcon 
 } from '../Interface'
-import { useSearchInput } from './useSearchInput'
+import { useSearchContext } from './SearchContext';
 
 const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
   className = '',
   showButton = true,
   autoFocus = false,
-  isExpandable = false,
-  onSubmit,
-  onClose,
   translations,
 }, ref) => {
-  const config: SearchInputConfig = {
-    isExpandable,
-    onSubmit,
-    onClose
-  };
-
-  const {
+  const { inputManagement } = useSearchContext();
+  const { 
     inputRef,
     query,
     suggestions,
     focusedIndex,
     showDropdown,
     searchStatus,
-    handlers,
-    controls
-  } = useSearchInput(translations, config);
-
-  // Expose the controls via ref
-  useImperativeHandle(ref, () => controls, [controls])
+    handlers
+  } = inputManagement;
 
   const renderSuggestionContent = () => {
-    console.log('Rendering suggestions:', { 
-      status: searchStatus, 
-      suggestions,
-      showDropdown 
-    }) // Debug log
-  
     if (searchStatus.type !== 'success') {
       return (
         <div className="px-4 py-2 text-txcolor-secondary">
@@ -141,6 +122,6 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
   );
 });
 
-SearchInput.displayName = 'SearchInput'
+SearchInput.displayName = 'SearchInput';
 
-export default SearchInput
+export default SearchInput;

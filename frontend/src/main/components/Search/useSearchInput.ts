@@ -3,7 +3,7 @@ import { useRef, useCallback, useState, useMemo } from 'react'
 import { 
   SearchInputConfig, 
   SearchInputHandle, 
-  SearchStateManagement,
+  SearchInputManagement,
   SearchStatus
 } from './types'
 import { useSearch } from './useSearch'
@@ -13,7 +13,7 @@ import { useDebounce } from '@/main/lib/hooks'
 export function useSearchInput(
   translations: SearchTranslations,
   config: SearchInputConfig
-): SearchStateManagement {
+): SearchInputManagement {
   const {
     searchQuery: query,
     suggestions,
@@ -88,7 +88,7 @@ export function useSearchInput(
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!showDropdown) return
-
+  
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault()
@@ -115,11 +115,20 @@ export function useSearchInput(
         break
     }
   }, [suggestions, focusedIndex, handleSelect, handleSubmitFromHook, showDropdown])
-
+    
   const handleSearchClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
-    handleSubmitFromHook()
-  }, [handleSubmitFromHook])
+    
+    const isValid = query.trim().length >= 3
+    if (isValid) {
+      handleSubmitFromHook()
+      if (config.mode === 'expandable') {
+        config.onClose?.()
+      }
+    } else if (config.mode === 'expandable') {
+      config.onClose?.()
+    }
+  }, [query, handleSubmitFromHook, config])
 
   const handleOutsideClick = useCallback(() => {
     setShowDropdown(false)
@@ -207,6 +216,5 @@ export function useSearchInput(
       handleBlur
     },
     controls,
-    translations
   }
 }

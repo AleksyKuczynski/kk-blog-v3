@@ -37,8 +37,13 @@ const hoverStyles = {
 };
 
 export const NavButton = forwardRef<HTMLButtonElement, NavButtonProps>(
-  ({ context, icon, className = '', noHover = false, isHamburger = false, children, ...props }, ref) => {
+  ({ context, icon, className = '', noHover = false, isHamburger = false, children, onClick, ...props }, ref) => {
     const { currentTheme } = useTheme();
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      console.log('NavButton clicked');
+      onClick?.(e);
+    };
 
     const getButtonStyles = () => {
       const baseStyle = buttonStyles.base;
@@ -53,6 +58,7 @@ export const NavButton = forwardRef<HTMLButtonElement, NavButtonProps>(
       <button
         ref={ref}
         className={classes}
+        onClick={handleClick}
         {...props}
       >
         {icon || children}

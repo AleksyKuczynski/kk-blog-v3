@@ -32,80 +32,6 @@ export interface SearchResults {
   totalResults: number;
 }
 
-// Context State
-export interface SearchContextState extends SearchState, SearchResults {
-  translations: SearchTranslations;
-}
-
-// Context Actions
-export interface SearchContextActions {
-  setQuery: (query: string) => void;
-  setShowDropdown: (show: boolean) => void;
-  setHasInteracted: (hasInteracted: boolean) => void;
-  handleSelect: (slug: string, rubricSlug: string) => void;
-  handleSubmit: () => void;
-  handleClose: (action?: SearchInputAction) => void;
-  handleExpand?: () => void;
-  handleCollapse?: () => void;
-}
-
-// Combined Context Type
-export interface SearchContextType extends SearchContextState, SearchContextActions {}
-
-// Provider Props
-export interface SearchProviderProps {
-  children: React.ReactNode;
-  initialSearch: string;
-  translations: SearchTranslations;
-  mode?: SearchMode;
-  isInitiallyOpen?: boolean;
-}
-
-// Component Props
-export interface SearchInputProps {
-  className?: string;
-  translations: SearchTranslations;
-  showButton?: boolean;
-  autoFocus?: boolean;
-  isExpandable?: boolean;
-  onSubmit?: () => void;
-  onClose?: () => void;
-}
-
-// Update SearchInput props to use correct type
-export interface SearchInputConfig {
-  isExpandable?: boolean;
-  onSubmit?: () => void;
-  onClose?: () => void;
-}
-
-// Component Handle Interface
-export interface SearchInputHandle {
-  getValue: () => string;
-  focus: () => void;
-  clear: () => void;
-  expand: () => void;
-  collapse: () => void;
-  submit: () => void;
-  close: (action?: SearchInputAction) => void;
-}
-
-// Search Response Types for Server Actions
-export interface SearchResponse {
-  success: boolean;
-  results: SearchProposition[];
-  error?: string;
-  timing?: number;
-}
-
-// URL Safe Search Params
-export interface SearchURLParams {
-  q: string;
-  page?: string;
-  sort?: 'relevance' | 'date';
-  category?: string;
-}
-
 // Search Status Type for UI States
 export type SearchStatus = 
   | { type: 'idle' }
@@ -127,22 +53,30 @@ export interface SearchUIHandlers {
   handleBlur: () => void;
 }
 
-// Search Presentation Props
-export interface SearchPresentationProps extends SearchUIHandlers {
-  inputRef: React.RefObject<HTMLInputElement>;
-  query: string;
-  showDropdown: boolean;
-  focusedIndex: number;
-  suggestions: SearchProposition[];
-  searchStatus: SearchStatus;
-  translations: SearchTranslations;
-  showButton?: boolean;
-  autoFocus?: boolean;
-  className?: string;
+// Component Handle Interface
+export interface SearchInputHandle {
+  getValue: () => string;
+  focus: () => void;
+  clear: () => void;
+  expand: () => void;
+  collapse: () => void;
+  submit: () => void;
+  close: (action?: SearchInputAction) => void;
 }
 
-// Search State Management
-export interface SearchStateManagement {
+// Base search functionality from useSearch
+export interface SearchFunctionality {
+  searchQuery: string;
+  suggestions: SearchProposition[];
+  isSearching: boolean;
+  setSearchQuery: (query: string) => void;
+  handleSearch: (term: string) => Promise<void>;
+  handleSelect: (slug: string, rubricSlug: string) => void;
+  handleSearchSubmit: () => boolean;
+}
+
+// Input management from useSearchInput
+export interface SearchInputManagement {
   inputRef: React.RefObject<HTMLInputElement>;
   query: string;
   suggestions: SearchProposition[];
@@ -151,5 +85,51 @@ export interface SearchStateManagement {
   searchStatus: SearchStatus;
   handlers: SearchUIHandlers;
   controls: SearchInputHandle;
+}
+
+// Provider Props
+export interface SearchProviderProps {
+  children: React.ReactNode;
+  initialSearch: string;
   translations: SearchTranslations;
+  mode?: SearchMode;
+  isInitiallyOpen?: boolean;
+}
+
+// Component Props
+export interface SearchInputProps {
+  className?: string;
+  translations: SearchTranslations;
+  showButton?: boolean;
+  autoFocus?: boolean;
+  isExpandable?: boolean;
+}
+
+// Search Input Configuration
+export interface SearchInputConfig {
+  isExpandable?: boolean;
+  mode?: SearchMode;
+  onSubmit?: (query: string) => boolean;
+  onClose?: () => boolean;
+}
+
+// Combined Context State & Actions
+export interface SearchContextType {
+  // Search state
+  query: string;
+  suggestions: SearchProposition[];
+  isExpanded: boolean;
+  showDropdown: boolean;
+  hasInteracted: boolean;
+  isSearching: boolean;
+
+  // Input management
+  inputManagement: SearchInputManagement;
+
+  // Actions
+  setQuery: (query: string) => void;
+  handleSelect: (slug: string, rubricSlug: string) => void;
+  handleSubmit: () => boolean;
+  handleClose: (clearInput?: boolean) => boolean;
+  handleExpandableToggle: () => boolean;
 }

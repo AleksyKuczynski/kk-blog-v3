@@ -1,36 +1,29 @@
 // src/main/components/Search/ExpandableSearchButton.tsx
 'use client'
 
-import React, { useRef, useState, useCallback } from 'react'
+import React, { useRef } from 'react'
 import { SearchProvider } from './SearchContext'
 import SearchInput from './SearchInput'
-import { NavButton } from '../Interface'
-import { SearchIcon } from '../Interface/Icons'
-import { SearchInputHandle } from './types'
+import { SearchButton } from './SearchButton'
 import { SearchTranslations } from '@/main/lib/dictionaries/types'
+import { useOutsideClick } from '@/main/lib/hooks'
+import { useSearchContext } from './SearchContext'
 
 interface ExpandableSearchButtonProps {
   searchTranslations: SearchTranslations;
   className?: string;
 }
 
-export default function ExpandableSearchButton({ 
-  searchTranslations,
-  className = ''
+function ExpandableSearchContent({ 
+  searchTranslations, 
+  className = '' 
 }: ExpandableSearchButtonProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
-  const searchInputRef = useRef<SearchInputHandle>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const { isExpanded, handleClose } = useSearchContext()
 
-  const handleExpand = useCallback(() => {
-    setIsExpanded(true)
-  }, [])
-
-  const handleClose = useCallback(() => {
-    setIsExpanded(false)
-    buttonRef.current?.focus()
-  }, [])
+  // Update outside click to properly close and clear input
+  useOutsideClick(containerRef, buttonRef, isExpanded, () => handleClose(true))
 
   const expandedClasses = `
     absolute 
@@ -48,43 +41,39 @@ export default function ExpandableSearchButton({
   return (
     <div ref={containerRef} className="relative">
       {!isExpanded ? (
-        <NavButton
-          ref={buttonRef}
-          context="desktop"
-          onClick={handleExpand}
-          className="relative z-10"
-          aria-label={searchTranslations.placeholder}
-          aria-expanded={isExpanded}
-          aria-controls="expandable-search"
-          icon={<SearchIcon className="h-6 w-6" />}
+        <SearchButton 
+          ref={buttonRef} 
+          context="desktop" 
+          className="relative z-10" 
         />
-      ) : null}
-
-      <div 
-        id="expandable-search"
-        className={expandedClasses}
-        role="search"
-      >
-        {isExpanded && (
-          <SearchProvider 
-            initialSearch="" 
+      ) : (
+        <div 
+          id="expandable-search"
+          className={expandedClasses}
+          role="search"
+        >
+          <SearchInput
             translations={searchTranslations}
-            mode="expandable"
-            // Add this prop to indicate expanded state to Provider
-            isInitiallyOpen={true}
-          >
-            <SearchInput
-              ref={searchInputRef}
-              translations={searchTranslations}
-              isExpandable={true}
-              showButton={true}
-              autoFocus={true}
-              onClose={handleClose}
-              className="w-full"
-            />
-          </SearchProvider>
-        )}
-      </div>
+            isExpandable={true}
+            showButton={true}
+            autoFocus={true}
+            className="w-full"
+          />
+        </div>
+      )}
     </div>
+  )
+}
+
+export default function ExpandableSearchButton(props: ExpandableSearchButtonProps) {
+  return (
+    <SearchProvider 
+      initialSearch="" 
+      translations={props.searchTranslations}
+      mode="expandable"
+      isInitiallyOpen={false}
+    >
+      <ExpandableSearchContent {...props} />
+    </SearchProvider>
   )
 }
