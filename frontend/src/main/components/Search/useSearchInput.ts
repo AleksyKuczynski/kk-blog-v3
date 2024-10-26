@@ -87,34 +87,58 @@ export function useSearchInput(
   }, [handleSelectFromHook])
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!showDropdown) return
-  
     switch (e.key) {
+      case 'Enter':
+        e.preventDefault()
+        if (showDropdown && focusedIndex >= 0 && suggestions[focusedIndex]) {
+          // Handle suggestion selection
+          const selected = suggestions[focusedIndex]
+          handleSelect(selected.slug, selected.rubric_slug)
+        } else {
+          // Handle search submission
+          const isValid = query.trim().length >= 3
+          if (isValid) {
+            handleSubmitFromHook()
+            if (config.mode === 'expandable') {
+              config.onClose?.()
+            }
+          } else if (config.mode === 'expandable') {
+            config.onClose?.()
+          }
+        }
+        break
+        
       case 'ArrowDown':
+        if (!showDropdown) return
         e.preventDefault()
         setFocusedIndex(prev => (
           prev < suggestions.length - 1 ? prev + 1 : prev
         ))
         break
+        
       case 'ArrowUp':
+        if (!showDropdown) return
         e.preventDefault()
         setFocusedIndex(prev => (prev > 0 ? prev - 1 : -1))
         break
-      case 'Enter':
-        e.preventDefault()
-        if (focusedIndex >= 0 && suggestions[focusedIndex]) {
-          const selected = suggestions[focusedIndex]
-          handleSelect(selected.slug, selected.rubric_slug)
-        } else {
-          handleSubmitFromHook()
-        }
-        break
+        
       case 'Escape':
         setShowDropdown(false)
         setFocusedIndex(-1)
+        if (config.mode === 'expandable') {
+          config.onClose?.()
+        }
         break
     }
-  }, [suggestions, focusedIndex, handleSelect, handleSubmitFromHook, showDropdown])
+  }, [
+    showDropdown,
+    suggestions, 
+    focusedIndex,
+    query,
+    handleSelect,
+    handleSubmitFromHook,
+    config
+  ])
     
   const handleSearchClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
