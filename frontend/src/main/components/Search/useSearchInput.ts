@@ -12,7 +12,9 @@ import { useDebounce } from '@/main/lib/hooks'
 
 export function useSearchInput(
   translations: SearchTranslations,
-  config: SearchInputConfig
+  isExpandable: boolean = false,
+  mode: 'expandable' | 'standard' = 'standard',
+  onClose?: () => void
 ): SearchInputManagement {
   const {
     searchQuery: query,
@@ -26,22 +28,27 @@ export function useSearchInput(
 
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const [showDropdown, setShowDropdown] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)  // New explicit expansion state
   const [searchState, setSearchState] = useState<'idle' | 'pending' | 'searching' | 'complete'>('idle')
   const inputRef = useRef<HTMLInputElement>(null)
   const searchIdRef = useRef(0)
 
   const handleFocus = useCallback(() => {
-    setShowDropdown(true)
-  }, [])
+    if (isExpandable) {
+      setIsExpanded(true)
+      setShowDropdown(true)
+    } else {
+      setShowDropdown(true)
+    }
+  }, [isExpandable])
 
   const handleBlur = useCallback(() => {
-    // Keep the timeout to allow click events to process
-    setTimeout(() => {
-      if (!config.isExpandable) {
+    if (!isExpandable) {
+      setTimeout(() => {
         setShowDropdown(false)
-      }
-    }, 200)
-  }, [config.isExpandable])
+      }, 200)
+    }
+  }, [isExpandable])
 
   const triggerSearch = useCallback(async (value: string) => {
     const currentSearchId = ++searchIdRef.current
@@ -50,7 +57,6 @@ export function useSearchInput(
       setSearchState('searching')
       await handleSearch(value)
       
-      // Only update if this is still the current search
       if (currentSearchId === searchIdRef.current) {
         setSearchState('complete')
       }
@@ -72,7 +78,6 @@ export function useSearchInput(
     setShowDropdown(true)
     setFocusedIndex(-1)
     
-    // Reset search ID and trigger new search
     searchIdRef.current++
     if (value.length < 3) {
       setSearchState('idle')
@@ -80,30 +85,74 @@ export function useSearchInput(
     debouncedSearch(value)
   }, [setSearchQuery, debouncedSearch])
 
+  const handleSearchClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    
+    const isValid = query.trim().length >= 3
+    
+    if (isExpandable) {
+      if (!isValid) {
+        if (isExpanded) {
+          setSearchQuery('')
+          setIsExpanded(false)
+          setShowDropdown(false)
+          setFocusedIndex(-1)
+          setSearchState('idle')
+          onClose?.()
+        } else {
+          setIsExpanded(true)
+          setShowDropdown(true)
+          // Use requestAnimationFrame to ensure state updates before focusing
+          requestAnimationFrame(() => {
+            inputRef.current?.focus()
+          })
+        }
+      } else {
+        handleSubmitFromHook()
+        setIsExpanded(false)
+        onClose?.()
+      }
+    } else {
+      if (isValid) {
+        handleSubmitFromHook()
+      }
+    }
+  }, [
+    query, 
+    isExpandable, 
+    isExpanded,
+    setSearchQuery, 
+    handleSubmitFromHook,
+    onClose
+  ])
+
   const handleSelect = useCallback((slug: string, rubricSlug: string) => {
     handleSelectFromHook(slug, rubricSlug)
     setShowDropdown(false)
     setFocusedIndex(-1)
-  }, [handleSelectFromHook])
+    if (isExpandable) {
+      onClose?.()
+    }
+  }, [handleSelectFromHook, isExpandable, onClose])
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
       case 'Enter':
         e.preventDefault()
         if (showDropdown && focusedIndex >= 0 && suggestions[focusedIndex]) {
-          // Handle suggestion selection
           const selected = suggestions[focusedIndex]
           handleSelect(selected.slug, selected.rubric_slug)
         } else {
-          // Handle search submission
           const isValid = query.trim().length >= 3
           if (isValid) {
             handleSubmitFromHook()
-            if (config.mode === 'expandable') {
-              config.onClose?.()
+            if (isExpandable) {
+              setIsExpanded(false)
+              onClose?.()
             }
-          } else if (config.mode === 'expandable') {
-            config.onClose?.()
+          } else if (isExpandable) {
+            setIsExpanded(false)
+            onClose?.()
           }
         }
         break
@@ -122,42 +171,40 @@ export function useSearchInput(
         setFocusedIndex(prev => (prev > 0 ? prev - 1 : -1))
         break
         
-      case 'Escape':
-        setShowDropdown(false)
-        setFocusedIndex(-1)
-        if (config.mode === 'expandable') {
-          config.onClose?.()
-        }
-        break
+        case 'Escape':
+          if (isExpandable) {
+            setIsExpanded(false)
+            setShowDropdown(false)
+            setFocusedIndex(-1)
+            onClose?.()
+          } else {
+            setShowDropdown(false)
+            setFocusedIndex(-1)
+          }
+          break
     }
   }, [
     showDropdown,
-    suggestions, 
+    suggestions,
     focusedIndex,
     query,
     handleSelect,
     handleSubmitFromHook,
-    config
+    isExpandable,
+    onClose
   ])
-    
-  const handleSearchClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    
-    const isValid = query.trim().length >= 3
-    if (isValid) {
-      handleSubmitFromHook()
-      if (config.mode === 'expandable') {
-        config.onClose?.()
-      }
-    } else if (config.mode === 'expandable') {
-      config.onClose?.()
-    }
-  }, [query, handleSubmitFromHook, config])
 
   const handleOutsideClick = useCallback(() => {
-    setShowDropdown(false)
-    setFocusedIndex(-1)
-  }, [])
+    if (isExpandable) {
+      setIsExpanded(false)
+      setShowDropdown(false)
+      setFocusedIndex(-1)
+      onClose?.()
+    } else {
+      setShowDropdown(false)
+      setFocusedIndex(-1)
+    }
+  }, [isExpandable, onClose])
 
   const searchStatus = useMemo((): SearchStatus => {
     if (!query || query.length < 3) {
@@ -229,6 +276,7 @@ export function useSearchInput(
     suggestions: suggestions || [],
     focusedIndex,
     showDropdown,
+    isExpanded,
     searchStatus,
     handlers: {
       handleInputChange,

@@ -18,9 +18,8 @@ export default function SearchBarWrapper({
 }: SearchBarWrapperProps) {
 
   return (
-    <SearchProvider initialSearch={initialSearch} translations={translations}>
+    <SearchProvider translations={translations}>
       <SearchInput 
-        showButton={showButton} 
         translations={translations}
       />
     </SearchProvider>

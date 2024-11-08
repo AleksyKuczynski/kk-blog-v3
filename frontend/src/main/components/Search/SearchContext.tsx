@@ -1,10 +1,9 @@
 // src/main/components/Search/SearchContext.tsx
 'use client'
 
-import React, { createContext, useCallback, useContext, useState } from 'react'
+import React, { createContext, useContext } from 'react'
 import { SearchContextType, SearchProviderProps } from './types'
 import { useSearchInput } from './useSearchInput'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useSearch } from './useSearch'
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined)
@@ -23,46 +22,20 @@ export function SearchProvider({
   mode = 'standard',
   isInitiallyOpen = false,
 }: SearchProviderProps) {
-  const [isExpanded, setIsExpanded] = useState(isInitiallyOpen)
-
-  // Get base search functionality
   const searchFunctionality = useSearch()
   
-  // Get input management
-  const inputManagement = useSearchInput(translations, {
-    isExpandable: mode === 'expandable',
+  const inputManagement = useSearchInput(
+    translations,
+    mode === 'expandable',
     mode,
-    onSubmit: () => {
-      const success = searchFunctionality.handleSearchSubmit()
-      if (success && mode === 'expandable') {
-        handleClose(false)
-      }
-      return success
-    },
-    onClose: () => {
-      if (mode === 'expandable') {
-        setIsExpanded(false)
-      }
-      return true
-    }
-  })
-
-  const handleClose = useCallback((clearInput: boolean = false): boolean => {
-    if (mode === 'expandable') {
-      setIsExpanded(false)
-      if (clearInput) {
-        inputManagement.controls.clear()
-      }
-      return true
-    }
-    return false
-  }, [mode, inputManagement.controls])
+    () => inputManagement.controls.close('clear')
+  )
 
   const contextValue: SearchContextType = {
     // Search state
     query: searchFunctionality.searchQuery,
     suggestions: searchFunctionality.suggestions,
-    isExpanded,
+    isExpanded: mode === 'expandable' ? inputManagement.isExpanded : true,
     showDropdown: inputManagement.showDropdown,
     hasInteracted: searchFunctionality.searchQuery.length > 0,
     isSearching: searchFunctionality.isSearching,
@@ -76,23 +49,10 @@ export function SearchProvider({
     handleSubmit: () => {
       const success = searchFunctionality.handleSearchSubmit()
       if (success && mode === 'expandable') {
-        handleClose(false)
+        inputManagement.controls.close('clear')
       }
       return Boolean(success)
-    },
-    handleClose,
-    handleExpandableToggle: () => {
-      if (mode === 'expandable') {
-        if (isExpanded) {
-          const isValid = searchFunctionality.searchQuery.trim().length >= 3
-          return isValid ? contextValue.handleSubmit() : handleClose(true)
-        } else {
-          setIsExpanded(true)
-          return true
-        }
-      }
-      return false
-    },
+    }
   }
 
   return (

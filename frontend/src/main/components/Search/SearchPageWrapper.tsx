@@ -12,9 +12,8 @@ interface SearchPageWrapperProps {
 
 export default function SearchPageWrapper({ initialSearch, translations }: SearchPageWrapperProps) {
   return (
-    <SearchProvider initialSearch={initialSearch} translations={translations}>
+    <SearchProvider translations={translations}>
       <SearchInput 
-        showButton={true} 
         translations={translations}
       />
     </SearchProvider>

@@ -1,5 +1,5 @@
 // src/main/components/Search/SearchInput.tsx
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useImperativeHandle } from 'react'
 import { 
   SearchInputProps,
   SearchInputHandle,
@@ -14,11 +14,17 @@ import { useSearchContext } from './SearchContext';
 
 const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
   className = '',
-  showButton = true,
   autoFocus = false,
   translations,
 }, ref) => {
-  const { inputManagement } = useSearchContext();
+  const { 
+    inputManagement,
+    isExpanded,
+  } = useSearchContext();
+
+  // Use the forwarded ref to expose the input controls
+  useImperativeHandle(ref, () => inputManagement.controls, [inputManagement.controls]);
+
   const { 
     inputRef,
     query,
@@ -26,7 +32,15 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
     focusedIndex,
     showDropdown,
     searchStatus,
-    handlers
+    handlers: {
+      handleInputChange,
+      handleKeyDown,
+      handleSearchClick,
+      handleOutsideClick,
+      handleSelect,
+      handleFocus,
+      handleBlur
+    }
   } = inputManagement;
 
   const renderSuggestionContent = () => {
@@ -47,7 +61,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
             key={suggestion.slug}
             role="option"
             aria-selected={index === focusedIndex}
-            onClick={() => handlers.handleSelect(suggestion.slug, suggestion.rubric_slug)}
+            onClick={() => handleSelect(suggestion.slug, suggestion.rubric_slug)}
             className={`
               px-4 py-2 cursor-pointer
               ${index === focusedIndex 
@@ -65,54 +79,58 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
     );
   };
 
+  const containerClasses = `
+    relative flex-grow
+    bg-bgcolor-accent shadow-md
+    focus-within:ring-2 focus-within:ring-prcolor-dark
+    transition-all duration-300
+    theme-default:rounded-lg
+    theme-rounded:rounded-3xl
+    theme-sharp:rounded-none
+    ${isExpanded === false ? 'w-0 opacity-0' : 'w-full opacity-100'}
+    ${className}
+  `;
+
   return (
     <div className="relative w-full">
-      <div className={`
-        group flex items-center
-        bg-bgcolor-accent shadow-md
-        focus-within:ring-2 focus-within:ring-prcolor-dark
-        transition-colors duration-300
-        theme-default:rounded-lg
-        theme-rounded:rounded-3xl
-        theme-sharp:rounded-none
-        ${className}
-      `}>
-        <input
-          ref={inputRef}
-          type="text"
-          className={`
-            w-full py-2 pl-3 pr-2
-            bg-transparent
-            text-txcolor placeholder-txcolor-muted
-            focus:outline-none
-          `}
-          placeholder={translations.placeholder}
-          value={query}
-          onChange={handlers.handleInputChange}
-          onKeyDown={handlers.handleKeyDown}
-          onFocus={handlers.handleFocus}
-          onBlur={handlers.handleBlur}
-          autoFocus={autoFocus}
-          role="combobox"
-          aria-expanded={showDropdown}
-          aria-controls="search-suggestions"
-          aria-autocomplete="list"
-        />
-
-        {showButton && (
-          <NavButton
-            context="desktop"
-            onClick={handlers.handleSearchClick}
-            noHover={true}
-            aria-label={translations.submit}
-            icon={<SearchIcon className="h-5 w-5" />}
-            className="h-full px-2 flex items-center justify-center"
+      <div className="flex gap-2 items-center">
+        <div className={containerClasses}>
+          <input
+            ref={inputRef}
+            type="text"
+            className={`
+              w-full py-2 px-3
+              bg-transparent
+              text-txcolor placeholder-txcolor-muted
+              focus:outline-none
+              ${isExpanded === false ? 'hidden' : ''}
+            `}
+            placeholder={translations.placeholder}
+            value={query}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            autoFocus={autoFocus}
+            role="combobox"
+            aria-expanded={showDropdown}
+            aria-controls="search-suggestions"
+            aria-autocomplete="list"
           />
-        )}
+        </div>
+
+        <NavButton
+          context="desktop"
+          onClick={handleSearchClick}
+          noHover={false}
+          aria-label={translations.submit}
+          aria-expanded={isExpanded}
+          icon={<SearchIcon className="h-5 w-5" />}
+        />
       </div>
 
       {showDropdown && (
-        <Dropdown forceOpen={true} onOutsideClick={handlers.handleOutsideClick}>
+        <Dropdown forceOpen={true} onOutsideClick={handleOutsideClick}>
           <DropdownContent width="search" align="left">
             {renderSuggestionContent()}
           </DropdownContent>
