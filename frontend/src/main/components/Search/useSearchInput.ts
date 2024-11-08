@@ -8,7 +8,7 @@ import {
 } from './types'
 import { useSearch } from './useSearch'
 import { SearchTranslations } from '@/main/lib/dictionaries/types'
-import { useDebounce } from '@/main/lib/hooks'
+import { useDebounce, useOutsideClick } from '@/main/lib/hooks'
 
 export function useSearchInput(
   translations: SearchTranslations,
@@ -28,27 +28,18 @@ export function useSearchInput(
 
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const [showDropdown, setShowDropdown] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)  // New explicit expansion state
+  const [isExpanded, setIsExpanded] = useState(false)
   const [searchState, setSearchState] = useState<'idle' | 'pending' | 'searching' | 'complete'>('idle')
-  const inputRef = useRef<HTMLInputElement>(null)
   const searchIdRef = useRef(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const handleFocus = useCallback(() => {
-    if (isExpandable) {
-      setIsExpanded(true)
-      setShowDropdown(true)
-    } else {
-      setShowDropdown(true)
-    }
-  }, [isExpandable])
-
-  const handleBlur = useCallback(() => {
-    if (!isExpandable) {
-      setTimeout(() => {
-        setShowDropdown(false)
-      }, 200)
-    }
-  }, [isExpandable])
+  // Helper to validate search query
+  const isValidQuery = useCallback((q: string) => {
+    return q.trim().length >= 3
+  }, [])
 
   const triggerSearch = useCallback(async (value: string) => {
     const currentSearchId = ++searchIdRef.current
@@ -85,46 +76,102 @@ export function useSearchInput(
     debouncedSearch(value)
   }, [setSearchQuery, debouncedSearch])
 
-  const handleSearchClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    
-    const isValid = query.trim().length >= 3
-    
-    if (isExpandable) {
-      if (!isValid) {
-        if (isExpanded) {
-          setSearchQuery('')
-          setIsExpanded(false)
-          setShowDropdown(false)
-          setFocusedIndex(-1)
-          setSearchState('idle')
-          onClose?.()
-        } else {
-          setIsExpanded(true)
-          setShowDropdown(true)
-          // Use requestAnimationFrame to ensure state updates before focusing
-          requestAnimationFrame(() => {
-            inputRef.current?.focus()
-          })
-        }
-      } else {
-        handleSubmitFromHook()
-        setIsExpanded(false)
-        onClose?.()
-      }
-    } else {
-      if (isValid) {
-        handleSubmitFromHook()
-      }
+  // Handle expansion state
+  const expand = useCallback(() => {
+    setIsExpanded(true)
+    setShowDropdown(true)
+    requestAnimationFrame(() => {
+      inputRef.current?.focus()
+    })
+  }, [])
+
+  // Handle collapse with state preservation
+  const collapse = useCallback((clearQuery: boolean = false) => {
+    setIsExpanded(false)
+    setShowDropdown(false)
+    setFocusedIndex(-1)
+    if (clearQuery) {
+      setSearchQuery('')
+      setSearchState('idle')
     }
-  }, [
-    query, 
-    isExpandable, 
-    isExpanded,
-    setSearchQuery, 
-    handleSubmitFromHook,
-    onClose
-  ])
+  }, [setSearchQuery])
+
+  const handleFocus = useCallback(() => {
+    if (isExpandable) {
+      expand()
+    } else {
+      setShowDropdown(true)
+    }
+  }, [isExpandable, expand])
+
+  const handleBlur = useCallback(() => {
+    if (!isExpandable) {
+      setTimeout(() => {
+        setShowDropdown(false)
+      }, 200)
+    }
+  }, [isExpandable])
+
+// Helper to check if click is within search component
+const isWithinSearchComponent = useCallback((target: Node | null) => {
+  if (!target) return false
+  return (
+    containerRef.current?.contains(target) ||
+    buttonRef.current?.contains(target) ||
+    inputRef.current?.contains(target) ||
+    dropdownRef.current?.contains(target)
+  )
+}, [])
+
+// Handle search button click
+const handleSearchClick = useCallback((e: React.MouseEvent) => {
+  e.preventDefault()
+  
+  if (!isExpandable) {
+    if (isValidQuery(query)) {
+      handleSubmitFromHook()
+    }
+    return
+  }
+
+  if (!isExpanded) {
+    expand()
+    return
+  }
+
+  // Handle expanded state
+  if (isValidQuery(query)) {
+    handleSubmitFromHook()
+    collapse(true)
+    onClose?.()
+  } else {
+    collapse(true)
+    onClose?.()
+  }
+}, [
+  query,
+  isExpandable,
+  isExpanded,
+  isValidQuery,
+  handleSubmitFromHook,
+  expand,
+  collapse,
+  onClose
+])
+
+// True outside click handler
+const handleOutsideClick = useCallback((event?: MouseEvent | TouchEvent) => {
+  if (!event?.target || !isExpandable) return
+
+  // If click is within search component, don't treat as outside click
+  if (isWithinSearchComponent(event.target as Node)) {
+    return
+  }
+
+  // True outside click - collapse but preserve query
+  collapse(false)
+  onClose?.()
+}, [isExpandable, isWithinSearchComponent, collapse, onClose])
 
   const handleSelect = useCallback((slug: string, rubricSlug: string) => {
     handleSelectFromHook(slug, rubricSlug)
@@ -194,17 +241,9 @@ export function useSearchInput(
     onClose
   ])
 
-  const handleOutsideClick = useCallback(() => {
-    if (isExpandable) {
-      setIsExpanded(false)
-      setShowDropdown(false)
-      setFocusedIndex(-1)
-      onClose?.()
-    } else {
-      setShowDropdown(false)
-      setFocusedIndex(-1)
-    }
-  }, [isExpandable, onClose])
+  // Use our optimized outside click hook
+  useOutsideClick(containerRef, buttonRef, isExpanded, handleOutsideClick)
+
 
   const searchStatus = useMemo((): SearchStatus => {
     if (!query || query.length < 3) {
@@ -239,39 +278,30 @@ export function useSearchInput(
       setSearchState('idle')
       searchIdRef.current++
     },
-    expand: () => {
-      setShowDropdown(true)
-      inputRef.current?.focus()
-    },
-    collapse: () => {
-      setShowDropdown(false)
-      setFocusedIndex(-1)
-    },
+    expand,
+    collapse: () => collapse(false),
     submit: () => handleSubmitFromHook(),
     close: (action = 'preserve') => {
       switch (action) {
         case 'clear':
-          setSearchQuery('')
-          setShowDropdown(false)
-          setFocusedIndex(-1)
-          setSearchState('idle')
-          searchIdRef.current++
+          collapse(true)
           break
         case 'submit':
           handleSubmitFromHook()
-          setShowDropdown(false)
-          setFocusedIndex(-1)
+          collapse(true)
           break
         default:
-          setShowDropdown(false)
-          setFocusedIndex(-1)
+          collapse(false)
           break
       }
     }
   }
 
   return {
+    containerRef,  
     inputRef,
+    buttonRef,
+    dropdownRef,
     query,
     suggestions: suggestions || [],
     focusedIndex,

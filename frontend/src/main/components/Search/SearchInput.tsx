@@ -10,7 +10,7 @@ import {
   NavButton, 
   SearchIcon 
 } from '../Interface'
-import { useSearchContext } from './SearchContext';
+import { useSearchContext } from './SearchContext'
 
 const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
   className = '',
@@ -26,7 +26,10 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
   useImperativeHandle(ref, () => inputManagement.controls, [inputManagement.controls]);
 
   const { 
+    containerRef,
     inputRef,
+    buttonRef,
+    dropdownRef,
     query,
     suggestions,
     focusedIndex,
@@ -55,7 +58,11 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
     }
   
     return (
-      <ul role="listbox" id="search-suggestions">
+      <ul 
+        role="listbox" 
+        id="search-suggestions"
+        aria-label={translations.results}
+      >
         {suggestions.map((suggestion, index) => (
           <li 
             key={suggestion.slug}
@@ -92,7 +99,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
   `;
 
   return (
-    <div className="relative w-full">
+    <div ref={containerRef} className="relative w-full">
       <div className="flex gap-2 items-center">
         <div className={containerClasses}>
           <input
@@ -116,10 +123,12 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
             aria-expanded={showDropdown}
             aria-controls="search-suggestions"
             aria-autocomplete="list"
+            aria-label={translations.placeholder}
           />
         </div>
 
         <NavButton
+          ref={buttonRef} // Assign buttonRef to NavButton
           context="desktop"
           onClick={handleSearchClick}
           noHover={false}
@@ -130,7 +139,10 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
       </div>
 
       {showDropdown && (
-        <Dropdown forceOpen={true} onOutsideClick={handleOutsideClick}>
+        <Dropdown 
+          forceOpen={true} 
+          onOutsideClick={handleOutsideClick} // Pass the handler directly
+        >
           <DropdownContent width="search" align="left">
             {renderSuggestionContent()}
           </DropdownContent>

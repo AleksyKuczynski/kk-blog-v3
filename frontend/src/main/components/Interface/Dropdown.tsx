@@ -1,7 +1,7 @@
 // src/main/components/Interface/Dropdown.tsx
 import React, { ReactNode, createContext, useContext, useCallback, useState, useRef } from 'react';
 import { useTheme } from '../ThemeSwitcher';
-import { useOutsideClick } from '@/main/lib/hooks';
+import { useDropdown } from './useDropdown';
 
 interface DropdownContextType {
   isOpen: boolean;
@@ -38,7 +38,6 @@ export function DropdownTrigger({ children }: DropdownTriggerProps) {
     context.toggle();
   };
 
-  // Clone child element to inject onClick handler
   return React.cloneElement(children as React.ReactElement, {
     onClick: handleClick,
   });
@@ -91,32 +90,23 @@ export default function Dropdown({
   forceOpen, 
   onOutsideClick 
 }: DropdownProps) {
-  const [internalOpen, setInternalOpen] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
-  
-  // Use forceOpen if provided, otherwise use internal state
-  const isOpen = forceOpen !== undefined ? forceOpen : internalOpen
-
-  const toggle = useCallback(() => {
-    if (forceOpen === undefined) {
-      setInternalOpen(prev => !prev)
-    }
-  }, [forceOpen])
-
-  const close = useCallback(() => {
-    if (forceOpen === undefined) {
-      setInternalOpen(false)
-    }
-    onOutsideClick?.()
-  }, [forceOpen, onOutsideClick])
-
-  useOutsideClick(containerRef, null, isOpen, close)
+  const {
+    isOpen,
+    toggle,
+    close,
+    dropdownRef,
+    toggleRef
+  } = useDropdown({
+    closeOnSelect,
+    forceOpen,
+    onOutsideClick
+  });
 
   return (
     <DropdownContext.Provider value={{ isOpen, toggle, close }}>
-      <div ref={containerRef} className="relative">
+      <div ref={dropdownRef} className="relative">
         {children}
       </div>
     </DropdownContext.Provider>
-  )
+  );
 }

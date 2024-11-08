@@ -47,7 +47,7 @@ export interface SearchUIHandlers {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   handleSearchClick: (e: React.MouseEvent) => void;
-  handleOutsideClick: () => void;
+  handleOutsideClick: (e?: MouseEvent) => void;
   handleSelect: (slug: string, rubricSlug: string) => void;
   handleFocus: () => void;
   handleBlur: () => void;
@@ -77,7 +77,10 @@ export interface SearchFunctionality {
 
 // Input management from useSearchInput
 export interface SearchInputManagement {
+  containerRef: React.RefObject<HTMLDivElement>;
   inputRef: React.RefObject<HTMLInputElement>;
+  buttonRef: React.RefObject<HTMLButtonElement>;
+  dropdownRef: React.RefObject<HTMLDivElement>;
   query: string;
   suggestions: SearchProposition[];
   focusedIndex: number;
