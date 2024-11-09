@@ -4,25 +4,14 @@
 import React from 'react';
 import { useTheme } from './ThemeContext';
 import { useColor } from './ColorContext';
-import { Theme, ColorScheme } from './themeTypes';
-import { ThemesTranslations, ColorsTranslations } from '@/main/lib/dictionaries/types';
-import { 
-  Dropdown, 
-  DropdownTrigger, 
-  DropdownContent,
-  NavButton, 
-  CheckIcon, 
-  PaletteIcon 
-} from '../Interface';
-
-interface ThemeSwitcherProps {
-  themeTranslations: ThemesTranslations;
-  colorTranslations: ColorsTranslations;
-  context?: 'mobile' | 'desktop';
-}
-
-const themes: Theme[] = ['default', 'rounded', 'sharp'];
-const colorSchemes: ColorScheme[] = ['default', 'scheme1', 'scheme2'];
+import { Theme, ColorScheme, ThemeSwitcherProps } from './themeTypes';
+import { NavButton } from '../Interface';
+import { PaletteIcon } from '../Interface/Icons';
+import type { DropdownItemType } from '../Interface/Dropdown/types';
+import Dropdown from '../Interface/Dropdown/Dropdown';
+import DropdownTrigger from '../Interface/Dropdown/DropdownTrigger';
+import DropdownContent from '../Interface/Dropdown/DropdownContent';
+import DropdownItem from '../Interface/Dropdown/DropdownItem';
 
 export function ThemeSwitcher({ 
   themeTranslations, 
@@ -32,73 +21,71 @@ export function ThemeSwitcher({
   const { currentTheme, handleThemeChange } = useTheme();
   const { colorScheme, setColorScheme } = useColor();
 
+  const themeItems = React.useMemo(() => [
+    { id: 'default', label: themeTranslations.default, value: 'default', group: 'theme' },
+    { id: 'rounded', label: themeTranslations.rounded, value: 'rounded', group: 'theme' },
+    { id: 'sharp', label: themeTranslations.sharp, value: 'sharp', group: 'theme' }
+  ], [themeTranslations]);
+
+  const colorItems = React.useMemo(() => [
+    { id: 'default', label: colorTranslations.default, value: 'default', group: 'color' },
+    { id: 'scheme1', label: colorTranslations.scheme1, value: 'scheme1', group: 'color' },
+    { id: 'scheme2', label: colorTranslations.scheme2, value: 'scheme2', group: 'color' }
+  ], [colorTranslations]);
+
+  const handleSelect = async (item: DropdownItemType) => {
+    if (item.group === 'theme') {
+      await handleThemeChange(item.value as Theme);
+    } else {
+      await setColorScheme(item.value as ColorScheme);
+    }
+  };
+
+  const allItems = [...themeItems, ...colorItems];
+
   return (
-    <Dropdown>
+    <Dropdown
+      items={allItems}
+      onSelect={handleSelect}
+      width={context === 'mobile' ? 'wide' : 'icon'}
+      position={context === 'mobile' ? 'left' : 'right'}
+    >
       <DropdownTrigger>
         <NavButton
           context={context}
-          icon={<PaletteIcon className="h-6 w-6" aria-hidden="true" />}
           aria-label="Customize appearance"
-        />
+        >
+          <PaletteIcon className="h-6 w-6" aria-hidden="true" />
+        </NavButton>
       </DropdownTrigger>
-
-      <DropdownContent 
-        width={context === 'mobile' ? 'wide' : 'icon'} 
-        align={context === 'mobile' ? 'left' : 'right'}
-        className={context === 'mobile' ? 'grid grid-cols-2 gap-4' : ''}
-      >
+      <DropdownContent>
         <div className="py-1">
           <div className="px-4 py-2 text-sm font-medium text-txcolor-secondary">
             {themeTranslations.name}
           </div>
-          <ul className="mt-2" role="listbox" aria-label="Select theme">
-            {themes.map((theme) => (
-              <li 
-                key={theme}
-                role="option"
-                aria-selected={theme === currentTheme}
-                className={`
-                  flex items-center justify-between px-4 py-2 cursor-pointer
-                  ${theme === currentTheme 
-                    ? 'bg-prcolor text-txcolor-inverted' 
-                    : 'text-txcolor hover:bg-bgcolor-accent'}
-                `}
-                onClick={() => handleThemeChange(theme)}
-              >
-                <span>{themeTranslations[theme]}</span>
-                {theme === currentTheme && (
-                  <CheckIcon className="h-4 w-4 ml-2" aria-hidden="true" />
-                )}
-              </li>
-            ))}
-          </ul>
+          {themeItems.map((item, index) => (
+            <DropdownItem
+              key={item.id}
+              item={item}
+              index={index}
+              isSelected={currentTheme === item.value}
+              onSelect={() => handleSelect(item)}
+            />
+          ))}
         </div>
-
         <div className="border-t border-bgcolor-alt py-1">
           <div className="px-4 py-2 text-sm font-medium text-txcolor-secondary">
             {colorTranslations.name}
           </div>
-          <ul className="mt-2" role="listbox" aria-label="Select color scheme">
-            {colorSchemes.map((scheme) => (
-              <li
-                key={scheme}
-                role="option"
-                aria-selected={scheme === colorScheme}
-                className={`
-                  flex items-center justify-between px-4 py-2 cursor-pointer
-                  ${scheme === colorScheme 
-                    ? 'bg-prcolor text-txcolor-inverted' 
-                    : 'text-txcolor hover:bg-bgcolor-accent'}
-                `}
-                onClick={() => setColorScheme(scheme)}
-              >
-                <span>{colorTranslations[scheme]}</span>
-                {scheme === colorScheme && (
-                  <CheckIcon className="h-4 w-4 ml-2" aria-hidden="true" />
-                )}
-              </li>
-            ))}
-          </ul>
+          {colorItems.map((item, index) => (
+            <DropdownItem
+              key={item.id}
+              item={item}
+              index={index + themeItems.length}
+              isSelected={colorScheme === item.value}
+              onSelect={() => handleSelect(item)}
+            />
+          ))}
         </div>
       </DropdownContent>
     </Dropdown>

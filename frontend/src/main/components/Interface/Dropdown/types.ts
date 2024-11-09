@@ -7,6 +7,7 @@ export type DropdownItemType = {
   value: string;
   selected?: boolean;
   icon?: React.ReactNode;
+  group?: string;
 }
 
 export interface DropdownContextType {

@@ -1,5 +1,8 @@
 // src/main/lib/themeTypes.ts
 
+import { ColorsTranslations, ThemesTranslations } from "@/main/lib/dictionaries/types";
+import { DropdownItemType } from "../Interface/Dropdown/types";
+
 export type Theme = 'default' | 'rounded' | 'sharp';
 export type ColorMode = 'light' | 'dark';
 export type ColorScheme = 'default' | 'scheme1' | 'scheme2';
@@ -25,3 +28,9 @@ export interface CardThemeStyles {
   authorWrapper?: string;
   authorLink?: string;   
 };
+
+export interface ThemeSwitcherProps {
+  themeTranslations: ThemesTranslations;
+  colorTranslations: ColorsTranslations;
+  context?: 'mobile' | 'desktop';
+}
