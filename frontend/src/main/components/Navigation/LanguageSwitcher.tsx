@@ -5,21 +5,20 @@ import React from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { switchLanguage } from '@/main/lib/actions';
-import { 
-  Dropdown,
-  DropdownTrigger,
-  DropdownContent,
-  NavButton,
-  CheckIcon,
-  LanguageIcon 
-} from '../Interface';
+import { NavButton } from '../Interface';
+import { LanguageIcon } from '../Interface/Icons';
+import Dropdown from '../Interface/Dropdown/Dropdown';
+import DropdownTrigger from '../Interface/Dropdown/DropdownTrigger';
+import DropdownContent from '../Interface/Dropdown/DropdownContent';
+import DropdownItem from '../Interface/Dropdown/DropdownItem';
+import type { DropdownItemType } from '../Interface/Dropdown/types';
 
-const languages: Record<Lang, string> = {
-  en: 'English',
-  fr: 'Français',
-  pl: 'Polski',
-  ru: 'Русский',
-};
+const languageItems: DropdownItemType[] = [
+  { id: 'en', label: 'English', value: 'en' },
+  { id: 'fr', label: 'Français', value: 'fr' },
+  { id: 'pl', label: 'Polski', value: 'pl' },
+  { id: 'ru', label: 'Русский', value: 'ru' },
+];
 
 interface LanguageSwitcherProps {
   currentLang: Lang;
@@ -34,7 +33,8 @@ export function LanguageSwitcher({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const handleLanguageChange = async (newLang: Lang) => {
+  const handleLanguageChange = async (item: DropdownItemType) => {
+    const newLang = item.value as Lang;
     if (newLang === currentLang) return;
 
     const currentParams = new URLSearchParams(searchParams);
@@ -54,45 +54,38 @@ export function LanguageSwitcher({
     router.refresh();
   };
 
+  const items = React.useMemo(() => 
+    languageItems.map(item => ({
+      ...item,
+      selected: item.value === currentLang
+    }))
+  , [currentLang]);
+
   return (
-    <Dropdown>
+    <Dropdown
+      items={items}
+      onSelect={handleLanguageChange}
+      width={context === 'mobile' ? 'wide' : 'icon'} 
+      position={context === 'mobile' ? 'left' : 'right'}
+    >
       <DropdownTrigger>
         <NavButton
           context={context}
-          icon={<LanguageIcon className="h-6 w-6" aria-hidden="true" />}
-          aria-label="Select language"
-        />
-      </DropdownTrigger>
-
-      <DropdownContent 
-        width={context === 'mobile' ? 'wide' : 'icon'} 
-        align={context === 'mobile' ? 'left' : 'right'}
-      >
-        <ul 
-          className="py-1" 
-          role="listbox" 
           aria-label="Select language"
         >
-          {Object.entries(languages).map(([lang, name]) => (
-            <li 
-              key={lang}
-              role="option" 
-              aria-selected={currentLang === lang}
-              className={`
-                flex items-center justify-between px-4 py-2 cursor-pointer
-                ${currentLang === lang 
-                  ? 'bg-prcolor text-txcolor-inverted' 
-                  : 'text-txcolor hover:bg-bgcolor-accent'}
-              `}
-              onClick={() => handleLanguageChange(lang as Lang)}
-            >
-              <span>{name}</span>
-              {currentLang === lang && (
-                <CheckIcon className="h-4 w-4 ml-2" aria-hidden="true" />
-              )}
-            </li>
-          ))}
-        </ul>
+          <LanguageIcon className="h-6 w-6" aria-hidden="true" />
+        </NavButton>
+      </DropdownTrigger>
+      <DropdownContent>
+        {items.map((item, index) => (
+          <DropdownItem
+            key={item.id}
+            item={item}
+            index={index}
+            isSelected={currentLang === item.value}
+            onSelect={() => handleLanguageChange(item)}
+          />
+        ))}
       </DropdownContent>
     </Dropdown>
   );
