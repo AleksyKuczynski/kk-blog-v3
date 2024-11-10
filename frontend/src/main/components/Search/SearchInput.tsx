@@ -5,12 +5,12 @@ import {
   SearchInputHandle,
 } from './types'
 import { 
-  Dropdown, 
-  DropdownContent,
   NavButton, 
-  SearchIcon 
+  SearchIcon,
 } from '../Interface'
 import { useSearchContext } from './SearchContext'
+import SearchSuggestionItem from './SearchSuggestionItem';
+import SearchDropdownContent from './SearchDropdownContent';
 
 const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
   className = '',
@@ -22,14 +22,12 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
     isExpanded,
   } = useSearchContext();
 
-  // Use the forwarded ref to expose the input controls
   useImperativeHandle(ref, () => inputManagement.controls, [inputManagement.controls]);
 
   const { 
     containerRef,
     inputRef,
     buttonRef,
-    dropdownRef,
     query,
     suggestions,
     focusedIndex,
@@ -39,52 +37,11 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
       handleInputChange,
       handleKeyDown,
       handleSearchClick,
-      handleOutsideClick,
       handleSelect,
       handleFocus,
       handleBlur
     }
   } = inputManagement;
-
-  const renderSuggestionContent = () => {
-    if (searchStatus.type !== 'success') {
-      return (
-        <div className="px-4 py-2 text-txcolor-secondary">
-          {searchStatus.type === 'minChars' && translations.minCharacters}
-          {searchStatus.type === 'searching' && translations.searching}
-          {searchStatus.type === 'noResults' && translations.noResults}
-        </div>
-      );
-    }
-  
-    return (
-      <ul 
-        role="listbox" 
-        id="search-suggestions"
-        aria-label={translations.results}
-      >
-        {suggestions.map((suggestion, index) => (
-          <li 
-            key={suggestion.slug}
-            role="option"
-            aria-selected={index === focusedIndex}
-            onClick={() => handleSelect(suggestion.slug, suggestion.rubric_slug)}
-            className={`
-              px-4 py-2 cursor-pointer
-              ${index === focusedIndex 
-                ? 'bg-prcolor text-txcolor-inverted' 
-                : 'text-txcolor hover:bg-bgcolor-accent'}
-            `}
-          >
-            <div className="font-medium">{suggestion.title}</div>
-            {suggestion.description && (
-              <div className="text-sm truncate">{suggestion.description}</div>
-            )}
-          </li>
-        ))}
-      </ul>
-    );
-  };
 
   const containerClasses = `
     relative flex-grow
@@ -128,7 +85,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
         </div>
 
         <NavButton
-          ref={buttonRef} // Assign buttonRef to NavButton
+          ref={buttonRef}
           context="desktop"
           onClick={handleSearchClick}
           noHover={false}
@@ -139,14 +96,33 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
       </div>
 
       {showDropdown && (
-        <Dropdown 
-          forceOpen={true} 
-          onOutsideClick={handleOutsideClick} // Pass the handler directly
+        <SearchDropdownContent 
+          position="left"
+          className="max-h-[80vh] overflow-y-auto"
         >
-          <DropdownContent width="search" align="left">
-            {renderSuggestionContent()}
-          </DropdownContent>
-        </Dropdown>
+          {searchStatus.type !== 'success' ? (
+            <div className="px-4 py-2 text-txcolor-secondary">
+              {searchStatus.type === 'minChars' && translations.minCharacters}
+              {searchStatus.type === 'searching' && translations.searching}
+              {searchStatus.type === 'noResults' && translations.noResults}
+            </div>
+          ) : (
+            <ul 
+              id="search-suggestions"
+              aria-label={translations.results}
+            >
+              {suggestions.map((suggestion, index) => (
+                <SearchSuggestionItem
+                  key={suggestion.slug}
+                  title={suggestion.title}
+                  description={suggestion.description}
+                  isHighlighted={index === focusedIndex}
+                  onSelect={() => handleSelect(suggestion.slug, suggestion.rubric_slug)}
+                />
+              ))}
+            </ul>
+          )}
+        </SearchDropdownContent>
       )}
     </div>
   );

@@ -8,10 +8,7 @@ import { Theme, ColorScheme, ThemeSwitcherProps } from './themeTypes';
 import { NavButton } from '../Interface';
 import { PaletteIcon } from '../Interface/Icons';
 import type { DropdownItemType } from '../Interface/Dropdown/types';
-import Dropdown from '../Interface/Dropdown/Dropdown';
-import DropdownTrigger from '../Interface/Dropdown/DropdownTrigger';
-import DropdownContent from '../Interface/Dropdown/DropdownContent';
-import DropdownItem from '../Interface/Dropdown/DropdownItem';
+import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../Interface/Dropdown';
 
 export function ThemeSwitcher({ 
   themeTranslations, 
@@ -47,8 +44,7 @@ export function ThemeSwitcher({
     <Dropdown
       items={allItems}
       onSelect={handleSelect}
-      width={context === 'mobile' ? 'wide' : 'icon'}
-      position={context === 'mobile' ? 'left' : 'right'}
+      position='right'
     >
       <DropdownTrigger>
         <NavButton
@@ -59,34 +55,36 @@ export function ThemeSwitcher({
         </NavButton>
       </DropdownTrigger>
       <DropdownContent>
-        <div className="py-1">
-          <div className="px-4 py-2 text-sm font-medium text-txcolor-secondary">
-            {themeTranslations.name}
-          </div>
-          {themeItems.map((item, index) => (
-            <DropdownItem
-              key={item.id}
-              item={item}
-              index={index}
-              isSelected={currentTheme === item.value}
-              onSelect={() => handleSelect(item)}
-            />
-          ))}
-        </div>
-        <div className="border-t border-bgcolor-alt py-1">
-          <div className="px-4 py-2 text-sm font-medium text-txcolor-secondary">
-            {colorTranslations.name}
-          </div>
-          {colorItems.map((item, index) => (
-            <DropdownItem
-              key={item.id}
-              item={item}
-              index={index + themeItems.length}
-              isSelected={colorScheme === item.value}
-              onSelect={() => handleSelect(item)}
-            />
-          ))}
-        </div>
+        <ul className="py-1 grid grid-cols-2 gap-2 divide-x divide-bgcolor-alt min-w-[320px]">
+          <li>
+            <div className="px-4 py-2 text-sm font-medium text-txcolor-secondary whitespace-nowrap">
+              {themeTranslations.name}
+            </div>
+            {themeItems.map((item, index) => (
+              <DropdownItem
+                key={item.id}
+                item={item}
+                index={index}
+                isSelected={currentTheme === item.value}
+                onSelect={() => handleSelect(item)}
+              />
+            ))}
+          </li>
+          <li className="px-2">
+            <div className="px-2 py-2 text-sm font-medium text-txcolor-secondary whitespace-nowrap">
+              {colorTranslations.name}
+            </div>
+            {colorItems.map((item, index) => (
+              <DropdownItem
+                key={item.id}
+                item={item}
+                index={index + themeItems.length}
+                isSelected={colorScheme === item.value}
+                onSelect={() => handleSelect(item)}
+              />
+            ))}
+          </li>
+        </ul>
       </DropdownContent>
     </Dropdown>
   );

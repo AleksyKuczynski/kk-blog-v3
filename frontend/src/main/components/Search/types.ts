@@ -2,6 +2,7 @@
 
 import { SearchProposition } from '@/main/lib/directus'
 import { SearchTranslations } from '@/main/lib/dictionaries/types'
+import { DropdownItemProps } from '../Interface/Dropdown/types';
 
 // Base Types
 export type SearchMode = 'expandable' | 'standard'
@@ -132,4 +133,12 @@ export interface SearchContextType {
   setQuery: (query: string) => void
   handleSelect: (slug: string, rubricSlug: string) => void
   handleSubmit: () => boolean
+}
+
+// For consistent styling with other dropdowns but different behavior
+export interface SearchSuggestionItemProps extends Omit<DropdownItemProps, 'onSelect' | 'isSelected'> {
+  title: string
+  description?: string
+  isHighlighted: boolean
+  onSelect: (slug: string, rubricSlug: string) => void
 }

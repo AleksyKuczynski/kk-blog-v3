@@ -1,55 +1,87 @@
-// /frontend/src/main/hooks/useFilterGroup.ts
+// src/main/components/Navigation/useFilterGroup.ts
 import { useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Category } from '@/main/lib/directus/interfaces';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang, CategoryTranslations } from '@/main/lib/dictionaries/types';
+import type { DropdownItemType } from '../Interface/Dropdown/types';
 
-export function useFilterGroup(categories: Category[], lang: Lang) {
+interface UseFilterGroupProps {
+  categories: Category[];
+  categoryTranslations: CategoryTranslations;
+  lang: Lang;
+}
+
+export function useFilterGroup({ 
+  categories, 
+  categoryTranslations,
+  lang 
+}: UseFilterGroupProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Derive current category and sort from URL
+  // Computed states
+  const isArticlesPath = useMemo(() => 
+    pathname.endsWith('/articles')
+  , [pathname]);
+
   const currentCategory = useMemo(() => {
     const categorySlug = pathname.split('/').pop();
     return categories.some(cat => cat.slug === categorySlug) ? categorySlug : '';
   }, [pathname, categories]);
 
-  const currentSort = useMemo(() => {
-    return searchParams.get('sort') || 'desc';
-  }, [searchParams]);
+  const currentSort = useMemo(() => 
+    searchParams.get('sort') || 'desc'
+  , [searchParams]);
 
-  const handleCategoryChange = useCallback((newCategory: string) => {
-    if (newCategory) {
-      router.push(`/${lang}/category/${newCategory}`);
+  // Prepare dropdown items
+  const categoryItems = useMemo<DropdownItemType[]>(() => [
+    { 
+      id: 'all',
+      label: categoryTranslations.allCategories,
+      value: '',
+      selected: currentCategory === ''
+    },
+    ...categories.map(category => ({
+      id: category.slug,
+      label: category.name,
+      value: category.slug,
+      selected: category.slug === currentCategory
+    }))
+  ], [categories, categoryTranslations.allCategories, currentCategory]);
+
+  // Handlers
+  const handleCategoryChange = useCallback((item: DropdownItemType) => {
+    const currentSort = searchParams.get('sort') || 'desc';
+    const params = new URLSearchParams();
+    params.set('sort', currentSort); // Preserve current sort order
+
+    if (item.value) {
+      router.push(`/${lang}/category/${item.value}?${params.toString()}`);
     } else {
-      router.push(`/${lang}/articles`);
+      router.push(`/${lang}/articles?${params.toString()}`);
     }
-  }, [router, lang]);
-
-  const handleSortChange = useCallback((newSort: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('sort', newSort);
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  }, [router, pathname, searchParams]);
+  }, [router, lang, searchParams]);
 
   const handleReset = useCallback(() => {
-    const isArticlesPage = pathname.endsWith('/articles');
-    
-    if (isArticlesPage) {
+    if (isArticlesPath) {
       if (currentCategory || currentSort !== 'desc') {
         router.push(`/${lang}/articles`);
       }
     } else {
       router.push(`/${lang}/articles`);
     }
-  }, [router, pathname, currentCategory, currentSort, lang]);
+  }, [router, isArticlesPath, currentCategory, currentSort, lang]);
 
   return {
+    // States
     currentCategory,
     currentSort,
+    isArticlesPath,
+    // Prepared data
+    categoryItems,
+    // Action handlers
     handleCategoryChange,
-    handleSortChange,
     handleReset,
   };
 }

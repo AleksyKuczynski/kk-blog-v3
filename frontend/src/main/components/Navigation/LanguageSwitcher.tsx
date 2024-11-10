@@ -7,10 +7,7 @@ import { Lang } from '@/main/lib/dictionaries/types';
 import { switchLanguage } from '@/main/lib/actions';
 import { NavButton } from '../Interface';
 import { LanguageIcon } from '../Interface/Icons';
-import Dropdown from '../Interface/Dropdown/Dropdown';
-import DropdownTrigger from '../Interface/Dropdown/DropdownTrigger';
-import DropdownContent from '../Interface/Dropdown/DropdownContent';
-import DropdownItem from '../Interface/Dropdown/DropdownItem';
+import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../Interface/Dropdown';
 import type { DropdownItemType } from '../Interface/Dropdown/types';
 
 const languageItems: DropdownItemType[] = [

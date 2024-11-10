@@ -4,15 +4,15 @@
 import React from 'react';
 import type { DropdownProps } from './types';
 import { DropdownContext } from './DropdownContext';
-import { useDropdown } from './useDropdown';
 import { useOutsideClick } from '@/main/lib/hooks';
 import DropdownContent from './DropdownContent';
+import { useDropdown } from './useDropdown';
 
 export default function Dropdown({
   children,
   items,
   onSelect,
-  width = 'narrow',
+  width,
   position = 'left'
 }: DropdownProps) {
   const dropdownContext = useDropdown({ items, onSelect });

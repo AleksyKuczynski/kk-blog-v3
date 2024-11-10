@@ -1,7 +1,6 @@
 // src/main/lib/themeTypes.ts
 
 import { ColorsTranslations, ThemesTranslations } from "@/main/lib/dictionaries/types";
-import { DropdownItemType } from "../Interface/Dropdown/types";
 
 export type Theme = 'default' | 'rounded' | 'sharp';
 export type ColorMode = 'light' | 'dark';
