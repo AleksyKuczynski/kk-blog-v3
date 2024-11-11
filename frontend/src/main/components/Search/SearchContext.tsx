@@ -24,12 +24,11 @@ export function SearchProvider({
 }: SearchProviderProps) {
   const searchFunctionality = useSearch()
   
-  const inputManagement = useSearchInput(
-    translations,
-    mode === 'expandable',
+  const inputManagement = useSearchInput({
     mode,
-    () => inputManagement.controls.close('clear')
-  )
+    isExpandable: mode === 'expandable',
+    autoFocus: isInitiallyOpen,
+  })
 
   const contextValue: SearchContextType = {
     // Search state
@@ -51,7 +50,7 @@ export function SearchProvider({
       if (success && mode === 'expandable') {
         inputManagement.controls.close('clear')
       }
-      return Boolean(success)
+      return success
     }
   }
 

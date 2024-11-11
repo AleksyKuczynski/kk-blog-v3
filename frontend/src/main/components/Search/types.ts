@@ -1,119 +1,90 @@
 // src/main/components/Search/types.ts
-
 import { SearchProposition } from '@/main/lib/directus'
 import { SearchTranslations } from '@/main/lib/dictionaries/types'
-import { DropdownItemProps } from '../Interface/Dropdown/types';
 
-// Base Types
+// Search Mode Types
 export type SearchMode = 'expandable' | 'standard'
 export type SearchInputAction = 'clear' | 'preserve' | 'submit'
 
-// Input Validation Types
-export interface SearchValidation {
-  minLength: number;
-  maxLength: number;
-  allowedChars: RegExp;
-}
-
 // Search State Types
 export interface SearchState {
-  query: string;
-  mode: SearchMode;
-  isActive: boolean;
-  isExpanded: boolean;
-  showDropdown: boolean;
-  hasInteracted: boolean;
-  isSearching: boolean;
+  query: string
+  mode: SearchMode
+  isActive: boolean
+  isExpanded: boolean
+  showDropdown: boolean
+  hasInteracted: boolean
+  isSearching: boolean
 }
 
-// Search Results Types
-export interface SearchResults {
-  suggestions: SearchProposition[];
-  focusedIndex: number;
-  totalResults: number;
-}
-
-// Search Status Type for UI States
+// Search Status Type
 export type SearchStatus = 
   | { type: 'idle' }
   | { type: 'minChars'; current: number; required: number }
   | { type: 'pending' }
   | { type: 'searching' }
   | { type: 'noResults' }
-  | { type: 'error'; message: string }
   | { type: 'success'; count: number }
+
+// Type for expansion state
+export type ExpansionState = 'collapsed' | 'expanding' | 'expanded';
 
 // Search UI Event Handlers
 export interface SearchUIHandlers {
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  handleSearchClick: (e: React.MouseEvent) => void;
-  handleOutsideClick: (e?: MouseEvent) => void;
-  handleSelect: (slug: string, rubricSlug: string) => void;
-  handleFocus: () => void;
-  handleBlur: () => void;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
+  handleSearchClick: (e: React.MouseEvent) => void
+  handleOutsideClick: (e?: MouseEvent | TouchEvent) => void
+  handleSelect: (slug: string, rubricSlug: string) => void
+  handleFocus: () => void
+  handleBlur: () => void
+  handleTransitionEnd: () => void
 }
 
 // Component Handle Interface
 export interface SearchInputHandle {
-  getValue: () => string;
-  focus: () => void;
-  clear: () => void;
-  expand: () => void;
-  collapse: () => void;
-  submit: () => void;
-  close: (action?: SearchInputAction) => void;
+  getValue: () => string
+  focus: () => void
+  clear: () => void
+  expand: () => void
+  collapse: () => void
+  submit: () => void
+  close: (action?: SearchInputAction) => void
 }
 
-// Base search functionality from useSearch
-export interface SearchFunctionality {
-  searchQuery: string;
-  suggestions: SearchProposition[];
-  isSearching: boolean;
-  setSearchQuery: (query: string) => void;
-  handleSearch: (term: string) => Promise<void>;
-  handleSelect: (slug: string, rubricSlug: string) => void;
-  handleSearchSubmit: () => boolean;
-}
-
-// Input management from useSearchInput
-export interface SearchInputManagement {
-  containerRef: React.RefObject<HTMLDivElement>;
-  inputRef: React.RefObject<HTMLInputElement>;
-  buttonRef: React.RefObject<HTMLButtonElement>;
-  dropdownRef: React.RefObject<HTMLDivElement>;
-  query: string;
-  suggestions: SearchProposition[];
-  focusedIndex: number;
-  showDropdown: boolean;
-  isExpanded: boolean;
-  searchStatus: SearchStatus;
-  handlers: SearchUIHandlers;
-  controls: SearchInputHandle;
+// Search Input Configuration
+export interface SearchInputConfig {
+  isExpandable?: boolean
+  mode?: SearchMode
+  autoFocus?: boolean
+  onClose?: () => void
 }
 
 // Provider Props
 export interface SearchProviderProps {
   children: React.ReactNode
   translations: SearchTranslations
-  mode?: 'expandable' | 'standard'
+  mode?: SearchMode
   isInitiallyOpen?: boolean
 }
 
-// Component Props
-export interface SearchInputProps {
-  className?: string;
-  translations: SearchTranslations;
-  showButton?: boolean;
-  autoFocus?: boolean;
-  isExpandable?: boolean;
-}
-
-// Search Input Configuration
-export interface SearchInputConfig {
-  isExpandable?: boolean;
-  mode?: 'expandable' | 'standard';
-  onClose?: () => void;
+// Combined Input Management Interface
+export interface SearchInputManagement {
+  containerRef: React.RefObject<HTMLDivElement>
+  inputRef: React.RefObject<HTMLInputElement>
+  buttonRef: React.RefObject<HTMLButtonElement>
+  dropdownRef: React.RefObject<HTMLDivElement>
+  query: string
+  suggestions: SearchProposition[]
+  focusedIndex: number
+  showDropdown: boolean
+  isExpanded: boolean
+  isAnimating: boolean
+  expansionState: ExpansionState
+  searchStatus: SearchStatus
+  instanceId: string
+  handlers: SearchUIHandlers
+  controls: SearchInputHandle
 }
 
 // Combined Context State & Actions
@@ -135,10 +106,11 @@ export interface SearchContextType {
   handleSubmit: () => boolean
 }
 
-// For consistent styling with other dropdowns but different behavior
-export interface SearchSuggestionItemProps extends Omit<DropdownItemProps, 'onSelect' | 'isSelected'> {
-  title: string
-  description?: string
-  isHighlighted: boolean
-  onSelect: (slug: string, rubricSlug: string) => void
+// Component Props
+export interface SearchInputProps {
+  className?: string;
+  translations: SearchTranslations;
+  showButton?: boolean;
+  autoFocus?: boolean;
+  isExpandable?: boolean;
 }

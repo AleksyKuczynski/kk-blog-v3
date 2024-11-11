@@ -24,8 +24,8 @@ export default function ExpandableSearchButton({
       <div className={`flex justify-end items-center ${className}`}>
         <SearchInput
           translations={searchTranslations}
-          autoFocus={true} 
-          className="pr-[42px]" // Space for the button
+          isExpandable={true}
+          className="pr-[42px]"
         />
       </div>
     </SearchProvider>

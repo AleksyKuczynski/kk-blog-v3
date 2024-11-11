@@ -1,6 +1,12 @@
 // src/main/lib/utils.ts
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 import { ReadonlyURLSearchParams } from 'next/navigation';
 import { fetchRubricSlug } from '@/main/lib/directus/index';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 export interface TocItem {
   id: string;

@@ -12,9 +12,7 @@ interface SearchBarWrapperProps {
 }
 
 export default function SearchBarWrapper({ 
-  initialSearch = '', 
   translations, 
-  showButton = true,
 }: SearchBarWrapperProps) {
 
   return (

@@ -1,21 +1,23 @@
 // src/main/components/Search/useSearchInput.ts
-import { useRef, useCallback, useState, useMemo } from 'react'
+import { useRef, useCallback, useState, useMemo } from 'react';
 import { 
   SearchInputConfig, 
   SearchInputHandle, 
   SearchInputManagement,
   SearchStatus
-} from './types'
-import { useSearch } from './useSearch'
-import { SearchTranslations } from '@/main/lib/dictionaries/types'
-import { useDebounce, useOutsideClick } from '@/main/lib/hooks'
+} from './types';
+import { useSearch } from './useSearch';
+import { useDebounce, useOutsideClick } from '@/main/lib/hooks';
 
 export function useSearchInput(
-  translations: SearchTranslations,
-  isExpandable: boolean = false,
-  mode: 'expandable' | 'standard' = 'standard',
-  onClose?: () => void
+  config: SearchInputConfig = {}
 ): SearchInputManagement {
+  const {
+    isExpandable = false,
+    mode = 'standard',
+    onClose,
+  } = config;
+
   const {
     searchQuery: query,
     suggestions,
@@ -24,17 +26,23 @@ export function useSearchInput(
     handleSearch,
     handleSelect: handleSelectFromHook,
     handleSearchSubmit: handleSubmitFromHook,
-  } = useSearch()
+  } = useSearch();
 
-  const [focusedIndex, setFocusedIndex] = useState(-1)
-  const [showDropdown, setShowDropdown] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)
-  const [searchState, setSearchState] = useState<'idle' | 'pending' | 'searching' | 'complete'>('idle')
-  const searchIdRef = useRef(0)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  // State
+  const [expansionState, setExpansionState] = useState<'collapsed' | 'expanding' | 'expanded'>('collapsed');
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(mode === 'standard');
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [searchState, setSearchState] = useState<'idle' | 'pending' | 'searching' | 'complete'>('idle');
+  
+  // Refs
+  const searchIdRef = useRef(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const instanceIdRef = useRef(`search-${Math.random()}`);
 
   // Helper to validate search query
   const isValidQuery = useCallback((q: string) => {
@@ -63,6 +71,27 @@ export function useSearchInput(
     }
   }, 300)
 
+  // Handlers
+  const handleExpansion = useCallback(() => {
+    if (expansionState === 'collapsed') {
+      setExpansionState('expanding');
+      setIsExpanded(true);
+      setIsAnimating(true);
+    }
+  }, [expansionState]);
+
+  // Clean transition end handler
+  const handleTransitionEnd = useCallback(() => {
+    if (isExpanded && expansionState === 'expanding') {
+      setIsAnimating(false);
+      setExpansionState('expanded');
+      // Focus only happens once transition is complete
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }
+  }, [isExpanded, expansionState]);
+
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchQuery(value)
@@ -78,23 +107,21 @@ export function useSearchInput(
 
   // Handle expansion state
   const expand = useCallback(() => {
-    setIsExpanded(true)
-    setShowDropdown(true)
-    requestAnimationFrame(() => {
-      inputRef.current?.focus()
-    })
-  }, [])
+    handleExpansion();
+    setShowDropdown(true);
+  }, [handleExpansion]);
 
   // Handle collapse with state preservation
   const collapse = useCallback((clearQuery: boolean = false) => {
-    setIsExpanded(false)
-    setShowDropdown(false)
-    setFocusedIndex(-1)
+    setExpansionState('collapsed');
+    setIsExpanded(false);
+    setShowDropdown(false);
+    setFocusedIndex(-1);
     if (clearQuery) {
-      setSearchQuery('')
-      setSearchState('idle')
+      setSearchQuery('');
+      setSearchState('idle');
     }
-  }, [setSearchQuery])
+  }, [setSearchQuery]);
 
   const handleFocus = useCallback(() => {
     if (isExpandable) {
@@ -125,39 +152,35 @@ const isWithinSearchComponent = useCallback((target: Node | null) => {
 
 // Handle search button click
 const handleSearchClick = useCallback((e: React.MouseEvent) => {
-  e.preventDefault()
+  e.preventDefault();
   
   if (!isExpandable) {
     if (isValidQuery(query)) {
-      handleSubmitFromHook()
+      handleSubmitFromHook();
     }
-    return
+    return;
   }
 
-  if (!isExpanded) {
-    expand()
-    return
-  }
-
-  // Handle expanded state
-  if (isValidQuery(query)) {
-    handleSubmitFromHook()
-    collapse(true)
-    onClose?.()
+  if (expansionState === 'collapsed') {
+    handleExpansion();
+  } else if (isValidQuery(query)) {
+    handleSubmitFromHook();
+    collapse(true);
+    onClose?.();
   } else {
-    collapse(true)
-    onClose?.()
+    collapse(false);
+    onClose?.();
   }
 }, [
   query,
   isExpandable,
-  isExpanded,
+  expansionState,
   isValidQuery,
   handleSubmitFromHook,
-  expand,
+  handleExpansion,
   collapse,
   onClose
-])
+]);
 
 // True outside click handler
 const handleOutsideClick = useCallback((event?: MouseEvent | TouchEvent) => {
@@ -307,7 +330,10 @@ const handleOutsideClick = useCallback((event?: MouseEvent | TouchEvent) => {
     focusedIndex,
     showDropdown,
     isExpanded,
+    expansionState,
+    isAnimating,
     searchStatus,
+    instanceId: instanceIdRef.current,
     handlers: {
       handleInputChange,
       handleKeyDown,
@@ -315,8 +341,9 @@ const handleOutsideClick = useCallback((event?: MouseEvent | TouchEvent) => {
       handleOutsideClick,
       handleSelect,
       handleFocus,
-      handleBlur
+      handleBlur,
+      handleTransitionEnd
     },
     controls,
-  }
+  };
 }
