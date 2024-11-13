@@ -61,7 +61,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
       focusedIndex,
       showDropdown,
       isExpanded,
-      isAnimating,
+      isExpanding,
       expansionState,
       searchStatus,
       instanceId,
@@ -79,16 +79,21 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
 
   // Determine if input should be visible
   const shouldShowInput = isExpandable ? 
-    (expansionState !== 'collapsed') : 
-    true;
+  (isExpanding || expansionState !== 'collapsed') : 
+  true;
 
-    const containerClassName = cn(
-      containerStyles.base,
-      containerStyles.theme[currentTheme],
-      isExpandable && containerStyles.motion[expansionState],
-      isExpandable && 'transform origin-right',
-      className
-    );
+const containerClassName = cn(
+  containerStyles.base,
+  containerStyles.theme[currentTheme],
+  isExpandable && {
+    [containerStyles.motion.expanding]: isExpanding,
+    [containerStyles.motion.expanded]: expansionState === 'expanded',
+    [containerStyles.motion.collapsing]: expansionState === 'collapsing',
+    [containerStyles.motion.collapsed]: expansionState === 'collapsed'
+  },
+  isExpandable && 'transform origin-right',
+  className
+);
 
   // Only show dropdown when expanded and not animating
   const shouldShowDropdown = showDropdown && expansionState !== 'collapsing';

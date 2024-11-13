@@ -1,6 +1,7 @@
 // src/main/components/Search/useSearchInput.ts
 import { useRef, useCallback, useState, useMemo } from 'react';
 import { 
+  ExpansionState,
   SearchInputConfig, 
   SearchInputHandle, 
   SearchInputManagement,
@@ -30,11 +31,12 @@ export function useSearchInput(
   } = useSearch();
 
   // State
-  const [expansionState, setExpansionState] = useState<'collapsed' | 'expanding' | 'expanded' | 'collapsing'>('collapsed');
+  const [expansionState, setExpansionState] = useState<ExpansionState>('collapsed');
+  const [isExpanding, setIsExpanding] = useState(false);
+  const [isCollapsing, setIsCollapsing] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isExpanded, setIsExpanded] = useState(mode === 'standard');
-  const [isAnimating, setIsAnimating] = useState(false);
   const [searchState, setSearchState] = useState<'idle' | 'pending' | 'searching' | 'complete'>('idle');
   
   // Refs
@@ -75,34 +77,37 @@ export function useSearchInput(
   // Handlers
   const handleExpansion = useCallback(() => {
     if (expansionState === 'collapsed') {
-      // Set expanding state first
-      setExpansionState('expanding');
-      setIsAnimating(true);
-      // Delay setting isExpanded to let animation start
+      // First, set expanding state
+      setIsExpanding(true);
+      // Use RAF to ensure DOM has time to recognize the state change
       requestAnimationFrame(() => {
-        setIsExpanded(true);
+        // Then trigger the expansion animation
+        setExpansionState('expanding');
+        // Ensure expanded state is set after the animation starts
+        requestAnimationFrame(() => {
+          setIsExpanded(true);
+        });
       });
     }
   }, [expansionState]);
-
-  // Clean transition end handler
+  
   const handleTransitionEnd = useCallback(() => {
-    if (expansionState === 'expanding') {
-      // Animation completed - update states
-      setIsAnimating(false);
+    if (isExpanding) {
+      // Ensure we complete the expansion
       setExpansionState('expanded');
-      // Focus input after states are updated
+      setIsExpanding(false);
+      // Focus after the expansion is complete
       requestAnimationFrame(() => {
         if (inputRef.current) {
           inputRef.current.focus();
         }
       });
     } else if (expansionState === 'collapsing') {
-      setIsAnimating(false);
       setExpansionState('collapsed');
+      setIsCollapsing(false);
       setIsExpanded(false);
     }
-  }, [expansionState]);
+  }, [isExpanding, expansionState]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -125,8 +130,8 @@ export function useSearchInput(
 
   // Handle collapse with state preservation
   const collapse = useCallback((clearQuery: boolean = false) => {
+    setIsCollapsing(true);
     setExpansionState('collapsing');
-    setIsAnimating(true);
     
     setTimeout(() => {
       if (clearQuery) {
@@ -282,7 +287,6 @@ export function useSearchInput(
   // Use our optimized outside click hook
   useOutsideClick(containerRef, buttonRef, isExpanded, handleOutsideClick)
 
-
   const searchStatus = useMemo((): SearchStatus => {
     if (!query || query.length < 3) {
       return { 
@@ -344,10 +348,10 @@ export function useSearchInput(
     suggestions: suggestions || [],
     focusedIndex,
     showDropdown,
-    isExpanded,
     expansionState,
+    isExpanding,
+    isExpanded,
     isCollapsing: expansionState === 'collapsing',
-    isAnimating,
     searchStatus,
     instanceId: instanceIdRef.current,
     handlers: {

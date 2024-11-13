@@ -80,7 +80,7 @@ export interface SearchInputManagement {
   focusedIndex: number
   showDropdown: boolean
   isExpanded: boolean
-  isAnimating: boolean
+  isExpanding: boolean
   expansionState: ExpansionState
   isCollapsing: boolean
   searchStatus: SearchStatus
