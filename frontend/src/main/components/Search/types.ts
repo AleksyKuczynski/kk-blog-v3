@@ -27,7 +27,7 @@ export type SearchStatus =
   | { type: 'success'; count: number }
 
 // Type for expansion state
-export type ExpansionState = 'collapsed' | 'expanding' | 'expanded';
+export type ExpansionState = 'collapsed' | 'expanding' | 'expanded' | 'collapsing';
 
 // Search UI Event Handlers
 export interface SearchUIHandlers {
@@ -38,6 +38,7 @@ export interface SearchUIHandlers {
   handleSelect: (slug: string, rubricSlug: string) => void
   handleFocus: () => void
   handleBlur: () => void
+  handleExpansion: () => void
   handleTransitionEnd: () => void
 }
 
@@ -81,6 +82,7 @@ export interface SearchInputManagement {
   isExpanded: boolean
   isAnimating: boolean
   expansionState: ExpansionState
+  isCollapsing: boolean
   searchStatus: SearchStatus
   instanceId: string
   handlers: SearchUIHandlers
@@ -113,4 +115,11 @@ export interface SearchInputProps {
   showButton?: boolean;
   autoFocus?: boolean;
   isExpandable?: boolean;
+}
+
+export interface SearchDropdownContentProps {
+  children: React.ReactNode;
+  position?: 'left' | 'center' | 'right';
+  className?: string;
+  isOpen: boolean;
 }

@@ -25,7 +25,6 @@ export default function ExpandableSearchButton({
         <SearchInput
           translations={searchTranslations}
           isExpandable={true}
-          className="pr-[42px]"
         />
       </div>
     </SearchProvider>

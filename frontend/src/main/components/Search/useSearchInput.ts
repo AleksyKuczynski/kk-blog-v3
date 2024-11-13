@@ -8,6 +8,7 @@ import {
 } from './types';
 import { useSearch } from './useSearch';
 import { useDebounce, useOutsideClick } from '@/main/lib/hooks';
+import { ANIMATION_DURATION } from './SearchInput';
 
 export function useSearchInput(
   config: SearchInputConfig = {}
@@ -29,7 +30,7 @@ export function useSearchInput(
   } = useSearch();
 
   // State
-  const [expansionState, setExpansionState] = useState<'collapsed' | 'expanding' | 'expanded'>('collapsed');
+  const [expansionState, setExpansionState] = useState<'collapsed' | 'expanding' | 'expanded' | 'collapsing'>('collapsed');
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isExpanded, setIsExpanded] = useState(mode === 'standard');
@@ -74,23 +75,34 @@ export function useSearchInput(
   // Handlers
   const handleExpansion = useCallback(() => {
     if (expansionState === 'collapsed') {
+      // Set expanding state first
       setExpansionState('expanding');
-      setIsExpanded(true);
       setIsAnimating(true);
+      // Delay setting isExpanded to let animation start
+      requestAnimationFrame(() => {
+        setIsExpanded(true);
+      });
     }
   }, [expansionState]);
 
   // Clean transition end handler
   const handleTransitionEnd = useCallback(() => {
-    if (isExpanded && expansionState === 'expanding') {
+    if (expansionState === 'expanding') {
+      // Animation completed - update states
       setIsAnimating(false);
       setExpansionState('expanded');
-      // Focus only happens once transition is complete
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
+      // Focus input after states are updated
+      requestAnimationFrame(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      });
+    } else if (expansionState === 'collapsing') {
+      setIsAnimating(false);
+      setExpansionState('collapsed');
+      setIsExpanded(false);
     }
-  }, [isExpanded, expansionState]);
+  }, [expansionState]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -113,14 +125,17 @@ export function useSearchInput(
 
   // Handle collapse with state preservation
   const collapse = useCallback((clearQuery: boolean = false) => {
-    setExpansionState('collapsed');
-    setIsExpanded(false);
-    setShowDropdown(false);
-    setFocusedIndex(-1);
-    if (clearQuery) {
-      setSearchQuery('');
-      setSearchState('idle');
-    }
+    setExpansionState('collapsing');
+    setIsAnimating(true);
+    
+    setTimeout(() => {
+      if (clearQuery) {
+        setSearchQuery('');
+        setSearchState('idle');
+      }
+      setShowDropdown(false);
+      setFocusedIndex(-1);
+    }, ANIMATION_DURATION);
   }, [setSearchQuery]);
 
   const handleFocus = useCallback(() => {
@@ -139,62 +154,62 @@ export function useSearchInput(
     }
   }, [isExpandable])
 
-// Helper to check if click is within search component
-const isWithinSearchComponent = useCallback((target: Node | null) => {
-  if (!target) return false
-  return (
-    containerRef.current?.contains(target) ||
-    buttonRef.current?.contains(target) ||
-    inputRef.current?.contains(target) ||
-    dropdownRef.current?.contains(target)
-  )
-}, [])
+  // Helper to check if click is within search component
+  const isWithinSearchComponent = useCallback((target: Node | null) => {
+    if (!target) return false
+    return (
+      containerRef.current?.contains(target) ||
+      buttonRef.current?.contains(target) ||
+      inputRef.current?.contains(target) ||
+      dropdownRef.current?.contains(target)
+    )
+  }, [])
 
-// Handle search button click
-const handleSearchClick = useCallback((e: React.MouseEvent) => {
-  e.preventDefault();
-  
-  if (!isExpandable) {
-    if (isValidQuery(query)) {
-      handleSubmitFromHook();
+  // Handle search button click
+  const handleSearchClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    if (!isExpandable) {
+      if (isValidQuery(query)) {
+        handleSubmitFromHook();
+      }
+      return;
     }
-    return;
-  }
 
-  if (expansionState === 'collapsed') {
-    handleExpansion();
-  } else if (isValidQuery(query)) {
-    handleSubmitFromHook();
-    collapse(true);
-    onClose?.();
-  } else {
-    collapse(false);
-    onClose?.();
-  }
-}, [
-  query,
-  isExpandable,
-  expansionState,
-  isValidQuery,
-  handleSubmitFromHook,
-  handleExpansion,
-  collapse,
-  onClose
-]);
+    if (expansionState === 'collapsed') {
+      handleExpansion();
+    } else if (isValidQuery(query)) {
+      handleSubmitFromHook();
+      collapse(true);
+      onClose?.();
+    } else {
+      collapse(false);
+      onClose?.();
+    }
+  }, [
+    query,
+    isExpandable,
+    expansionState,
+    isValidQuery,
+    handleSubmitFromHook,
+    handleExpansion,
+    collapse,
+    onClose
+  ]);
 
-// True outside click handler
-const handleOutsideClick = useCallback((event?: MouseEvent | TouchEvent) => {
-  if (!event?.target || !isExpandable) return
+  // True outside click handler
+  const handleOutsideClick = useCallback((event?: MouseEvent | TouchEvent) => {
+    if (!event?.target || !isExpandable) return
 
-  // If click is within search component, don't treat as outside click
-  if (isWithinSearchComponent(event.target as Node)) {
-    return
-  }
+    // If click is within search component, don't treat as outside click
+    if (isWithinSearchComponent(event.target as Node)) {
+      return
+    }
 
-  // True outside click - collapse but preserve query
-  collapse(false)
-  onClose?.()
-}, [isExpandable, isWithinSearchComponent, collapse, onClose])
+    // True outside click - collapse but preserve query
+    collapse(false)
+    onClose?.()
+  }, [isExpandable, isWithinSearchComponent, collapse, onClose])
 
   const handleSelect = useCallback((slug: string, rubricSlug: string) => {
     handleSelectFromHook(slug, rubricSlug)
@@ -331,6 +346,7 @@ const handleOutsideClick = useCallback((event?: MouseEvent | TouchEvent) => {
     showDropdown,
     isExpanded,
     expansionState,
+    isCollapsing: expansionState === 'collapsing',
     isAnimating,
     searchStatus,
     instanceId: instanceIdRef.current,
@@ -342,6 +358,7 @@ const handleOutsideClick = useCallback((event?: MouseEvent | TouchEvent) => {
       handleSelect,
       handleFocus,
       handleBlur,
+      handleExpansion,
       handleTransitionEnd
     },
     controls,

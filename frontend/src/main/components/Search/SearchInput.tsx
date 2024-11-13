@@ -4,19 +4,25 @@ import { NavButton, SearchIcon } from '../Interface';
 import { useSearchContext } from './SearchContext';
 import { useTheme } from '../ThemeSwitcher';
 import SearchSuggestionItem from './SearchSuggestionItem';
-import SearchDropdownContent from './SearchDropdownContent';
+import { SearchDropdownContent } from './SearchDropdownContent';
 import { SearchInputHandle, SearchInputProps } from './types';
 import { cn } from '@/main/lib/utils';
 
+export const ANIMATION_DURATION = 300;
+
 const containerStyles = {
-  base: 'relative flex-grow bg-bgcolor-accent shadow-md focus-within:ring-2 focus-within:ring-prcolor-dark transition-all duration-300',
+  base: 'relative flex-grow bg-bgcolor-accent shadow-md focus-within:ring-2 focus-within:ring-prcolor-dark',
   theme: {
     default: 'rounded-lg',
-    rounded: 'rounded-full',
+    rounded: 'rounded-lg',
     sharp: 'border-2 border-prcolor',
   },
-  expanded: 'w-full opacity-100',
-  collapsed: 'w-0 opacity-0',
+  motion: {
+    expanded: `transition-all duration-${ANIMATION_DURATION} w-full transform-none`,
+    expanding: `transition-all duration-${ANIMATION_DURATION} w-full scale-x-100 origin-right`,
+    collapsing: `transition-all duration-${ANIMATION_DURATION} w-0 scale-x-0 origin-right`,
+    collapsed: 'w-0 scale-x-0'
+  }
 };
 
 const inputStyles = {
@@ -41,6 +47,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
   className = '',
   autoFocus = false,
   translations,
+  isExpandable = false
 }, ref) => {
   const { currentTheme } = useTheme();
   
@@ -55,6 +62,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
       showDropdown,
       isExpanded,
       isAnimating,
+      expansionState,
       searchStatus,
       instanceId,
       handlers: {
@@ -69,45 +77,57 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
     },
   } = useSearchContext();
 
-  const containerClassName = cn(
-    containerStyles.base,
-    containerStyles.theme[currentTheme],
-    isExpanded ? containerStyles.expanded : containerStyles.collapsed,
-    className
-  );
+  // Determine if input should be visible
+  const shouldShowInput = isExpandable ? 
+    (expansionState !== 'collapsed') : 
+    true;
+
+    const containerClassName = cn(
+      containerStyles.base,
+      containerStyles.theme[currentTheme],
+      isExpandable && containerStyles.motion[expansionState],
+      isExpandable && 'transform origin-right',
+      className
+    );
 
   // Only show dropdown when expanded and not animating
-  const shouldShowDropdown = showDropdown && isExpanded && !isAnimating;
+  const shouldShowDropdown = showDropdown && expansionState !== 'collapsing';
 
   return (
     <div ref={containerRef} className="relative w-full">
       <div className="flex gap-2 items-center">
-        <div 
-          className={containerClassName}
-          onTransitionEnd={handleTransitionEnd}
-        >
-          <input
-            ref={inputRef}
-            type="text"
-            className={cn(
-              inputStyles.base,
-              inputStyles.theme[currentTheme],
-              isExpanded ? '' : 'hidden'
-            )}
-            placeholder={translations.placeholder}
-            value={query}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            autoFocus={autoFocus}
-            role="combobox"
-            aria-expanded={shouldShowDropdown}
-            aria-controls={`search-suggestions-${instanceId}`}
-            aria-autocomplete="list"
-            aria-label={translations.placeholder}
-          />
-        </div>
+        {shouldShowInput && (
+          <div 
+          className={cn(
+            containerClassName,
+            'overflow-hidden', // Add this to prevent content flash
+            !shouldShowInput && 'invisible' // Use invisible instead of conditional rendering
+          )}
+            onTransitionEnd={handleTransitionEnd}
+          >
+            <input
+              ref={inputRef}
+              type="text"
+              className={cn(
+                inputStyles.base,
+                inputStyles.theme[currentTheme],
+                !isExpandable && 'w-full'
+              )}
+              placeholder={translations.placeholder}
+              value={query}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              autoFocus={autoFocus}
+              role="combobox"
+              aria-expanded={showDropdown}
+              aria-controls={`search-suggestions-${instanceId}`}
+              aria-autocomplete="list"
+              aria-label={translations.placeholder}
+            />
+          </div>
+        )}
 
         <NavButton
           ref={buttonRef}
@@ -120,14 +140,11 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
         />
       </div>
 
-      {shouldShowDropdown && (
         <SearchDropdownContent 
-          position="left"
-          className={cn(
-            "max-h-[80vh] overflow-y-auto",
-            "animate-in fade-in-0 duration-200"
-          )}
-        >
+        position="left"
+        isOpen={shouldShowDropdown}
+        className="max-h-[80vh] overflow-y-auto"
+      >
           {searchStatus.type !== 'success' ? (
             <div className={cn(
               statusMessageStyles.base,
@@ -155,7 +172,6 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
             </ul>
           )}
         </SearchDropdownContent>
-      )}
     </div>
   );
 });
