@@ -55,36 +55,43 @@ export function ThemeSwitcher({
         </NavButton>
       </DropdownTrigger>
       <DropdownContent>
-        <ul className="py-1 grid grid-cols-2 gap-2 divide-x divide-bgcolor-alt min-w-[320px]">
-          <li>
+        <div className="grid grid-cols-2 divide-x divide-bgcolor-alt min-w-[320px]">
+          {/* Theme Section */}
+          <div role="group" aria-label={themeTranslations.name} className="py-1">
             <div className="px-4 py-2 text-sm font-medium text-txcolor-secondary whitespace-nowrap">
               {themeTranslations.name}
             </div>
-            {themeItems.map((item, index) => (
-              <DropdownItem
-                key={item.id}
-                item={item}
-                index={index}
-                isSelected={currentTheme === item.value}
-                onSelect={() => handleSelect(item)}
-              />
-            ))}
-          </li>
-          <li className="px-2">
+            <ul>
+              {themeItems.map((item, index) => (
+                <DropdownItem
+                  key={item.id}
+                  item={item}
+                  index={index}
+                  isSelected={currentTheme === item.value}
+                  onSelect={() => handleSelect(item)}
+                />
+              ))}
+            </ul>
+          </div>
+
+          {/* Color Scheme Section */}
+          <div role="group" aria-label={colorTranslations.name} className="py-1 px-2">
             <div className="px-2 py-2 text-sm font-medium text-txcolor-secondary whitespace-nowrap">
               {colorTranslations.name}
             </div>
-            {colorItems.map((item, index) => (
-              <DropdownItem
-                key={item.id}
-                item={item}
-                index={index + themeItems.length}
-                isSelected={colorScheme === item.value}
-                onSelect={() => handleSelect(item)}
-              />
-            ))}
-          </li>
-        </ul>
+            <ul>
+              {colorItems.map((item, index) => (
+                <DropdownItem
+                  key={item.id}
+                  item={item}
+                  index={index + themeItems.length}
+                  isSelected={colorScheme === item.value}
+                  onSelect={() => handleSelect(item)}
+                />
+              ))}
+            </ul>
+          </div>
+        </div>
       </DropdownContent>
     </Dropdown>
   );

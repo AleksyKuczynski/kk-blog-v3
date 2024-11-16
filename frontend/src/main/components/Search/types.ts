@@ -107,6 +107,7 @@ export interface SearchDropdownContentProps {
   direction?: Direction
   className?: string
   isOpen: boolean
+  isVisible: boolean
 }
 
 // Animation-related types
@@ -114,7 +115,7 @@ export interface SearchAnimationState {
   expansionState: ExpansionState;
   isExpanding: boolean;
   isExpanded: boolean;
-  isCollapsing: boolean;
+  isVisible: boolean;
   handleExpansion: () => void;
   handleTransitionEnd: () => void;
   collapse: (clearQuery?: boolean) => void;

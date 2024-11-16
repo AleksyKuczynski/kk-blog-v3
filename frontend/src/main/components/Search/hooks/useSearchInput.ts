@@ -66,7 +66,7 @@ export function useSearchInput(
     updateDirection,
     setShowDropdown,
     setFocusedIndex
-  } = useSearchDropdown(containerRef, suggestions.length);
+  } = useSearchDropdown(containerRef, suggestions.length, searchStatus);
 
   // Initialize interaction handlers
   const handlers = useSearchInteractions({

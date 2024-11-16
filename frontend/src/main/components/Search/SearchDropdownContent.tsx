@@ -9,15 +9,11 @@ const dropdownStyles = {
   base: `
     absolute z-60 shadow-lg bg-bgcolor-alt 
     w-[calc(100%-44px)] 
+    overflow-y-auto
   `,
   position: {
-    left: 'left-0',
-    center: 'left-1/2 -translate-x-1/2', 
-    right: 'right-0'
-  },
-  direction: {
     top: 'bottom-full mb-2',
-    bottom: 'top-full mt-2',
+    bottom: 'top-full mt-2'
   },
   theme: {
     default: 'rounded-lg',
@@ -34,13 +30,14 @@ export const SearchDropdownContent = ({
   children,
   direction = 'bottom',
   className = '',
-  isOpen
+  isOpen,
+  isVisible
 }: SearchDropdownContentProps) => {
   const { currentTheme } = useTheme();
 
   const dropdownClassName = cn(
     dropdownStyles.base,
-    dropdownStyles.direction[direction],
+    dropdownStyles.position[direction],
     dropdownStyles.theme[currentTheme],
     {
       [dropdownStyles.state.open]: isOpen,
@@ -49,14 +46,15 @@ export const SearchDropdownContent = ({
     className
   );
 
+  if (!isVisible && !isOpen) return null;
+
   return (
     <div 
       className={dropdownClassName}
       role="listbox"
       style={{
-        transition: `transform ${ANIMATION_DURATION}ms ease-in-out, opacity ${ANIMATION_DURATION}ms ease-in-out`,
-        maxHeight: 'calc(var(--vh, 1vh) * 80)',
-        transformOrigin: direction === 'top' ? 'bottom' : 'top'
+        transformOrigin: direction === 'top' ? 'bottom' : 'top',
+        maxHeight: 'var(--dropdown-max-height, 80vh)',
       }}
     >
       {children}

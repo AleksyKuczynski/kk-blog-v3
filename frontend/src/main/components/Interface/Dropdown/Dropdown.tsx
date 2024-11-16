@@ -24,6 +24,7 @@ export default function Dropdown({
     if (React.isValidElement(child) && 
         child.type === DropdownContent) {
       return React.cloneElement(child as React.ReactElement<any>, {
+        children: <ul role="menu">{child.props.children}</ul>,
         width,
         position
       });
