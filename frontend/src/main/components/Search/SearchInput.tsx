@@ -7,8 +7,7 @@ import SearchSuggestionItem from './SearchSuggestionItem';
 import { SearchDropdownContent } from './SearchDropdownContent';
 import { SearchInputHandle, SearchInputProps } from './types';
 import { cn } from '@/main/lib/utils';
-
-export const ANIMATION_DURATION = 300;
+import { ANIMATION_DURATION } from '../Interface/constants';
 
 const containerStyles = {
   base: 'relative flex-grow bg-bgcolor-accent shadow-md focus-within:ring-2 focus-within:ring-prcolor-dark',
@@ -65,6 +64,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
       expansionState,
       searchStatus,
       instanceId,
+      direction,
       handlers: {
         handleInputChange,
         handleKeyDown,
@@ -146,10 +146,10 @@ const containerClassName = cn(
       </div>
 
         <SearchDropdownContent 
-        position="left"
-        isOpen={shouldShowDropdown}
-        className="max-h-[80vh] overflow-y-auto"
-      >
+          direction={direction}
+          isOpen={shouldShowDropdown}
+          className="max-h-[80vh] overflow-y-auto"
+        >
           {searchStatus.type !== 'success' ? (
             <div className={cn(
               statusMessageStyles.base,

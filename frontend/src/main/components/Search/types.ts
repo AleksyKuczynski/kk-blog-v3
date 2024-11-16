@@ -1,46 +1,21 @@
 // src/main/components/Search/types.ts
+
 import { SearchProposition } from '@/main/lib/directus'
 import { SearchTranslations } from '@/main/lib/dictionaries/types'
 
-// Search Mode Types
+// Core Types
 export type SearchMode = 'expandable' | 'standard'
 export type SearchInputAction = 'clear' | 'preserve' | 'submit'
-
-// Search State Types
-export interface SearchState {
-  query: string
-  mode: SearchMode
-  isActive: boolean
-  isExpanded: boolean
-  showDropdown: boolean
-  hasInteracted: boolean
-  isSearching: boolean
-}
+export type Direction = 'top' | 'bottom'
+export type ExpansionState = 'collapsed' | 'expanding' | 'expanded' | 'collapsing'
 
 // Search Status Type
 export type SearchStatus = 
   | { type: 'idle' }
   | { type: 'minChars'; current: number; required: number }
-  | { type: 'pending' }
   | { type: 'searching' }
   | { type: 'noResults' }
   | { type: 'success'; count: number }
-
-// Type for expansion state
-export type ExpansionState = 'collapsed' | 'expanding' | 'expanded' | 'collapsing';
-
-// Search UI Event Handlers
-export interface SearchUIHandlers {
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
-  handleSearchClick: (e: React.MouseEvent) => void
-  handleOutsideClick: (e?: MouseEvent | TouchEvent) => void
-  handleSelect: (slug: string, rubricSlug: string) => void
-  handleFocus: () => void
-  handleBlur: () => void
-  handleExpansion: () => void
-  handleTransitionEnd: () => void
-}
 
 // Component Handle Interface
 export interface SearchInputHandle {
@@ -53,7 +28,20 @@ export interface SearchInputHandle {
   close: (action?: SearchInputAction) => void
 }
 
-// Search Input Configuration
+// Handler Interfaces
+export interface SearchUIHandlers {
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
+  handleSearchClick: (e: React.MouseEvent) => void
+  handleOutsideClick: (e?: MouseEvent | TouchEvent) => void
+  handleSelect: (slug: string, rubricSlug: string) => void
+  handleFocus: () => void
+  handleBlur: () => void
+  handleExpansion: () => void
+  handleTransitionEnd: () => void
+}
+
+// Configuration Interface
 export interface SearchInputConfig {
   isExpandable?: boolean
   mode?: SearchMode
@@ -69,7 +57,7 @@ export interface SearchProviderProps {
   isInitiallyOpen?: boolean
 }
 
-// Combined Input Management Interface
+// Input Management Interface
 export interface SearchInputManagement {
   containerRef: React.RefObject<HTMLDivElement>
   inputRef: React.RefObject<HTMLInputElement>
@@ -85,24 +73,21 @@ export interface SearchInputManagement {
   isCollapsing: boolean
   searchStatus: SearchStatus
   instanceId: string
+  direction: Direction
+  updateDirection: () => void
   handlers: SearchUIHandlers
   controls: SearchInputHandle
 }
 
-// Combined Context State & Actions
+// Context Type
 export interface SearchContextType {
-  // Search state
   query: string
   suggestions: SearchProposition[]
   isExpanded: boolean
   showDropdown: boolean
   hasInteracted: boolean
   isSearching: boolean
-
-  // Input management
   inputManagement: SearchInputManagement
-
-  // Actions
   setQuery: (query: string) => void
   handleSelect: (slug: string, rubricSlug: string) => void
   handleSubmit: () => boolean
@@ -110,16 +95,37 @@ export interface SearchContextType {
 
 // Component Props
 export interface SearchInputProps {
-  className?: string;
-  translations: SearchTranslations;
-  showButton?: boolean;
-  autoFocus?: boolean;
-  isExpandable?: boolean;
+  className?: string
+  translations: SearchTranslations
+  showButton?: boolean
+  autoFocus?: boolean
+  isExpandable?: boolean
 }
 
 export interface SearchDropdownContentProps {
-  children: React.ReactNode;
-  position?: 'left' | 'center' | 'right';
-  className?: string;
-  isOpen: boolean;
+  children: React.ReactNode
+  direction?: Direction
+  className?: string
+  isOpen: boolean
+}
+
+// Animation-related types
+export interface SearchAnimationState {
+  expansionState: ExpansionState;
+  isExpanding: boolean;
+  isExpanded: boolean;
+  isCollapsing: boolean;
+  handleExpansion: () => void;
+  handleTransitionEnd: () => void;
+  collapse: (clearQuery?: boolean) => void;
+  expand: () => void;
+}
+
+export interface SearchAnimationConfig {
+  mode?: SearchMode;
+  onExpandComplete?: () => void;
+  onCollapse?: (clearQuery: boolean) => void;
+  isValidSearch?: boolean;
+  onSearchSubmit?: () => boolean;
+  shouldExpand?: boolean;
 }

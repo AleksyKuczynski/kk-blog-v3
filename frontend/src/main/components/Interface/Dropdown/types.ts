@@ -28,7 +28,7 @@ export interface DropdownContextType {
 }
 
 export interface DropdownBaseProps {
-  width?: 'icon' | 'narrow' | 'wide';
+  width?: 'icon' | 'narrow' | 'wide' | 'auto';
   position?: 'left' | 'center' | 'right';
 }
 

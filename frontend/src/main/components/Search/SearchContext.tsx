@@ -3,8 +3,8 @@
 
 import React, { createContext, useContext } from 'react'
 import { SearchContextType, SearchProviderProps } from './types'
-import { useSearchInput } from './useSearchInput'
-import { useSearch } from './useSearch'
+import { useSearchInput } from './hooks/useSearchInput'
+import { useSearch } from './hooks/useSearch'
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined)
 
@@ -18,7 +18,6 @@ export function useSearchContext() {
 
 export function SearchProvider({ 
   children, 
-  translations,
   mode = 'standard',
   isInitiallyOpen = false,
 }: SearchProviderProps) {

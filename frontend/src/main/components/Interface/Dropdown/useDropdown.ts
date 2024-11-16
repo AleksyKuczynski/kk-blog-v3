@@ -4,17 +4,27 @@
 import { useCallback, useState, useRef } from 'react';
 import type { DropdownItemType, DropdownContextType } from './types';
 
-interface UseDropdownProps {
+export function useDropdown({ 
+  items, 
+  onSelect 
+}: {
   items: DropdownItemType[];
   onSelect: (item: DropdownItemType) => void;
-}
-
-export function useDropdown({ items, onSelect }: UseDropdownProps): DropdownContextType {
+}): DropdownContextType {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+
+  const focusTrigger = useCallback(() => {
+    triggerRef.current?.focus();
+  }, []);
+
+  const focusItem = useCallback((index: number) => {
+    itemRefs.current[index]?.focus();
+  }, []);
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -26,18 +36,28 @@ export function useDropdown({ items, onSelect }: UseDropdownProps): DropdownCont
     setSelectedIndex(-1);
   }, []);
 
-  const focusTrigger = useCallback(() => {
-    triggerRef.current?.focus();
-  }, []);
-
-  const focusItem = useCallback((index: number) => {
-    itemRefs.current[index]?.focus();
-  }, []);
-
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     toggle();
   }, [toggle]);
+
+  const findNextSelectableIndex = useCallback((currentIndex: number, direction: 'up' | 'down') => {
+    let nextIndex = currentIndex;
+    const increment = direction === 'down' ? 1 : -1;
+
+    do {
+      nextIndex = nextIndex + increment;
+      // Loop around at boundaries
+      if (nextIndex >= items.length) nextIndex = 0;
+      if (nextIndex < 0) nextIndex = items.length - 1;
+      
+      // Check if we've gone through all items
+      if (nextIndex === currentIndex) return -1;
+      
+    } while (items[nextIndex].selected);
+
+    return nextIndex;
+  }, [items]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     switch (e.key) {
@@ -50,21 +70,30 @@ export function useDropdown({ items, onSelect }: UseDropdownProps): DropdownCont
         e.preventDefault();
         if (!isOpen) {
           setIsOpen(true);
-          setSelectedIndex(0);
-          focusItem(0);
-        } else if (selectedIndex < items.length - 1) {
-          setSelectedIndex(prev => prev + 1);
-          focusItem(selectedIndex + 1);
+          const firstSelectable = findNextSelectableIndex(-1, 'down');
+          if (firstSelectable !== -1) {
+            setSelectedIndex(firstSelectable);
+            focusItem(firstSelectable);
+          }
+        } else {
+          const nextIndex = findNextSelectableIndex(selectedIndex, 'down');
+          if (nextIndex !== -1) {
+            setSelectedIndex(nextIndex);
+            focusItem(nextIndex);
+          }
         }
         break;
       case 'ArrowUp':
         e.preventDefault();
-        if (selectedIndex > 0) {
-          setSelectedIndex(prev => prev - 1);
-          focusItem(selectedIndex - 1);
-        } else {
-          setSelectedIndex(-1);
-          focusTrigger();
+        if (selectedIndex > -1) {
+          const prevIndex = findNextSelectableIndex(selectedIndex, 'up');
+          if (prevIndex !== -1) {
+            setSelectedIndex(prevIndex);
+            focusItem(prevIndex);
+          } else {
+            setSelectedIndex(-1);
+            focusTrigger();
+          }
         }
         break;
       case 'Enter':
@@ -77,7 +106,7 @@ export function useDropdown({ items, onSelect }: UseDropdownProps): DropdownCont
         }
         break;
     }
-  }, [items, selectedIndex, isOpen, onSelect, close, focusItem, focusTrigger]);
+  }, [items, selectedIndex, isOpen, onSelect, close, focusItem, focusTrigger, findNextSelectableIndex]);
 
   return {
     isOpen,
