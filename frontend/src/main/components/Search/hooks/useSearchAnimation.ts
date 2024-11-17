@@ -1,7 +1,6 @@
 // src/main/components/Search/hooks/useSearchAnimation.ts
 import { useState, useCallback } from 'react';
-import { ExpansionState, SearchAnimationState } from '../types';
-import { ANIMATION_DURATION } from '../../Interface/constants';
+import { ExpansionState, DropdownAnimationState, SearchAnimationState } from '../types';
 
 export function useSearchAnimation({
   mode = 'standard',
@@ -13,57 +12,76 @@ export function useSearchAnimation({
   const [expansionState, setExpansionState] = useState<ExpansionState>('collapsed');
   const [isExpanding, setIsExpanding] = useState(false);
   const [isExpanded, setIsExpanded] = useState(mode === 'standard');
-  const [isVisible, setIsVisible] = useState(false);
+  const [internalDropdownState, setInternalDropdownState] = 
+    useState<DropdownAnimationState>('initial');
 
-  const expand = useCallback(() => {
-    if (expansionState === 'collapsed') {
-      // Set all states synchronously before animation starts
-      setIsVisible(true);
-      setIsExpanding(true);
-      setIsExpanded(true);
-      
-      // Use RAF to ensure DOM is ready for animation
-      requestAnimationFrame(() => {
-        setExpansionState('expanding');
-      });
+  const getAnimationState = useCallback((): DropdownAnimationState => {
+    if (mode === 'expandable') {
+      return expansionState === 'expanded' ? 'entered' :
+             expansionState === 'expanding' ? 'entering' :
+             expansionState === 'collapsing' ? 'exiting' :
+             'initial';
     }
-  }, [expansionState]);
+    // For standard mode, directly reflect showDropdown state
+    return internalDropdownState;
+  }, [mode, expansionState, internalDropdownState]);
 
   const handleTransitionEnd = useCallback(() => {
     if (expansionState === 'expanding') {
-      // Complete expansion first
       setExpansionState('expanded');
       setIsExpanding(false);
-      
-      // Focus in next frame after expansion is complete
       requestAnimationFrame(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
+        inputRef.current?.focus();
+        setInternalDropdownState('entering');
+      });
+    } else if (expansionState === 'collapsing') {
+      setExpansionState('collapsed');
+      setIsExpanded(false);
+      requestAnimationFrame(() => {
+        setInternalDropdownState('initial');
+      });
+    } 
+    else if (internalDropdownState === 'entering') {
+      setInternalDropdownState('entered');
+    } else if (internalDropdownState === 'exiting') {
+      requestAnimationFrame(() => {
+        setInternalDropdownState('initial');
       });
     }
-  }, [expansionState, inputRef]);
+  }, [expansionState, inputRef, internalDropdownState]);
 
-  const collapse = useCallback((clearQuery: boolean = false) => {
-    if (expansionState !== 'collapsed') {
-      setExpansionState('collapsing');
-      
-      setTimeout(() => {
-        setExpansionState('collapsed');
-        setIsExpanded(false);
-        setIsVisible(false);
-        setIsExpanding(false);
-      }, ANIMATION_DURATION);
+  const collapse = useCallback((clearQuery = false) => {
+    if (mode === 'expandable') {
+      if (expansionState !== 'collapsed') {
+        setInternalDropdownState('exiting');
+        setExpansionState('collapsing');
+      }
+    } else {
+      setInternalDropdownState('exiting');
     }
-  }, [expansionState]);
+  }, [mode, expansionState]);
+
+  const expand = useCallback(() => {
+    if (mode === 'expandable') {
+      if (expansionState === 'collapsed') {
+        setIsExpanding(true);
+        setIsExpanded(true);
+        setExpansionState('expanding');
+        setInternalDropdownState('initial');
+      }
+    } else {
+      // For standard mode, directly enter
+      setInternalDropdownState('entering');
+    }
+  }, [mode, expansionState]);
 
   return {
     expansionState,
     isExpanding,
     isExpanded,
-    isVisible,
     handleTransitionEnd,
     collapse,
-    expand
+    expand,
+    getAnimationState
   };
 }

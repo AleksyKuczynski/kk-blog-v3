@@ -47,11 +47,9 @@ export function useSearchInput(
     isExpanded,
     handleTransitionEnd,
     collapse,
-    expand
-  } = useSearchAnimation({
-    mode,
-    inputRef // Pass the ref to animation hook
-  });
+    expand,
+    getAnimationState
+  } = useSearchAnimation({ mode, inputRef });
 
   // Initialize dropdown management
   const {
@@ -134,6 +132,7 @@ export function useSearchInput(
       ...handlers,
       handleTransitionEnd // Used by container transition
     },
-    controls
+    controls,
+    getAnimationState
   };
 }

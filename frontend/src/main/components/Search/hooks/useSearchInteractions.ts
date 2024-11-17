@@ -132,19 +132,22 @@ export function useSearchInteractions({
   const handleFocus = useCallback(() => {
     if (isExpandable) {
       expand();
+    } else {
+      setShowDropdown(true);
+      expand(); // Add direct expand call
     }
     handleFocusStatus();
-    setShowDropdown(true);
   }, [isExpandable, expand, handleFocusStatus, setShowDropdown]);
 
   const handleBlur = useCallback(() => {
-    if (!isExpandable) {
-      setTimeout(() => {
-        setShowDropdown(false);
-        resetStatus();
-      }, 200);
-    }
-  }, [isExpandable, setShowDropdown, resetStatus]);
+  if (!isExpandable) {
+    setTimeout(() => {
+      setShowDropdown(false);
+      collapse(true); // Add direct collapse call
+      resetStatus();
+    }, 200);
+  }
+}, [isExpandable, collapse, setShowDropdown, resetStatus]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

@@ -2,7 +2,7 @@
 import React from 'react';
 import { useTheme } from '../ThemeSwitcher';
 import { cn } from '@/main/lib/utils';
-import { ExpansionState } from './types';
+import type { SearchDropdownContentProps } from './types';
 
 const dropdownStyles = {
   base: `
@@ -15,39 +15,29 @@ const dropdownStyles = {
   `,
   theme: {
     default: 'rounded-lg',
-    rounded: 'rounded-xl', 
+    rounded: 'rounded-xl',
     sharp: 'border-2 border-prcolor'
   },
   state: {
-    entering: 'translate-y-2 opacity-0',
-    entered: 'translate-y-0 opacity-100',
-    exiting: 'translate-y-2 opacity-0 pointer-events-none'
+    entered: 'scale-y-100 opacity-100 translate-y-0',
+    entering: 'scale-y-100 opacity-100 translate-y-0',
+    exiting: 'scale-y-0 opacity-0 -translate-y-4',
+    initial: 'scale-y-0 opacity-0 -translate-y-4 pointer-events-none'
   }
 };
-
-interface SearchDropdownContentProps {
-  children: React.ReactNode;
-  className?: string;
-  isOpen: boolean;
-  isVisible: boolean;
-  expansionState: ExpansionState;
-}
 
 export const SearchDropdownContent = ({
   children,
   className = '',
-  isOpen,
-  isVisible,
-  expansionState
+  animationState,
+  onTransitionEnd
 }: SearchDropdownContentProps) => {
   const { currentTheme } = useTheme();
-
-  if (!isVisible && !isOpen || expansionState !== 'expanded') return null;
 
   const dropdownClassName = cn(
     dropdownStyles.base,
     dropdownStyles.theme[currentTheme],
-    isOpen && isVisible ? dropdownStyles.state.entered : dropdownStyles.state.exiting,
+    dropdownStyles.state[animationState],
     className
   );
 
@@ -55,8 +45,14 @@ export const SearchDropdownContent = ({
     <div 
       className={dropdownClassName}
       role="listbox"
+      onTransitionEnd={(e) => {
+        if (e.target === e.currentTarget) {
+          onTransitionEnd();
+        }
+      }}
     >
-      {children}
+      {/* Only hide content in 'initial' state */}
+      {animationState !== 'initial' && children}
     </div>
   );
 };

@@ -72,41 +72,37 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
         handleFocus,
         handleBlur,
         handleTransitionEnd
-      }
+      },
+      getAnimationState
     },
   } = useSearchContext();
 
-  // Determine if input should be visible
   const shouldShowInput = isExpandable ? 
-  (isExpanding || expansionState !== 'collapsed') : 
-  true;
+    (isExpanding || expansionState !== 'collapsed') : 
+    true;
 
-const containerClassName = cn(
-  containerStyles.base,
-  containerStyles.theme[currentTheme],
-  isExpandable && {
-    [containerStyles.motion.expanding]: isExpanding,
-    [containerStyles.motion.expanded]: expansionState === 'expanded',
-    [containerStyles.motion.collapsing]: expansionState === 'collapsing',
-    [containerStyles.motion.collapsed]: expansionState === 'collapsed'
-  },
-  isExpandable && 'transform origin-right',
-  className
-);
-
-  // Only show dropdown when expanded and not animating
-  const shouldShowDropdown = showDropdown && expansionState !== 'collapsing';
+  const containerClassName = cn(
+    containerStyles.base,
+    containerStyles.theme[currentTheme],
+    isExpandable && {
+      [containerStyles.motion.expanding]: isExpanding,
+      [containerStyles.motion.expanded]: expansionState === 'expanded',
+      [containerStyles.motion.collapsing]: expansionState === 'collapsing',
+      [containerStyles.motion.collapsed]: expansionState === 'collapsed'
+    },
+    isExpandable && 'transform origin-right',
+    className
+  );
 
   return (
     <div ref={containerRef} className="relative w-full">
       <div className="flex gap-2 items-center">
         {shouldShowInput && (
           <div 
-          className={cn(
-            containerClassName,
-            'overflow-hidden', // Add this to prevent content flash
-            !shouldShowInput && 'invisible' // Use invisible instead of conditional rendering
-          )}
+            className={cn(
+              containerClassName,
+              'overflow-hidden'
+            )}
             onTransitionEnd={handleTransitionEnd}
           >
             <input
@@ -144,39 +140,38 @@ const containerClassName = cn(
         />
       </div>
 
-        <SearchDropdownContent 
-          isOpen={showDropdown}
-          isVisible={isExpanded}
-          expansionState={expansionState}
-          className="max-h-[80vh] overflow-y-auto"
-        >
-          {searchStatus.type !== 'success' ? (
-            <div className={cn(
-              statusMessageStyles.base,
-              statusMessageStyles.theme[currentTheme]
-            )}>
-              {searchStatus.type === 'minChars' && translations.minCharacters}
-              {searchStatus.type === 'searching' && translations.searching}
-              {searchStatus.type === 'noResults' && translations.noResults}
-            </div>
-          ) : (
-            <ul 
-              id={`search-suggestions-${instanceId}`}
-              role="listbox"
-              aria-label={translations.results}
-            >
-              {suggestions.map((suggestion, index) => (
-                <SearchSuggestionItem
-                  key={suggestion.slug}
-                  title={suggestion.title}
-                  description={suggestion.description}
-                  isHighlighted={index === focusedIndex}
-                  onSelect={() => handleSelect(suggestion.slug, suggestion.rubric_slug)}
-                />
-              ))}
-            </ul>
-          )}
-        </SearchDropdownContent>
+      <SearchDropdownContent 
+       isOpen={showDropdown}
+       animationState={getAnimationState()}
+       onTransitionEnd={handleTransitionEnd}
+      >
+        {searchStatus.type !== 'success' ? (
+          <div className={cn(
+            statusMessageStyles.base,
+            statusMessageStyles.theme[currentTheme]
+          )}>
+            {searchStatus.type === 'minChars' && translations.minCharacters}
+            {searchStatus.type === 'searching' && translations.searching}
+            {searchStatus.type === 'noResults' && translations.noResults}
+          </div>
+        ) : (
+          <ul 
+            id={`search-suggestions-${instanceId}`}
+            role="listbox"
+            aria-label={translations.results}
+          >
+            {suggestions.map((suggestion, index) => (
+              <SearchSuggestionItem
+                key={suggestion.slug}
+                title={suggestion.title}
+                description={suggestion.description}
+                isHighlighted={index === focusedIndex}
+                onSelect={() => handleSelect(suggestion.slug, suggestion.rubric_slug)}
+              />
+            ))}
+          </ul>
+        )}
+      </SearchDropdownContent>
     </div>
   );
 });
