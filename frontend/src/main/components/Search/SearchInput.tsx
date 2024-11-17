@@ -147,6 +147,7 @@ const containerClassName = cn(
         <SearchDropdownContent 
           isOpen={showDropdown}
           isVisible={isExpanded}
+          expansionState={expansionState}
           className="max-h-[80vh] overflow-y-auto"
         >
           {searchStatus.type !== 'success' ? (

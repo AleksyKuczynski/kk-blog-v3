@@ -2,6 +2,7 @@
 import React from 'react';
 import { useTheme } from '../ThemeSwitcher';
 import { cn } from '@/main/lib/utils';
+import { ExpansionState } from './types';
 
 const dropdownStyles = {
   base: `
@@ -29,17 +30,19 @@ interface SearchDropdownContentProps {
   className?: string;
   isOpen: boolean;
   isVisible: boolean;
+  expansionState: ExpansionState;
 }
 
 export const SearchDropdownContent = ({
   children,
   className = '',
   isOpen,
-  isVisible
+  isVisible,
+  expansionState
 }: SearchDropdownContentProps) => {
   const { currentTheme } = useTheme();
 
-  if (!isVisible && !isOpen) return null;
+  if (!isVisible && !isOpen || expansionState !== 'expanded') return null;
 
   const dropdownClassName = cn(
     dropdownStyles.base,
