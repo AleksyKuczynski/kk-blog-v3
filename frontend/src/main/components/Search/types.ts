@@ -70,11 +70,8 @@ export interface SearchInputManagement {
   isExpanded: boolean
   isExpanding: boolean
   expansionState: ExpansionState
-  isCollapsing: boolean
   searchStatus: SearchStatus
   instanceId: string
-  direction: Direction
-  updateDirection: () => void
   handlers: SearchUIHandlers
   controls: SearchInputHandle
 }
@@ -116,7 +113,6 @@ export interface SearchAnimationState {
   isExpanding: boolean;
   isExpanded: boolean;
   isVisible: boolean;
-  handleExpansion: () => void;
   handleTransitionEnd: () => void;
   collapse: (clearQuery?: boolean) => void;
   expand: () => void;

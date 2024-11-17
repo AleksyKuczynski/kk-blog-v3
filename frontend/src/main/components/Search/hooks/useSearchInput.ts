@@ -45,28 +45,21 @@ export function useSearchInput(
     expansionState,
     isExpanding,
     isExpanded,
-    isCollapsing,
-    handleExpansion,
     handleTransitionEnd,
     collapse,
     expand
   } = useSearchAnimation({
     mode,
-    isValidSearch: query.trim().length >= 3,
-    onSearchSubmit: handleSubmitFromState,
-    onExpandComplete: () => inputRef.current?.focus(),
-    shouldExpand: true
+    inputRef // Pass the ref to animation hook
   });
 
   // Initialize dropdown management
   const {
-    direction,
     showDropdown,
     focusedIndex,
-    updateDirection,
     setShowDropdown,
     setFocusedIndex
-  } = useSearchDropdown(containerRef, suggestions.length, searchStatus);
+  } = useSearchDropdown(isExpanded);
 
   // Initialize interaction handlers
   const handlers = useSearchInteractions({
@@ -82,7 +75,6 @@ export function useSearchInput(
     setQuery,
     handleSelect: handleSelectFromState,
     handleSubmit: handleSubmitFromState,
-    updateDirection,
     expand,
     collapse,
     onClose,
@@ -132,18 +124,14 @@ export function useSearchInput(
     isExpanded,
     isExpanding,
     expansionState,
-    isCollapsing,
     searchStatus,
 
     // Identifiers and configuration
     instanceId: instanceIdRef.current,
-    direction,
-    updateDirection,
 
     // Handlers and controls
     handlers: {
       ...handlers,
-      handleExpansion,    // Used by button click
       handleTransitionEnd // Used by container transition
     },
     controls

@@ -1,8 +1,7 @@
 // src/main/components/Search/hooks/useSearchInteractions.ts
-
-import { useCallback, RefObject } from 'react';
+import { useCallback } from 'react';
 import { SearchProposition } from '@/main/lib/directus';
-import { ExpansionState, SearchStatus, SearchUIHandlers } from '../types';
+import { ExpansionState, SearchUIHandlers } from '../types';
 
 interface SearchInteractionsConfig {
   isExpandable: boolean;
@@ -17,7 +16,6 @@ interface SearchInteractionsConfig {
   setQuery: (value: string) => void;
   handleSelect: (slug: string, rubricSlug: string) => void;
   handleSubmit: () => boolean;
-  updateDirection: () => void;
   expand: () => void;
   collapse: (clearQuery: boolean) => void;
   onClose?: () => void;
@@ -37,7 +35,6 @@ export function useSearchInteractions({
   setFocusedIndex,
   handleSelect,
   handleSubmit,
-  updateDirection,
   expand,
   collapse,
   onClose,
@@ -65,7 +62,7 @@ export function useSearchInteractions({
         }
         break;
 
-        case 'ArrowDown':
+      case 'ArrowDown':
         if (!showDropdown || !suggestions.length) return;
         e.preventDefault();
         setFocusedIndex(focusedIndex < suggestions.length - 1 ? focusedIndex + 1 : focusedIndex);
@@ -136,16 +133,15 @@ export function useSearchInteractions({
     if (isExpandable) {
       expand();
     }
-    handleFocusStatus();  // Call without parameter
+    handleFocusStatus();
     setShowDropdown(true);
-    updateDirection();
-  }, [isExpandable, expand, handleFocusStatus, setShowDropdown, updateDirection]);
+  }, [isExpandable, expand, handleFocusStatus, setShowDropdown]);
 
   const handleBlur = useCallback(() => {
     if (!isExpandable) {
       setTimeout(() => {
         setShowDropdown(false);
-        resetStatus();  // Use resetStatus instead
+        resetStatus();
       }, 200);
     }
   }, [isExpandable, setShowDropdown, resetStatus]);
@@ -153,11 +149,10 @@ export function useSearchInteractions({
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
-    handleFocusStatus();  // Call without parameter
+    handleFocusStatus();
     setShowDropdown(true);
     setFocusedIndex(-1);
-    updateDirection();
-  }, [setQuery, handleFocusStatus, setShowDropdown, setFocusedIndex, updateDirection]);
+  }, [setQuery, handleFocusStatus, setShowDropdown, setFocusedIndex]);
 
   const handleOutsideClick = useCallback((event?: MouseEvent | TouchEvent) => {
     if (!event?.target || !isExpandable || !isExpanded) return;
@@ -175,9 +170,10 @@ export function useSearchInteractions({
     handleBlur,
     handleExpansion: expand,
     handleTransitionEnd: useCallback(() => {
+      // Only handle transition states
       if (expansionState === 'expanding' || expansionState === 'collapsing') {
-        updateDirection();
+        // No direction update needed
       }
-    }, [expansionState, updateDirection])
+    }, [expansionState])
   };
 }

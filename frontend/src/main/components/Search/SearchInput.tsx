@@ -64,7 +64,6 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
       expansionState,
       searchStatus,
       instanceId,
-      direction,
       handlers: {
         handleInputChange,
         handleKeyDown,
@@ -146,8 +145,8 @@ const containerClassName = cn(
       </div>
 
         <SearchDropdownContent 
-          direction={direction}
-          isOpen={shouldShowDropdown}
+          isOpen={showDropdown}
+          isVisible={isExpanded}
           className="max-h-[80vh] overflow-y-auto"
         >
           {searchStatus.type !== 'success' ? (

@@ -1,68 +1,67 @@
 // src/main/components/Search/hooks/useSearchAnimation.ts
-
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { 
-  ExpansionState, 
-  SearchAnimationState,
-  SearchAnimationConfig 
-} from '../types';
+import { useState, useCallback } from 'react';
+import { ExpansionState, SearchAnimationState } from '../types';
 import { ANIMATION_DURATION } from '../../Interface/constants';
 
 export function useSearchAnimation({
   mode = 'standard',
-  onExpandComplete,
-  onCollapse,
-  isValidSearch = false,
-  onSearchSubmit,
-  shouldExpand = true
-}: SearchAnimationConfig = {}): SearchAnimationState {
+  inputRef
+}: {
+  mode?: 'standard' | 'expandable';
+  inputRef: React.RefObject<HTMLInputElement>;
+}): SearchAnimationState {
   const [expansionState, setExpansionState] = useState<ExpansionState>('collapsed');
   const [isExpanding, setIsExpanding] = useState(false);
   const [isExpanded, setIsExpanded] = useState(mode === 'standard');
   const [isVisible, setIsVisible] = useState(false);
-  const isSearchingRef = useRef(false);
 
   const expand = useCallback(() => {
-    if (!isSearchingRef.current && expansionState === 'collapsed') {
+    if (expansionState === 'collapsed') {
+      // Set all states synchronously before animation starts
+      setIsVisible(true);
       setIsExpanding(true);
       setIsExpanded(true);
-      setIsVisible(true);
-      setExpansionState('expanding');
+      
+      // Use RAF to ensure DOM is ready for animation
+      requestAnimationFrame(() => {
+        setExpansionState('expanding');
+      });
     }
   }, [expansionState]);
+
+  const handleTransitionEnd = useCallback(() => {
+    if (expansionState === 'expanding') {
+      // Complete expansion first
+      setExpansionState('expanded');
+      setIsExpanding(false);
+      
+      // Focus in next frame after expansion is complete
+      requestAnimationFrame(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      });
+    }
+  }, [expansionState, inputRef]);
 
   const collapse = useCallback((clearQuery: boolean = false) => {
     if (expansionState !== 'collapsed') {
       setExpansionState('collapsing');
-      // Will hide after animation completes
-      const timeoutId = setTimeout(() => {
+      
+      setTimeout(() => {
         setExpansionState('collapsed');
         setIsExpanded(false);
         setIsVisible(false);
-        if (clearQuery) {
-          onCollapse?.(true);
-        }
+        setIsExpanding(false);
       }, ANIMATION_DURATION);
     }
-  }, [expansionState, onCollapse]);
-
-  const handleTransitionEnd = useCallback(() => {
-    if (expansionState === 'expanding') {
-      setExpansionState('expanded');
-      setIsExpanding(false);
-      if (!isSearchingRef.current) {
-        onExpandComplete?.();
-      }
-    }
-    isSearchingRef.current = false;
-  }, [expansionState, onExpandComplete]);
+  }, [expansionState]);
 
   return {
     expansionState,
     isExpanding,
     isExpanded,
     isVisible,
-    handleExpansion: expand,
     handleTransitionEnd,
     collapse,
     expand
