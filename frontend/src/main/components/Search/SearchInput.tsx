@@ -73,7 +73,8 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
         handleBlur,
         handleTransitionEnd
       },
-      getAnimationState
+      getAnimationState,
+      contentTransitionState
     },
   } = useSearchContext();
 
@@ -143,6 +144,7 @@ const SearchInput = forwardRef<SearchInputHandle, SearchInputProps>(({
       <SearchDropdownContent 
        isOpen={showDropdown}
        animationState={getAnimationState()}
+       contentTransitionState={contentTransitionState}
        onTransitionEnd={handleTransitionEnd}
       >
         {searchStatus.type !== 'success' ? (

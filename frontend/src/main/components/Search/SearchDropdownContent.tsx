@@ -1,4 +1,5 @@
 // src/main/components/Search/SearchDropdownContent.tsx
+
 import React from 'react';
 import { useTheme } from '../ThemeSwitcher';
 import { cn } from '@/main/lib/utils';
@@ -9,8 +10,7 @@ const dropdownStyles = {
     absolute z-60 shadow-lg bg-bgcolor-alt 
     w-[calc(100%-44px)]
     top-full mt-2
-    max-h-[80vh] overflow-y-auto 
-    transition-all duration-300 ease-out
+    max-h-[80vh]
     transform origin-top
   `,
   theme: {
@@ -19,40 +19,54 @@ const dropdownStyles = {
     sharp: 'border-2 border-prcolor'
   },
   state: {
-    entered: 'scale-y-100 opacity-100 translate-y-0',
-    entering: 'scale-y-100 opacity-100 translate-y-0',
-    exiting: 'scale-y-0 opacity-0 -translate-y-4',
+    entered: 'scale-y-100 opacity-100 translate-y-0 transition-transform duration-300 ease-out',
+    entering: 'scale-y-100 opacity-100 translate-y-0 transition-transform duration-300 ease-out',
+    exiting: 'scale-y-0 opacity-0 -translate-y-4 transition-all duration-200 ease-in',
     initial: 'scale-y-0 opacity-0 -translate-y-4 pointer-events-none'
+  },
+  content: {
+    stable: 'opacity-100 visible transition-none',
+    'transitioning-out': 'opacity-0 transition-opacity duration-150 ease-out',
+    'transitioning-in': 'opacity-100 transition-opacity duration-150 ease-in'
+  },
+  overflow: {
+    auto: 'overflow-y-auto',
+    hidden: 'overflow-hidden'
   }
-};
-
-export const SearchDropdownContent = ({
+ };
+ 
+ export const SearchDropdownContent = ({
   children,
   className = '',
   animationState,
+  contentTransitionState,
   onTransitionEnd
-}: SearchDropdownContentProps) => {
+ }: SearchDropdownContentProps) => {
   const { currentTheme } = useTheme();
-
-  const dropdownClassName = cn(
-    dropdownStyles.base,
-    dropdownStyles.theme[currentTheme],
-    dropdownStyles.state[animationState],
-    className
-  );
-
+  const hasScrollableContent = React.Children.count(children) > 1;
+ 
   return (
     <div 
-      className={dropdownClassName}
+      className={cn(
+        dropdownStyles.base,
+        dropdownStyles.theme[currentTheme],
+        dropdownStyles.state[animationState],
+        hasScrollableContent ? dropdownStyles.overflow.auto : dropdownStyles.overflow.hidden,
+        className
+      )}
       role="listbox"
       onTransitionEnd={(e) => {
-        if (e.target === e.currentTarget) {
+        if (e.propertyName === 'transform' || e.propertyName === 'opacity') {
           onTransitionEnd();
         }
       }}
     >
-      {/* Only hide content in 'initial' state */}
-      {animationState !== 'initial' && children}
+      <div 
+        className={cn(dropdownStyles.content[contentTransitionState])}
+        style={{ display: animationState === 'initial' ? 'none' : 'block' }}
+      >
+        {children}
+      </div>
     </div>
   );
-};
+ };

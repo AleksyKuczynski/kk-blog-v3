@@ -1,6 +1,6 @@
 // src/main/components/Search/hooks/useSearchInput.ts
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { 
   SearchInputConfig, 
   SearchInputHandle, 
@@ -48,8 +48,22 @@ export function useSearchInput(
     handleTransitionEnd,
     collapse,
     expand,
-    getAnimationState
+    getAnimationState,
+    handleSearchStatusChange,
+    contentTransitionState
   } = useSearchAnimation({ mode, inputRef });
+
+  const lastSearchStatus = useRef(searchStatus);
+  useEffect(() => {
+    if (searchStatus.type !== lastSearchStatus.current.type) {
+      console.log('Search status changed:', { 
+        from: lastSearchStatus.current.type, 
+        to: searchStatus.type 
+      });
+      handleSearchStatusChange(searchStatus);
+      lastSearchStatus.current = searchStatus;
+    }
+  }, [searchStatus, handleSearchStatusChange]);
 
   // Initialize dropdown management
   const {
@@ -133,6 +147,7 @@ export function useSearchInput(
       handleTransitionEnd // Used by container transition
     },
     controls,
-    getAnimationState
+    getAnimationState,
+    contentTransitionState
   };
 }

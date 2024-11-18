@@ -9,6 +9,7 @@ export type SearchInputAction = 'clear' | 'preserve' | 'submit'
 export type Direction = 'top' | 'bottom'
 export type ExpansionState = 'collapsed' | 'expanding' | 'expanded' | 'collapsing'
 export type DropdownAnimationState = 'initial' | 'entering' | 'entered' | 'exiting'
+export type ContentTransitionState = 'stable' | 'transitioning-out' | 'transitioning-in'
 
 // Search Status Type
 export type SearchStatus = 
@@ -76,6 +77,7 @@ export interface SearchInputManagement {
   handlers: SearchUIHandlers
   controls: SearchInputHandle
   getAnimationState: () => DropdownAnimationState
+  contentTransitionState: ContentTransitionState
 }
 
 // Context Type
@@ -106,6 +108,7 @@ export interface SearchDropdownContentProps {
   children: React.ReactNode
   className?: string
   animationState: DropdownAnimationState
+  contentTransitionState: ContentTransitionState
   onTransitionEnd: () => void
 }
 
@@ -118,6 +121,8 @@ export interface SearchAnimationState {
   collapse: (clearQuery?: boolean) => void;
   expand: () => void;
   getAnimationState: () => DropdownAnimationState;
+  handleSearchStatusChange: (newStatus: SearchStatus) => void;
+  contentTransitionState: ContentTransitionState;
 }
 
 export interface SearchAnimationConfig {
