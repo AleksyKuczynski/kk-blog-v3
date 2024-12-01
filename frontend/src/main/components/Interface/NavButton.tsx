@@ -41,6 +41,8 @@ export const NavButton = forwardRef<HTMLButtonElement, NavButtonProps>(
     const { currentTheme } = useTheme();
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
       console.log('NavButton clicked');
       onClick?.(e);
     };
@@ -59,6 +61,7 @@ export const NavButton = forwardRef<HTMLButtonElement, NavButtonProps>(
         ref={ref}
         className={classes}
         onClick={handleClick}
+        type='button'
         {...props}
       >
         {icon || children}

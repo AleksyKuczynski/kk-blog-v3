@@ -8,7 +8,6 @@ import { getDictionary } from '@/main/lib/dictionaries';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { ArticleSlugInfo } from '@/main/lib/directus/interfaces';
 import Section from '@/main/components/Main/Section';
-import SearchPageWrapper from '@/main/components/Search/SearchPageWrapper';
 import SortingControl from '@/main/components/Navigation/SortingControl';
 
 export const dynamic = 'force-dynamic';
@@ -61,11 +60,6 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
     <>
       <h1 className="text-4xl font-bold text-primary mb-8 text-center font-display">{dict.search.results}</h1>
       
-      <SearchPageWrapper 
-        initialSearch={searchQuery}
-        translations={dict.search}
-      />
-
       <SortingControl
         translations={dict.sorting}
         currentSort={currentSort}

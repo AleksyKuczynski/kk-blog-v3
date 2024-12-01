@@ -9,7 +9,6 @@ import { useOutsideClick } from '@/main/lib/hooks'
 import { NavButton } from '../Interface'
 import Logo from '../Logo'
 import NavLinks from './NavLinks'
-import SearchBarWrapper from '../Search/SearchBarWrapper'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { ThemeSwitcher } from '../ThemeSwitcher'
 
@@ -98,14 +97,6 @@ export default function MobileNavigation({
             sm:landscape:flex-row sm:landscape:justify-between sm:landscape:items-center sm:landscape:space-y-0 sm:landscape:space-x-4 sm:landscape:pt-5 sm:landscape:pr-3
             sm:pt-4 sm:pr-16 
           `}>
-          {!isSearchPage && (
-            <div className="w-full px-4 pt-8 sm:landscape:w-auto sm:landscape:pt-1 order-2 sm:landscape:order-1">
-              <SearchBarWrapper 
-                translations={translations.search}
-                showButton={true}
-              />
-            </div>
-          )}
           <div className="flex pr-16 space-x-2 order-1 sm:landscape:order-2">
             <LanguageSwitcher currentLang={lang} />
             <ThemeSwitcher 

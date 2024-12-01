@@ -77,12 +77,6 @@ export default function Footer({ lang, translations }: FooterProps) {
             translations={footer.socialLinks}
           />
           
-          <SearchSection
-            lang={lang}
-            translations={footer.search}
-            searchTranslations={search}
-          />         
-
           <KuKraftSection
             translations={footer.kuKraft}
           />

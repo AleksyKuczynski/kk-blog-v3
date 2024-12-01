@@ -1,135 +1,94 @@
 // src/main/components/Search/types.ts
+import { SearchProposition } from '@/main/lib/directus';
 
-import { SearchProposition } from '@/main/lib/directus'
-import { SearchTranslations } from '@/main/lib/dictionaries/types'
+export type ComponentMode = 'expandable' | 'standard';
+export type ComponentVisibility = 'hidden' | 'animating-in' | 'visible' | 'animating-out';
+export type DropdownContent = 'empty' | 'message' | 'suggestions';
 
-// Core Types
-export type SearchMode = 'expandable' | 'standard'
-export type SearchInputAction = 'clear' | 'preserve' | 'submit'
-export type Direction = 'top' | 'bottom'
-export type ExpansionState = 'collapsed' | 'expanding' | 'expanded' | 'collapsing'
-export type DropdownAnimationState = 'initial' | 'entering' | 'entered' | 'exiting'
-export type ContentTransitionState = 'stable' | 'transitioning-out' | 'transitioning-in'
-
-// Search Status Type
+// Search status and control
 export type SearchStatus = 
   | { type: 'idle' }
   | { type: 'minChars'; current: number; required: number }
   | { type: 'searching' }
   | { type: 'noResults' }
-  | { type: 'success'; count: number }
+  | { type: 'success'; count: number };
 
-// Component Handle Interface
-export interface SearchInputHandle {
-  getValue: () => string
-  focus: () => void
-  clear: () => void
-  expand: () => void
-  collapse: () => void
-  submit: () => void
-  close: (action?: SearchInputAction) => void
+// Unified state interface
+export interface SearchUIState {
+  mode: ComponentMode;
+  input: {
+    visibility: ComponentVisibility;
+    isFocused: boolean;
+  };
+  dropdown: {
+    visibility: ComponentVisibility;
+    content: DropdownContent;
+  };
+  query: string;
+  suggestions: SearchProposition[];
+  selectedIndex: number;
+  searchStatus: SearchStatus;
 }
 
-// Handler Interfaces
-export interface SearchUIHandlers {
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
-  handleSearchClick: (e: React.MouseEvent) => void
-  handleOutsideClick: (e?: MouseEvent | TouchEvent) => void
-  handleSelect: (slug: string, rubricSlug: string) => void
-  handleFocus: () => void
-  handleBlur: () => void
-  handleExpansion: () => void
-  handleTransitionEnd: () => void
+// Search Input handlers interface
+export interface SearchInputHandlers {
+  onInputChange: (value: string) => void;
+  onSearchExpand: () => void;
+  onSearchCollapse: () => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onSelect: (index: number) => void;
 }
 
-// Configuration Interface
-export interface SearchInputConfig {
-  isExpandable?: boolean
-  mode?: SearchMode
-  autoFocus?: boolean
-  onClose?: () => void
-}
+export type SearchStepAction = 
+  // Expand search steps
+  | { type: 'START_SEARCH_EXPANSION' }
+  | { type: 'COMPLETE_SEARCH_EXPANSION' }
+  | { type: 'SET_FOCUS' }
+  | { type: 'START_DROPDOWN_EXPANSION' }
+  | { type: 'SET_MESSAGE' }
+  | { type: 'COMPLETE_DROPDOWN_EXPANSION' }
+  // Collapse search steps
+  | { type: 'START_DROPDOWN_COLLAPSE' }
+  | { type: 'COMPLETE_DROPDOWN_COLLAPSE' }
+  | { type: 'START_INPUT_COLLAPSE' }
+  | { type: 'COMPLETE_INPUT_COLLAPSE' }
+  // Search execution steps
+  | { type: 'START_SEARCH' }
+  | { type: 'SET_QUERY', payload: string }
+  | { type: 'SET_SEARCHING_STATE' }
+  | { type: 'SET_SUGGESTIONS', payload: SearchProposition[] }
+  | { type: 'SET_SEARCH_ERROR' }
+  // Navigation steps
+  | { type: 'NAVIGATE_UP' }
+  | { type: 'NAVIGATE_DOWN' }
+  // Selection steps
+  | { type: 'SELECT_ITEM', payload: number }
+  // Reset
+  | { type: 'RESET_STATE' };
 
-// Provider Props
-export interface SearchProviderProps {
-  children: React.ReactNode
-  translations: SearchTranslations
-  mode?: SearchMode
-  isInitiallyOpen?: boolean
-}
-
-// Input Management Interface
-export interface SearchInputManagement {
-  containerRef: React.RefObject<HTMLDivElement>
-  inputRef: React.RefObject<HTMLInputElement>
-  buttonRef: React.RefObject<HTMLButtonElement>
-  dropdownRef: React.RefObject<HTMLDivElement>
-  query: string
-  suggestions: SearchProposition[]
-  focusedIndex: number
-  showDropdown: boolean
-  isExpanded: boolean
-  isExpanding: boolean
-  expansionState: ExpansionState
-  searchStatus: SearchStatus
-  instanceId: string
-  handlers: SearchUIHandlers
-  controls: SearchInputHandle
-  getAnimationState: () => DropdownAnimationState
-  contentTransitionState: ContentTransitionState
-}
-
-// Context Type
-export interface SearchContextType {
-  query: string
-  suggestions: SearchProposition[]
-  isExpanded: boolean
-  showDropdown: boolean
-  hasInteracted: boolean
-  isSearching: boolean
-  inputManagement: SearchInputManagement
-  setQuery: (query: string) => void
-  handleSelect: (slug: string, rubricSlug: string) => void
-  handleSubmit: () => boolean
-}
-
-// Component Props
-export interface SearchInputProps {
-  className?: string
-  translations: SearchTranslations
-  showButton?: boolean
-  autoFocus?: boolean
-  isExpandable?: boolean
-}
-
-export interface SearchDropdownContentProps {
-  isOpen: boolean
-  children: React.ReactNode
-  className?: string
-  animationState: DropdownAnimationState
-  contentTransitionState: ContentTransitionState
-  onTransitionEnd: () => void
-}
-
-// Animation-related types
-export interface SearchAnimationState {
-  expansionState: ExpansionState;
-  isExpanding: boolean;
-  isExpanded: boolean;
-  handleTransitionEnd: () => void;
-  collapse: (clearQuery?: boolean) => void;
-  expand: () => void;
-  getAnimationState: () => DropdownAnimationState;
-  handleSearchStatusChange: (newStatus: SearchStatus) => void;
-  contentTransitionState: ContentTransitionState;
-}
-
-export interface SearchAnimationConfig {
-  mode?: SearchMode;
-  onExpandComplete?: () => void;
-  onCollapse?: (clearQuery: boolean) => void;
-  isValidSearch?: boolean;
-  onSearchSubmit?: () => boolean;
-  shouldExpand?: boolean;
-}
+// High-level scenarios
+export type SearchScenario =
+  | { 
+      type: 'SCENARIO_EXPAND_SEARCH';
+      dispatch: (action: SearchStepAction) => void;
+    }
+  | { 
+      type: 'SCENARIO_COLLAPSE_SEARCH'; 
+      trigger: 'escape' | 'outside-click' | 'selection';
+      dispatch: (action: SearchStepAction) => void;
+    }
+  | { 
+      type: 'SCENARIO_EXECUTE_SEARCH'; 
+      payload: string;
+      dispatch: (action: SearchStepAction) => void;
+    }
+  | { 
+      type: 'SCENARIO_NAVIGATE_RESULTS'; 
+      direction: 'up' | 'down';
+      dispatch: (action: SearchStepAction) => void;
+    }
+  | { 
+      type: 'SCENARIO_SELECT_RESULT'; 
+      index: number;
+      dispatch: (action: SearchStepAction) => void;
+    };

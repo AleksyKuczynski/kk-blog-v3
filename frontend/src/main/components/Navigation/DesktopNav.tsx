@@ -2,12 +2,12 @@
 'use client';
 
 import React from 'react';
-import ExpandableSearchButton from '../Search/ExpandableSearchButton';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeSwitcher, useTheme } from '../ThemeSwitcher';
 import { NavProps } from './Navigation';
 import Logo from '../Logo';
 import NavLinks from './NavLinks';
+import ExpandableSearchButton from '../Search/ExpandableSearchButton';
 
 const linkStylesValues = {
   default: 'px-3 py-2 font-medium tracking-wider',
@@ -18,7 +18,6 @@ const linkStylesValues = {
 export default function DesktopNavigation({
   lang,
   translations,
-  isSearchPage,
 }: NavProps) {
 
   const { currentTheme } = useTheme();
@@ -38,7 +37,7 @@ export default function DesktopNavigation({
           <Logo lang={lang} variant="desktop" />
         </div>
         <div className="flex items-center justify-end space-x-4 pr-8">
-          {!isSearchPage && <ExpandableSearchButton searchTranslations={translations.search} />}
+          <ExpandableSearchButton searchTranslations={translations.search} lang={lang}/>
           <LanguageSwitcher currentLang={lang} />
           <ThemeSwitcher 
             themeTranslations={translations.themes} 

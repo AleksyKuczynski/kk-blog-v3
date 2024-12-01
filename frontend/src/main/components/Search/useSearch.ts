@@ -5,15 +5,27 @@ import { SearchProposition } from '@/main/lib/directus'
 import { getSearchSuggestions } from '@/main/lib/actions'
 import { Lang } from '@/main/lib/dictionaries/types'
 import { createSearchUrl } from '@/main/lib/utils'
+import { SearchStatus } from './types'
 
 export function useSearch() {
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestions, setSuggestions] = useState<SearchProposition[]>([])
-  const [hasInteracted, setHasInteracted] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
+  const [searchStatus, setSearchStatus] = useState<SearchStatus>({ type: 'idle' })
+  
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+
+  const handleSelect = useCallback(async (articleSlug: string, rubricSlug: string) => {
+    const lang = pathname.split('/')[1] as Lang
+    // Reset states
+    setSearchQuery('')
+    setSuggestions([])
+    setSearchStatus({ type: 'idle' })
+    // Navigate to the selected article
+    router.push(`/${lang}/${rubricSlug}/${articleSlug}`)
+  }, [pathname, router])
 
   const handleSearchSubmit = useCallback((): boolean => {
     const trimmedQuery = searchQuery.trim()
@@ -23,44 +35,51 @@ export function useSearch() {
       router.push(`/${lang}${searchUrl}`)
       setSearchQuery('')
       setSuggestions([])
-      setHasInteracted(false)
+      setSearchStatus({ type: 'idle' })
       return true
     }
     return false
   }, [searchQuery, pathname, router, searchParams])
 
-  const handleSearch = useCallback(async (term: string) => {
+  const handleSearch = useCallback(async (term: string): Promise<SearchProposition[]> => {
     if (term.length >= 3) {
+      setIsSearching(true);
+      setSearchStatus({ type: 'searching' });
+      
       try {
-        const results = await getSearchSuggestions(term, pathname.split('/')[1] as Lang)
-        setSuggestions(results)
+        const results = await getSearchSuggestions(term, pathname.split('/')[1] as Lang);
+        setSuggestions(results);
+        return results;
       } finally {
-        setIsSearching(false)
+        setIsSearching(false);
       }
-    } else {
-      setIsSearching(false)
-      setSuggestions([])
     }
-  }, [pathname])
+    return [];
+  }, [pathname]);
 
-  const handleSelect = useCallback((slug: string, rubricSlug: string) => {
-    const lang = pathname.split('/')[1] as Lang
-    router.push(`/${lang}/${rubricSlug}/${slug}`)
-    setSearchQuery('')
-    setSuggestions([])
-  }, [pathname, router])
+  // Animation-related states
+  const shouldShowContent = searchStatus.type !== 'idle'
+  const hasValidContent = suggestions.length > 0
+  const isTransitioning = isSearching
 
   return {
+    // Search functionality
     searchQuery,
     suggestions,
-    hasInteracted,
     isSearching,
+    searchStatus,
     setSearchQuery,
     setSuggestions,
-    setIsSearching,
-    setHasInteracted,
     handleSearch,
-    handleSelect,
     handleSearchSubmit,
+    handleSelect, // Added handleSelect to the return object
+
+    // Animation-related states
+    animation: {
+      shouldShowContent,
+      hasValidContent,
+      isTransitioning,
+      searchStatus,
+    }
   }
 }
