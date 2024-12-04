@@ -2,7 +2,7 @@
 import React, { useReducer, useRef } from 'react';
 import SearchInput from './SearchInput';
 import SearchDropdown from './SearchDropdown';
-import { searchReducer, initialState } from './searchReducer';
+import { searchReducer, getInitialState } from './searchReducer';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
 import { Lang } from '@/main/lib/dictionaries/types';
 import { useOutsideClick } from '@/main/lib/hooks';
@@ -11,22 +11,27 @@ import { handleSearchScenario } from './searchScenarios';
 import { useSearch } from './useSearch';
 import { createSearchUrl, generateArticleLink } from '@/main/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { ComponentMode } from './types';
 
 interface ExpandableSearchButtonProps {
   searchTranslations: SearchTranslations;
   lang: Lang;
   className?: string;
+  mode?: ComponentMode;
 }
 
 export default function ExpandableSearchButton({
   searchTranslations,
   lang,
-  className = ''
+  className = '',
+  mode = 'expandable'
 }: ExpandableSearchButtonProps) {
-  const [state, dispatch] = useReducer(searchReducer, {
-    ...initialState,
-    mode: 'expandable'
-  });
+  const [state, dispatch] = useReducer(
+    searchReducer,
+    mode,
+    getInitialState
+  );
+
   const { handleSearch } = useSearch();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -38,21 +43,37 @@ export default function ExpandableSearchButton({
 
   // Handle click on search button
   const handleSearchButton = () => {
+    if (state.mode === 'standard') {
+      if (state.searchStatus.type === 'minChars') {
+        handleSearchScenario({
+          type: 'SCENARIO_COLLAPSE_SEARCH',
+          dispatch,
+          mode: state.mode
+        });
+      } else {
+        const searchUrl = createSearchUrl(state.query, searchParams);
+        router.push(`/${lang}/${searchUrl}`);
+      }
+      return;
+    }
+
     if (state.input.visibility === 'hidden') {
       // Expand search input
       handleSearchScenario({
         type: 'SCENARIO_EXPAND_SEARCH',
         dispatch,
+        mode: state.mode
       });
       setTimeout(() => {
         inputRef.current?.focus();
       }, 50);
     } else if (hasNavigableContent) {
+      dispatch({ type: 'CLEAR_QUERY' });
       // First collapse
       handleSearchScenario({
         type: 'SCENARIO_COLLAPSE_SEARCH',
-        trigger: 'selection',
-        dispatch
+        dispatch,
+        mode: state.mode
       });
       // Then navigate after a small delay to allow collapse animation
       setTimeout(() => {
@@ -60,11 +81,12 @@ export default function ExpandableSearchButton({
         router.push(`/${lang}/${searchUrl}`);
       }, 100);
     } else {
+      dispatch({ type: 'CLEAR_QUERY' });
       // Just collapse
       handleSearchScenario({
         type: 'SCENARIO_COLLAPSE_SEARCH',
-        trigger: 'outside-click',
-        dispatch
+        dispatch,
+        mode: state.mode
       });
     }
   };
@@ -122,8 +144,8 @@ export default function ExpandableSearchButton({
             // Close search after navigation
             handleSearchScenario({
               type: 'SCENARIO_COLLAPSE_SEARCH',
-              trigger: 'selection',
-              dispatch
+              dispatch,
+              mode: state.mode
             });
           }
           break;
@@ -131,8 +153,8 @@ export default function ExpandableSearchButton({
         e.preventDefault();
         handleSearchScenario({
           type: 'SCENARIO_COLLAPSE_SEARCH',
-          trigger: 'escape',
-          dispatch
+          dispatch,
+          mode: state.mode
         });
         break;
     }
@@ -148,7 +170,8 @@ export default function ExpandableSearchButton({
       handleSearchScenario({
         type: 'SCENARIO_SELECT_RESULT',
         index,
-        dispatch
+        dispatch,
+        mode
       });
       
       // Generate link and navigate
@@ -164,6 +187,13 @@ export default function ExpandableSearchButton({
 
   // Handle focus
   const handleFocus = () => {
+    if (state.mode === 'standard') {
+      handleSearchScenario({
+        type: 'SCENARIO_EXPAND_SEARCH',
+        dispatch,
+        mode: state.mode
+      });
+    }
     dispatch({ type: 'SET_FOCUS' });
   };
 
@@ -175,19 +205,24 @@ export default function ExpandableSearchButton({
     () => {
       handleSearchScenario({
         type: 'SCENARIO_COLLAPSE_SEARCH',
-        trigger: 'outside-click',
-        dispatch
+        dispatch,
+        mode: state.mode
       });
     }
   );
 
-  const shouldShowInput = state.input.visibility !== 'hidden';
+  const shouldShowInput = state.input.visibility !== 'hidden' || state.mode === 'standard';
 
   const getButtonIcon = () => {
-    if (state.input.visibility === 'hidden' || hasNavigableContent) {
-      return <SearchIcon />;
+    if (state.mode === 'standard') {
+      return state.dropdown.visibility === 'hidden' || hasNavigableContent
+        ? <SearchIcon />
+        : <CloseIcon />;
     }
-    return <CloseIcon />;
+
+    return state.input.visibility === 'hidden' || hasNavigableContent
+        ? <SearchIcon />
+        : <CloseIcon />;
   };
 
   return (

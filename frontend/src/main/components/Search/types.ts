@@ -42,6 +42,7 @@ export interface SearchInputHandlers {
 export type SearchStepAction = 
   // Expand search steps
   | { type: 'START_SEARCH_EXPANSION' }
+  | { type: 'ANIMATE_SEARCH_EXPANSION' }
   | { type: 'COMPLETE_SEARCH_EXPANSION' }
   | { type: 'SET_FOCUS' }
   | { type: 'START_DROPDOWN_EXPANSION' }
@@ -52,6 +53,7 @@ export type SearchStepAction =
   | { type: 'COMPLETE_DROPDOWN_COLLAPSE' }
   | { type: 'START_INPUT_COLLAPSE' }
   | { type: 'COMPLETE_INPUT_COLLAPSE' }
+  | { type: 'CLEAR_QUERY' }
   // Search execution steps
   | { type: 'START_SEARCH' }
   | { type: 'SET_QUERY', payload: string }
@@ -71,11 +73,12 @@ export type SearchScenario =
   | { 
       type: 'SCENARIO_EXPAND_SEARCH';
       dispatch: (action: SearchStepAction) => void;
+      mode: ComponentMode;
     }
   | { 
       type: 'SCENARIO_COLLAPSE_SEARCH'; 
-      trigger: 'escape' | 'outside-click' | 'selection';
       dispatch: (action: SearchStepAction) => void;
+      mode: ComponentMode;
     }
   | { 
       type: 'SCENARIO_EXECUTE_SEARCH'; 
@@ -91,4 +94,5 @@ export type SearchScenario =
       type: 'SCENARIO_SELECT_RESULT'; 
       index: number;
       dispatch: (action: SearchStepAction) => void;
+      mode: ComponentMode;
     };

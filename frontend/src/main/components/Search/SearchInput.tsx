@@ -1,5 +1,5 @@
 // src/main/components/Search/SearchInput.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SearchUIState } from './types';
 import { cn } from '@/main/lib/utils';
 import { ANIMATION_DURATION } from '../Interface/constants';
@@ -24,6 +24,12 @@ export default function SearchInput({
 }: SearchInputProps) {
   const { currentTheme } = useTheme();
   console.log('🎨 SearchInput render, visibility:', state.input.visibility);
+
+  useEffect(() => {
+    if (state.input.visibility === 'visible' && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [state.input.visibility, inputRef]);
 
   const containerStyles = {
     base: `
@@ -55,10 +61,7 @@ export default function SearchInput({
         value={state.query}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}
-        onFocus={() => {
-          console.log('👆 Input focus event');
-          onFocus();
-        }}
+        onFocus={() => {onFocus()}}
         role="combobox"
         aria-expanded={state.dropdown.visibility !== 'hidden'}
         aria-controls="search-suggestions"

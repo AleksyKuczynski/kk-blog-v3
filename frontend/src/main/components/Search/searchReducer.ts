@@ -1,11 +1,11 @@
 // src/main/components/Search/searchReducer.ts
 
-import { SearchUIState, SearchStepAction, SearchScenario } from './types';
+import { SearchUIState, SearchStepAction, SearchScenario, ComponentMode } from './types';
 
-export const initialState: SearchUIState = {
-  mode: 'expandable',
+export const getInitialState = (mode: ComponentMode = 'expandable'): SearchUIState => ({
+  mode,
   input: {
-    visibility: 'hidden',
+    visibility: mode === 'standard' ? 'visible' : 'hidden',
     isFocused: false
   },
   dropdown: {
@@ -20,15 +20,32 @@ export const initialState: SearchUIState = {
     required: 3 
   },
   selectedIndex: -1
-};
+});
 
 export function searchReducer(
   state: SearchUIState,
   action: SearchStepAction | SearchScenario
 ): SearchUIState {
+  if (state.mode === 'standard') {
+    switch (action.type) {
+      case 'START_INPUT_COLLAPSE':
+      case 'COMPLETE_INPUT_COLLAPSE':
+        return state;
+    }
+  }
+  
   switch (action.type) {
     // Expand Search Steps
     case 'START_SEARCH_EXPANSION':
+      return {
+        ...state,
+        input: {
+          visibility: 'hidden',
+          isFocused: false
+        }
+      };
+
+    case 'ANIMATE_SEARCH_EXPANSION':
       return {
         ...state,
         input: {
@@ -125,6 +142,17 @@ export function searchReducer(
         }
       };
 
+    case 'CLEAR_QUERY':
+      return {
+        ...state,
+        query: '',
+        searchStatus: { 
+          type: 'minChars',
+          current: 0,
+          required: 3 
+        }
+      };
+
     // Search Execution Steps
     case 'START_SEARCH':
       return {
@@ -204,8 +232,7 @@ export function searchReducer(
     // Reset
     case 'RESET_STATE':
       return {
-        ...initialState,
-        mode: state.mode // Preserve the mode
+        ...getInitialState(state.mode)
       };
 
     // Handle scenarios by delegating to orchestrator

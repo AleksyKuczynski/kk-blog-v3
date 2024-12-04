@@ -26,18 +26,18 @@ export default function SearchDropdown({
         w-[calc(100%-44px)]
         top-full mt-2
         max-h-[80vh]
-        transform origin-top
+        origin-top transition-none
       `,
       theme: {
         default: 'rounded-lg',
         rounded: 'rounded-xl',
-        sharp: 'border-2 border-prcolor'
+        sharp: 'border border-prcolor'
       },
       visibility: {
         'hidden': 'scale-y-0 opacity-0 -translate-y-4 pointer-events-none invisible',
-        'animating-in': 'scale-y-100 opacity-100 translate-y-0 transition-all duration-300 ease-out visible',
-        'visible': 'scale-y-100 opacity-100 translate-y-0 visible',
-        'animating-out': 'scale-y-0 opacity-0 -translate-y-4 transition-all duration-200 ease-in pointer-events-none'
+        'animating-in': 'scale-y-100 opacity-100 translate-y-0 transition-all duration-300 ease-out delay-150 visible',
+        'visible': 'scale-y-100 opacity-100 translate-y-0 transition-none visible',
+        'animating-out': 'scale-y-0 opacity-0 -translate-y-4 transition-all duration-300 ease-in pointer-events-none'
       }
     },
     content: {

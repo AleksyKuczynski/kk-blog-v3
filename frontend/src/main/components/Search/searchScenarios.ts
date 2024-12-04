@@ -1,54 +1,73 @@
 // src/main/components/Search/searchScenarios.ts
 
-import { SearchScenario, SearchStepAction } from './types';
-
-// Animation duration constant - could be moved to a shared constants file if needed
-const ANIMATION_DURATION = 300;
+import { ANIMATION_DURATION } from '../Interface/constants';
+import { ComponentMode, SearchScenario, SearchStepAction } from './types';
 
 export function executeExpandSearch(
   dispatch: (action: SearchStepAction) => void,
+  mode: ComponentMode
 ) {
-  requestAnimationFrame(() => {
-    dispatch({ type: 'START_SEARCH_EXPANSION' });
-    
+  if (mode === 'standard') {
+    dispatch({ type: 'START_DROPDOWN_EXPANSION' });
+    dispatch({ type: 'SET_MESSAGE' });
     setTimeout(() => {
-      dispatch({ type: 'COMPLETE_SEARCH_EXPANSION' });
-            
+      dispatch({ type: 'COMPLETE_DROPDOWN_EXPANSION' });
+    }, ANIMATION_DURATION);
+    return;
+  }
+
+  dispatch({ type: 'RESET_STATE' });
+  
+  setTimeout(() => {
+
+    requestAnimationFrame(() => {
+      dispatch({ type: 'START_SEARCH_EXPANSION' });
+
       requestAnimationFrame(() => {
-        dispatch({ type: 'START_DROPDOWN_EXPANSION' });
-        
-        requestAnimationFrame(() => {
-          dispatch({ type: 'SET_MESSAGE' });
-        });
+        dispatch({ type: 'ANIMATE_SEARCH_EXPANSION' });
         
         setTimeout(() => {
-          dispatch({ type: 'COMPLETE_DROPDOWN_EXPANSION' });
+          dispatch({ type: 'COMPLETE_SEARCH_EXPANSION' });
+          
+          requestAnimationFrame(() => {
+            dispatch({ type: 'START_DROPDOWN_EXPANSION' });
+            dispatch({ type: 'SET_MESSAGE' });
+            
+            setTimeout(() => {
+              dispatch({ type: 'COMPLETE_DROPDOWN_EXPANSION' });
+            }, ANIMATION_DURATION);
+          });
         }, ANIMATION_DURATION);
       });
-    }, ANIMATION_DURATION);
-  });
+    });  
+  }, 16);
 }
 
 export function executeCollapseSearch(
   dispatch: (action: SearchStepAction) => void, 
-  trigger: 'escape' | 'outside-click' | 'selection'
+  mode: ComponentMode
 ) {
   requestAnimationFrame(() => {
+    if (mode === 'standard') {
+      dispatch({ type: 'CLEAR_QUERY' });
+    }
+    
     // First collapse dropdown
     dispatch({ type: 'START_DROPDOWN_COLLAPSE' });
     
     setTimeout(() => {
       dispatch({ type: 'COMPLETE_DROPDOWN_COLLAPSE' });
       
-      // Then collapse input
-      requestAnimationFrame(() => {
-        dispatch({ type: 'START_INPUT_COLLAPSE' });
-        
-        setTimeout(() => {
-          dispatch({ type: 'COMPLETE_INPUT_COLLAPSE' });
-          dispatch({ type: 'RESET_STATE' });
-        }, ANIMATION_DURATION);
-      });
+      // Then collapse input if in expandable mode
+      if (mode === 'expandable') {
+        requestAnimationFrame(() => {
+          dispatch({ type: 'START_INPUT_COLLAPSE' });
+          setTimeout(() => {
+            dispatch({ type: 'COMPLETE_INPUT_COLLAPSE' });
+            dispatch({ type: 'RESET_STATE' });
+          }, ANIMATION_DURATION);
+        });
+      }
     }, ANIMATION_DURATION);
   });
 }
@@ -76,21 +95,22 @@ export function navigateResults(
 
 export function selectResult(
   dispatch: (action: SearchStepAction) => void,
-  index: number
+  index: number,
+  mode: ComponentMode
 ) {
   dispatch({ type: 'SELECT_ITEM', payload: index });
-  executeCollapseSearch(dispatch, 'selection');
+  executeCollapseSearch(dispatch, mode);
 }
 
 // Main scenario handler
 export function handleSearchScenario(scenario: SearchScenario): void {
   switch (scenario.type) {
     case 'SCENARIO_EXPAND_SEARCH':
-      executeExpandSearch(scenario.dispatch);
+      executeExpandSearch(scenario.dispatch, scenario.mode);
       break;
       
     case 'SCENARIO_COLLAPSE_SEARCH':
-      executeCollapseSearch(scenario.dispatch, scenario.trigger);
+      executeCollapseSearch(scenario.dispatch, scenario.mode);
       break;
       
     case 'SCENARIO_EXECUTE_SEARCH':
@@ -102,7 +122,7 @@ export function handleSearchScenario(scenario: SearchScenario): void {
       break;
       
     case 'SCENARIO_SELECT_RESULT':
-      selectResult(scenario.dispatch, scenario.index);
+      selectResult(scenario.dispatch, scenario.index, scenario.mode);
       break;
   }
 }
