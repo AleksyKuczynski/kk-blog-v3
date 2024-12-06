@@ -7,7 +7,7 @@ import { ThemeSwitcher, useTheme } from '../ThemeSwitcher';
 import { NavProps } from './Navigation';
 import Logo from '../Logo';
 import NavLinks from './NavLinks';
-import ExpandableSearchButton from '../Search/ExpandableSearchButton';
+import ExpandableSearch from '../Search/ExpandableSearch';
 
 const linkStylesValues = {
   default: 'px-3 py-2 font-medium tracking-wider',
@@ -25,7 +25,7 @@ export default function DesktopNavigation({
   return (
     <nav className="hidden xl:block fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-bgcolor-alt/20 transition-all duration-300">
       <div className="grid grid-cols-3 items-center h-24">
-      <ul className="flex items-center justify-start pl-8">
+        <ul className="flex items-center justify-start pl-8">
           <NavLinks 
             lang={lang} 
             translations={translations.navigation} 
@@ -37,7 +37,7 @@ export default function DesktopNavigation({
           <Logo lang={lang} variant="desktop" />
         </div>
         <div className="flex items-center justify-end space-x-4 pr-8">
-          <ExpandableSearchButton searchTranslations={translations.search} lang={lang}/>
+          <ExpandableSearch searchTranslations={translations.search} lang={lang}/>
           <LanguageSwitcher currentLang={lang} />
           <ThemeSwitcher 
             themeTranslations={translations.themes} 

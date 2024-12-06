@@ -22,8 +22,8 @@ export default function SearchDropdown({
   const dropdownStyles = {
     container: {
       base: `
-        absolute z-60 shadow-lg bg-bgcolor-alt 
-        w-[calc(100%-44px)]
+        absolute z-50 shadow-lg bg-bgcolor-alt 
+        w-full
         top-full mt-2
         max-h-[80vh]
         origin-top transition-none

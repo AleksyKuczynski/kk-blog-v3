@@ -74,6 +74,7 @@ export type SearchScenario =
       type: 'SCENARIO_EXPAND_SEARCH';
       dispatch: (action: SearchStepAction) => void;
       mode: ComponentMode;
+      inputRef: React.RefObject<HTMLInputElement>;
     }
   | { 
       type: 'SCENARIO_COLLAPSE_SEARCH'; 

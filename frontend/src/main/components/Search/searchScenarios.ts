@@ -5,8 +5,11 @@ import { ComponentMode, SearchScenario, SearchStepAction } from './types';
 
 export function executeExpandSearch(
   dispatch: (action: SearchStepAction) => void,
-  mode: ComponentMode
+  mode: ComponentMode,
+  inputRef: React.RefObject<HTMLInputElement>
 ) {
+
+  console.log('executeExpandSearch called with:', { mode, inputRef });
   if (mode === 'standard') {
     dispatch({ type: 'START_DROPDOWN_EXPANSION' });
     dispatch({ type: 'SET_MESSAGE' });
@@ -18,29 +21,32 @@ export function executeExpandSearch(
 
   dispatch({ type: 'RESET_STATE' });
   
-  setTimeout(() => {
+  // Start expansion
+  requestAnimationFrame(() => {
+    dispatch({ type: 'START_SEARCH_EXPANSION' });
+    dispatch({ type: 'ANIMATE_SEARCH_EXPANSION' });
+    
+    // Complete expansion and set focus
+    setTimeout(() => {
+      dispatch({ type: 'COMPLETE_SEARCH_EXPANSION' });
+      
+      // Try to focus right after completing expansion
+      setTimeout(() => {
+        if (inputRef?.current) {
+          inputRef.current.focus();
+          console.log('Trying to focus input:', inputRef.current); // debug
+        }
+      }, 300);
 
-    requestAnimationFrame(() => {
-      dispatch({ type: 'START_SEARCH_EXPANSION' });
-
-      requestAnimationFrame(() => {
-        dispatch({ type: 'ANIMATE_SEARCH_EXPANSION' });
-        
-        setTimeout(() => {
-          dispatch({ type: 'COMPLETE_SEARCH_EXPANSION' });
-          
-          requestAnimationFrame(() => {
-            dispatch({ type: 'START_DROPDOWN_EXPANSION' });
-            dispatch({ type: 'SET_MESSAGE' });
-            
-            setTimeout(() => {
-              dispatch({ type: 'COMPLETE_DROPDOWN_EXPANSION' });
-            }, ANIMATION_DURATION);
-          });
-        }, ANIMATION_DURATION);
-      });
-    });  
-  }, 16);
+      // Show dropdown
+      dispatch({ type: 'START_DROPDOWN_EXPANSION' });
+      dispatch({ type: 'SET_MESSAGE' });
+      
+      setTimeout(() => {
+        dispatch({ type: 'COMPLETE_DROPDOWN_EXPANSION' });
+      }, ANIMATION_DURATION);
+    }, ANIMATION_DURATION);
+  });
 }
 
 export function executeCollapseSearch(
@@ -106,7 +112,7 @@ export function selectResult(
 export function handleSearchScenario(scenario: SearchScenario): void {
   switch (scenario.type) {
     case 'SCENARIO_EXPAND_SEARCH':
-      executeExpandSearch(scenario.dispatch, scenario.mode);
+      executeExpandSearch(scenario.dispatch, scenario.mode, scenario.inputRef);
       break;
       
     case 'SCENARIO_COLLAPSE_SEARCH':

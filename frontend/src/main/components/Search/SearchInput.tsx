@@ -1,9 +1,8 @@
 // src/main/components/Search/SearchInput.tsx
-import React, { useEffect } from 'react';
+import React from 'react';
 import { SearchUIState } from './types';
 import { cn } from '@/main/lib/utils';
 import { ANIMATION_DURATION } from '../Interface/constants';
-import { useTheme } from '../ThemeSwitcher';
 
 interface SearchInputProps {
   state: SearchUIState;
@@ -22,46 +21,46 @@ export default function SearchInput({
   onFocus,
   inputRef,
 }: SearchInputProps) {
-  const { currentTheme } = useTheme();
-  console.log('🎨 SearchInput render, visibility:', state.input.visibility);
-
-  useEffect(() => {
-    if (state.input.visibility === 'visible' && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [state.input.visibility, inputRef]);
-
-  const containerStyles = {
-    base: `
-      relative flex-grow bg-bgcolor-accent shadow-md 
-      focus-within:ring-2 focus-within:ring-prcolor-dark
-      transition-all duration-[${ANIMATION_DURATION}ms] ease-out
-      transform origin-right
-    `,
-    visibility: {
-      'hidden': 'w-0 scale-x-0 opacity-0',
-      'animating-in': 'w-full scale-x-100 opacity-100',
-      'visible': 'w-full scale-x-100 opacity-100',
-      'animating-out': 'w-0 scale-x-0 opacity-0'
+  const styles = {
+    container: {
+      base: `
+        relative flex-grow z-40
+        transition-all duration-[${ANIMATION_DURATION}ms] ease-out
+        transform origin-right
+      `,
+      visibility: {
+        'hidden': 'w-0 scale-x-0 opacity-0',
+        'animating-in': 'w-full scale-x-100 opacity-100',
+        'visible': 'w-full scale-x-100 opacity-100',
+        'animating-out': 'w-0 scale-x-0 opacity-0'
+      }
+    },
+    input: {
+      base: `
+        w-full py-2 px-3 
+        bg-transparent 
+        text-txcolor placeholder-txcolor-muted 
+        focus:outline-none 
+      `
     }
   };
 
   return (
     <div 
       className={cn(
-        containerStyles.base,
-        containerStyles.visibility[state.input.visibility]
+        styles.container.base,
+        styles.container.visibility[state.input.visibility]
       )}
     >
       <input
         ref={inputRef}
         type="text"
-        className="w-full py-2 px-3 bg-transparent text-txcolor placeholder-txcolor-muted focus:outline-none"
+        className={styles.input.base}
         placeholder={placeholder}
         value={state.query}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}
-        onFocus={() => {onFocus()}}
+        onFocus={onFocus}
         role="combobox"
         aria-expanded={state.dropdown.visibility !== 'hidden'}
         aria-controls="search-suggestions"

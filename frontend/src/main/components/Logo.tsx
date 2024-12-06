@@ -15,7 +15,7 @@ const variantStyles = {
 
 const containerStyles = {
   desktop: 'flex items-center justify-center py-2',
-  mobile: 'z-50 flex justify-center sm:landscape:justify-start',
+  mobile: 'z-40 flex justify-center sm:landscape:justify-start',
   footer: 'flex items-center justify-center'
 }
 
