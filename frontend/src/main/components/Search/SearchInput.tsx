@@ -13,45 +13,44 @@ interface SearchInputProps {
   inputRef: React.RefObject<HTMLInputElement>;
 }
 
-export default function SearchInput({ 
-  state, 
+export default function SearchInput({
+  state,
   placeholder,
   onChange,
   onKeyDown,
   onFocus,
-  inputRef,
+  inputRef
 }: SearchInputProps) {
   const styles = {
     container: {
       base: `
-        relative flex-grow z-40
-        transition-all duration-[${ANIMATION_DURATION}ms] ease-out
+        w-0 overflow-hidden
+        transition-all duration-[${ANIMATION_DURATION}ms]
         transform origin-right
       `,
       visibility: {
-        'hidden': 'w-0 scale-x-0 opacity-0',
-        'animating-in': 'w-full scale-x-100 opacity-100',
-        'visible': 'w-full scale-x-100 opacity-100',
-        'animating-out': 'w-0 scale-x-0 opacity-0'
+        'hidden': 'w-0 opacity-0',
+        'animating-in': 'w-64 opacity-100',
+        'visible': 'w-64 opacity-100',
+        'animating-out': 'w-0 opacity-0'
       }
     },
     input: {
       base: `
-        w-full py-2 px-3 
-        bg-transparent 
-        text-txcolor placeholder-txcolor-muted 
-        focus:outline-none 
+        w-full h-full
+        py-2 px-3
+        text-txcolor placeholder-txcolor-muted
+        bg-transparent
+        focus:outline-none
       `
     }
   };
 
   return (
-    <div 
-      className={cn(
-        styles.container.base,
-        styles.container.visibility[state.input.visibility]
-      )}
-    >
+    <div className={cn(
+      styles.container.base,
+      styles.container.visibility[state.input.visibility]
+    )}>
       <input
         ref={inputRef}
         type="text"

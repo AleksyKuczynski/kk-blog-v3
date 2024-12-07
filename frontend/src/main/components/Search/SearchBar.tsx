@@ -17,38 +17,38 @@ interface SearchBarProps {
 }
 
 const containerStyles = {
-    wrapper: {
-      base: `
-        relative flex gap-2 items-center
-        bg-bgcolor-accent
-        group
-      `,
-      theme: {
-        default: `
-          rounded-lg shadow-md
-          hover:shadow-lg
-          [&:focus-within]:outline-none
-          [&:focus-within]:ring-2 
-          [&:focus-within]:ring-prcolor/50
-          [&:focus-within]:ring-offset-0
-        `,
-        rounded: `
+  wrapper: {
+    base: `
+      relative flex gap-2 items-center
+      bg-bgcolor-accent
+      group
+    `,
+    theme: {
+      default: `
         rounded-lg shadow-md
-        focus-within:outline-none
-        focus-within:ring-2 
-        focus-within:ring-prcolor/50
-        focus-within:ring-offset-0
         hover:shadow-lg
+        focus-within:outline-none
+        focus-within:ring-2
+        focus-within:ring-prcolor
+        focus-within:ring-offset-0
+      `,
+      rounded: `
+        rounded-lg shadow-md
+        hover:shadow-lg
+        focus-within:outline-none
+        focus-within:ring-2
+        focus-within:ring-prcolor
+        focus-within:ring-offset-0
       `,
       sharp: `
-        border-2 border-bgcolor-accent/20
-        focus-within:border-prcolor
+        border-2 border-prcolor
         hover:bg-bgcolor-accent/80
       `
-      },
-      transition: `transition-[background-color,box-shadow] duration-200`
-    }
-  };
+    },
+    transition: `transition-[background-color,box-shadow] duration-200`
+  }
+};
+
 export default function SearchBar({
   searchTranslations,
   lang,

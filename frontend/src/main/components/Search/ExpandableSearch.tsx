@@ -1,7 +1,6 @@
 // src/main/components/Search/ExpandableSearch.tsx
 import React from 'react';
-import { SearchTranslations } from '@/main/lib/dictionaries/types';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { SearchTranslations, Lang } from '@/main/lib/dictionaries/types';
 import { SearchIcon, NavButton, CloseIcon } from '../Interface';
 import { useTheme } from '../ThemeSwitcher';
 import { cn } from '@/main/lib/utils';
@@ -18,27 +17,45 @@ interface ExpandableSearchProps {
 const containerStyles = {
   wrapper: {
     base: `
-      relative flex gap-2 items-center
-      bg-bgcolor-accent
-      transition-all duration-200
-      group
+      relative flex items-center gap-2
+      transition-all duration-200 ease-in-out
     `,
-    theme: {
+    expanded: {
       default: `
-        rounded-lg shadow-md
-        focus-within:ring-2 focus-within:ring-prcolor/50
-        hover:shadow-lg
+        bg-bgcolor-accent rounded-lg shadow-md 
+        hover:shadow-lg 
+        focus-within:outline-none
+        focus-within:ring-2
+        focus-within:ring-prcolor
+        focus-within:ring-offset-0
       `,
       rounded: `
-        rounded-lg shadow-lg
-        focus-within:ring-2 focus-within:ring-prcolor/50
-        hover:shadow-xl
+        bg-bgcolor-accent rounded-lg shadow-lg 
+        hover:shadow-xl 
+        focus-within:outline-none
+        focus-within:ring-2
+        focus-within:ring-prcolor
+        focus-within:ring-offset-0
       `,
       sharp: `
-        border-2 border-bgcolor-accent/20
-        focus-within:border-prcolor
+        bg-bgcolor-accent 
+        border-2 border-prcolor
         hover:bg-bgcolor-accent/80
       `
+    }
+  },
+  button: {
+    default: {
+      collapsed: 'hover:bg-bgcolor-accent/10',
+      expanded: 'hover:bg-bgcolor-accent-dark/50'
+    },
+    rounded: {
+      collapsed: 'hover:bg-bgcolor-accent/10',
+      expanded: 'hover:bg-bgcolor-accent-dark/50'
+    },
+    sharp: {
+      collapsed: 'hover:bg-bgcolor-accent/10',
+      expanded: 'hover:bg-bgcolor-accent-dark/50'
     }
   }
 };
@@ -59,39 +76,38 @@ export default function ExpandableSearch({
     lang,
   });
 
-  const shouldShowInput = state.input.visibility !== 'hidden';
+  const isExpanded = state.input.visibility !== 'hidden';
 
   return (
     <div 
       ref={refs.containerRef}
       className={`relative ${className}`}
     >
-      <div className="flex gap-2 items-center">
-        {shouldShowInput && (
-          <div className={cn(
-            containerStyles.wrapper.base,
-            containerStyles.wrapper.theme[currentTheme]
-          )}>
-            <SearchInput
-              state={state}
-              placeholder={searchTranslations.placeholder}
-              onChange={handlers.handleInputChange}
-              onKeyDown={handlers.handleKeyDown}
-              onFocus={handlers.handleFocus}
-              inputRef={refs.inputRef}
-            />
-          </div>
-        )}
+      <div className={cn(
+        containerStyles.wrapper.base,
+        isExpanded && containerStyles.wrapper.expanded[currentTheme]
+      )}>
+        <SearchInput
+          state={state}
+          placeholder={searchTranslations.placeholder}
+          onChange={handlers.handleInputChange}
+          onKeyDown={handlers.handleKeyDown}
+          onFocus={handlers.handleFocus}
+          inputRef={refs.inputRef}
+        />
         <NavButton
           context="desktop"
           onClick={handlers.handleSearchButton}
-          icon={shouldShowInput && utils.hasNavigableContent ? <CloseIcon /> : <SearchIcon />}
+          icon={utils.iconType === 'search' ? <SearchIcon /> : <CloseIcon />}
           aria-label={searchTranslations.submit}
-          aria-expanded={shouldShowInput}
+          aria-expanded={isExpanded}
+          className={cn(
+            containerStyles.button[currentTheme][isExpanded ? 'expanded' : 'collapsed']
+          )}
         />
       </div>
 
-      {shouldShowInput && (
+      {isExpanded && (
         <SearchDropdown
           state={state}
           translations={searchTranslations}

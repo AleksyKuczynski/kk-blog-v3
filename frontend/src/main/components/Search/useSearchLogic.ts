@@ -50,6 +50,21 @@ export function useSearchLogic({
   const hasNavigableContent = state.dropdown.content === 'suggestions' && 
                             state.suggestions.length > 0;
 
+  const cleanupAndClose = useCallback(() => {
+    // Czyszczenie query
+    dispatch({ type: 'RESET_STATE' });
+    
+    // Zamykanie komponentu
+    handleSearchScenario({
+      type: 'SCENARIO_COLLAPSE_SEARCH',
+      dispatch,
+      mode
+    });
+
+    // Wywołanie callback'a zamknięcia (dla MobileNav)
+    onSearchComplete?.();
+  }, [dispatch, mode, onSearchComplete]);
+
   const handleInputChange = useCallback(async (value: string) => {
     handleSearchScenario({
       type: 'SCENARIO_EXECUTE_SEARCH',
@@ -124,24 +139,23 @@ export function useSearchLogic({
       case 'Enter':
         e.preventDefault();
         if (state.selectedIndex >= 0 && state.suggestions[state.selectedIndex]) {
+          // Nawigacja z wybranej sugestii
           const selectedSuggestion = state.suggestions[state.selectedIndex];
+          cleanupAndClose();
           router.push(`/${lang}/${selectedSuggestion.rubric_slug}/${selectedSuggestion.slug}`);
-        } else if (state.query.length >= 3) {
+        } else if (hasNavigableContent && state.query.length >= 3) {
+          // Nawigacja z wprowadzonego tekstu
           const searchUrl = createSearchUrl(state.query, searchParams);
+          cleanupAndClose();
           router.push(`/${lang}${searchUrl}`);
-          onSearchComplete?.();
         }
         break;
       case 'Escape':
         e.preventDefault();
-        handleSearchScenario({
-          type: 'SCENARIO_COLLAPSE_SEARCH',
-          dispatch,
-          mode
-        });
+        cleanupAndClose();
         break;
     }
-  }, [state.selectedIndex, state.suggestions, state.query, lang, searchParams, router, mode, onSearchComplete]);
+  }, [state.selectedIndex, state.suggestions, state.query, hasNavigableContent, lang, searchParams, router, cleanupAndClose]);
 
   const handleSelect = useCallback((index: number) => {
     handleSearchScenario({
@@ -153,10 +167,10 @@ export function useSearchLogic({
     
     const selectedSuggestion = state.suggestions[index];
     if (selectedSuggestion) {
+      cleanupAndClose();
       router.push(`/${lang}/${selectedSuggestion.rubric_slug}/${selectedSuggestion.slug}`);
-      onSearchComplete?.();
     }
-  }, [state.suggestions, lang, router, mode, onSearchComplete]);
+  }, [state.suggestions, lang, router, cleanupAndClose, mode]);
 
   const handleFocus = useCallback(() => {
     if (mode === 'standard') {

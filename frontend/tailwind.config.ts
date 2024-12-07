@@ -10,7 +10,10 @@ const config: Config = {
   theme: {
     extend: {
       zIndex: {
+        '40': '40',
+        '50': '50',
         '60': '60',
+        '70': '70',        
       },
       borderRadius: {
         'none': 'var(--border-radius-none)',
@@ -53,6 +56,7 @@ const config: Config = {
         expandWidth: 'expandWidth 300ms ease-in-out',
         collapseWidth: 'collapseWidth 300ms ease-in-out',
       },
+
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
