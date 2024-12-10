@@ -1,9 +1,12 @@
 // src/main/components/Footer/NewsletterSection.tsx
-import NewsletterSectionClient from './NewsletterSectionClient';
+
+import { subscribeNewsletter } from "@/main/lib/actions";
+import FormSectionServer from "./FormSectionServer";
 
 interface NewsletterSectionProps {
   translations: {
     title: string;
+    description: string;
     placeholder: string;
     submitButton: string;
     successMessage: string;
@@ -11,10 +14,25 @@ interface NewsletterSectionProps {
 }
 
 export default function NewsletterSection({ translations }: NewsletterSectionProps) {
+  const newsletterForm = (
+    <form action={subscribeNewsletter} className="space-y-4">
+      <input
+        type="email"
+        name="email"
+        className="w-full p-2 border rounded"
+        placeholder={translations.placeholder}
+        required
+      />
+      <button type="submit" className="w-full bg-prcolor text-white py-2 rounded">
+        {translations.submitButton}
+      </button>
+    </form>
+  );
+
   return (
-    <div className="bg-bgcolor-accent p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">{translations.title}</h2>
-      <NewsletterSectionClient translations={translations} />
-    </div>
+    <FormSectionServer
+      translations={translations}
+      form={newsletterForm}
+    />
   );
 }

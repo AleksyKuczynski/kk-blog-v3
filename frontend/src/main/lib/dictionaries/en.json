@@ -10,13 +10,14 @@
     "about": {
       "title": "About EventForMe",
       "description": "Your premier online destination for event planning and management.",
-      "companyDescription": "EventForMe is a fully virtual company dedicated to revolutionizing event planning and management through innovative online solutions."
+      "companyDescription": "EventForMe – a blog about weddings and the people who create them. We write for those who want to delve into all the nuances of organizing a celebration while keeping the joy in the process. Our editorial team brings together passionate professionals: wedding experts who turn dreams into detailed plans, an astropsychologist with remarkable intuition, talented stylists, and tireless travelers. We explore trends, search for unique ideas, and share practical tools to bring them to life. Our articles are a mix of useful advice, inspiring stories, and practical life hacks. We explain complex things simply, help find unconventional solutions, and share the experience of industry professionals. Welcome to a space where every wedding becomes a special story, and every article helps make it exactly that."
     },
     "quickLinks": {
       "title": "Quick Links"
     },
     "contact": {
       "title": "Contact Us",
+      "description": "Let's start a conversation - we're here to help",
       "emailUs": "Email us",
       "faq": "FAQ",
       "helpCenter": "Help Center",
@@ -39,12 +40,14 @@
     },
     "newsletter": {
       "title": "Subscribe to Our Newsletter",
+      "description": "Be the first to discover our latest insights and updates",
       "placeholder": "Enter your email",
       "submitButton": "Subscribe",
       "successMessage": "Thank you for subscribing!"
     },
     "feedback": {
       "title": "We'd Love to Hear From You",
+      "description": "Your thoughts help us grow and improve",
       "namePlaceholder": "Your name",
       "emailPlaceholder": "Your email",
       "messagePlaceholder": "Your message",

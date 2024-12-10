@@ -15,7 +15,7 @@ interface CredentialsSectionProps {
 const CredentialsSection: React.FC<CredentialsSectionProps> = ({ lang, translations }) => {
   const currentYear = new Date().getFullYear();
   return (
-    <div className="mt-12 pt-8 border-t border-txcolor-muted/20 text-center">
+    <div className="pt-16">
       <p>&copy; {currentYear} EventForMe. {translations.copyright}</p>
       <p className="mt-2">
         <Link href={`/${lang}/privacy-policy`} className="hover:text-prcolor transition-colors duration-200">

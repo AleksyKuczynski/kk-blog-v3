@@ -10,13 +10,13 @@ interface KuKraftSectionProps {
 
 export default function KuKraftSection({ translations }: KuKraftSectionProps) {
   return (
-    <div>
-      <h3 className="text-2xl font-bold mb-4">{translations.designedWithLove}</h3>
+    <div className='flex justify-end items-end space-x-2 mt-16'>
+      <h3 className="">{translations.designedWithLove}</h3>
       <a 
         href="https://kukraft.com" 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="inline-block bg-accent text-text-primary px-6 py-3 rounded-full text-lg font-semibold hover:bg-accent-dark transition duration-300 transform hover:scale-105"
+        className="inline-block bg-accent text-text-primary rounded-full text-lg font-semibold hover:bg-accent-dark transition duration-300 transform hover:scale-105"
       >
         {translations.visitKuKraft}
       </a>

@@ -10,13 +10,14 @@
     "about": {
       "title": "À propos d'EventForMe",
       "description": "Votre destination en ligne de premier choix pour la planification et la gestion d'événements.",
-      "companyDescription": "EventForMe est une entreprise entièrement virtuelle dédiée à révolutionner la planification et la gestion d'événements grâce à des solutions en ligne innovantes."
+      "companyDescription": "EventForMe – un blog sur les mariages et ceux qui les créent. Nous écrivons pour ceux qui souhaitent explorer toutes les subtilités de l'organisation d'une célébration sans perdre la joie du processus. Notre équipe éditoriale rassemble des professionnels passionnés : des experts en mariage qui transforment les rêves en plans détaillés, une astropsychologue à l'intuition remarquable, des stylistes talentueux et des voyageurs infatigables. Nous explorons les tendances, recherchons des idées originales et partageons des outils pratiques pour les concrétiser. Nos articles sont un mélange de conseils utiles, d'histoires inspirantes et d'astuces pratiques. Nous expliquons simplement les choses complexes, aidons à trouver des solutions non conventionnelles et partageons l'expérience des professionnels du secteur. Bienvenue dans un espace où chaque mariage devient une histoire unique, et où chaque article aide à le rendre exactement ainsi."
     },
     "quickLinks": {
       "title": "Liens rapides"
     },
     "contact": {
       "title": "Contactez-nous",
+      "description": "Commençons une conversation - nous sommes là pour vous aider",
       "emailUs": "Contactez-nous par e-mail",
       "faq": "FAQ",
       "helpCenter": "Centre d'aide",
@@ -39,12 +40,14 @@
     },
     "newsletter": {
       "title": "Abonnez-vous à notre newsletter",
+      "description": "Soyez le premier à découvrir nos dernières actualités",
       "placeholder": "Entrez votre email",
       "submitButton": "S'abonner",
       "successMessage": "Merci de vous être abonné !"
     },
     "feedback": {
       "title": "Nous aimerions avoir votre avis",
+      "description": "Vos idées nous aident à grandir et à nous améliorer",
       "namePlaceholder": "Votre nom",
       "emailPlaceholder": "Votre email",
       "messagePlaceholder": "Votre message",

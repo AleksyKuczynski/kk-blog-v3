@@ -16,13 +16,14 @@ interface SocialLinksProps {
       telegram: string;
       whatsapp: string;
     };
+    className: string;
   }
 
-const SocialLinks: React.FC<SocialLinksProps> = ({ translations }) => {
+const SocialLinks: React.FC<SocialLinksProps> = ({ translations, className }) => {
   return (
-    <div className="mt-8">
-      <h2 className="text-xl font-semibold mb-4">{translations.title}</h2>
-      <p className="mb-4">{translations.description}</p>
+    <div className={className}>
+      <h2 className="text-xl font-semibold grow">{translations.title}</h2>
+      <p className='text-sm'>{translations.description}</p>
       <ul className="flex space-x-4">
         {socialLinks.map((link: SocialLink) => (
           <li key={link.name}>
@@ -33,7 +34,7 @@ const SocialLinks: React.FC<SocialLinksProps> = ({ translations }) => {
               className="text-txcolor-muted hover:text-prcolor transition-colors duration-300"
             >
               <span className="sr-only">{translations[link.name]}</span>
-              <link.Icon className="w-6 h-6" aria-hidden="true" />
+              <link.Icon className="w-8 h-8" aria-hidden="true" />
             </Link>
           </li>
         ))}

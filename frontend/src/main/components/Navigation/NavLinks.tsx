@@ -2,11 +2,13 @@
 import Link from 'next/link';
 import { Lang, NavigationTranslations } from '@/main/lib/dictionaries/types';
 import NavLinksClient from './NavLinksClient';
+import { cn } from '@/main/lib/utils';
 
 interface NavLinksProps {
   lang: Lang;
   translations: NavigationTranslations;
   linkStyles: string;
+  disableClientDecorations?: boolean;
 }
 
 type NavigationLink = {
@@ -20,14 +22,22 @@ const NAVIGATION_LINKS: NavigationLink[] = [
   { href: '/authors', translationKey: 'authors' },
 ];
 
-export default function NavLinks({ lang, translations, linkStyles }: NavLinksProps) {
+export default function NavLinks({ 
+  lang, 
+  translations, 
+  linkStyles,
+  disableClientDecorations = false 
+}: NavLinksProps) {
   return (
     <>
       {NAVIGATION_LINKS.map((link) => (
         <li key={link.href}>
           <Link 
             href={`/${lang}${link.href}`} 
-            className={`nav-link ${linkStyles}`}
+            className={cn(
+              linkStyles,
+              !disableClientDecorations && 'nav-link'
+            )}
             data-href={link.href}
           >
             {translations[link.translationKey]}

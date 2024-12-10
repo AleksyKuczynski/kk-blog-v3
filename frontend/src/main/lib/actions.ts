@@ -81,3 +81,32 @@ export async function getArticlePageData(params: { rubric: string, slug: string,
     dict,
   };
 }
+
+export async function submitFeedback(formData: FormData) {
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // Log the data that would be sent
+  console.log('Feedback submitted:', {
+    name: formData.get('name'),
+    email: formData.get('email'),
+    message: formData.get('message')
+  });
+}
+
+export async function submitContact(formData: FormData) {
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  console.log('Contact form submitted:', {
+    email: formData.get('email'),
+    message: formData.get('message')
+  });
+}
+
+export async function subscribeNewsletter(formData: FormData) {
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  console.log('Newsletter subscription:', {
+    email: formData.get('email'),
+  });
+}

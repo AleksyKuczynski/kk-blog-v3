@@ -10,13 +10,14 @@
     "about": {
       "title": "O EventForMe",
       "description": "Twoje najlepsze internetowe miejsce do planowania i zarządzania wydarzeniami.",
-      "companyDescription": "EventForMe to w pełni wirtualna firma zajmująca się rewolucjonizowaniem planowania i zarządzania wydarzeniami poprzez innowacyjne rozwiązania online."
+      "companyDescription": "EventForMe – blog o ślubach i ludziach, którzy je tworzą. Piszemy dla wszystkich, którzy chcą zgłębić tajniki organizacji wesela, nie tracąc przy tym radości z przygotowań. Naszą redakcję tworzą zaangażowani profesjonaliści: eksperci ślubni zamieniający marzenia w precyzyjne plany, astropsycholog o niezwykłej intuicji, utalentowani styliści i niestrudzeni podróżnicy. Śledzimy trendy, szukamy niebanalnych pomysłów i dzielimy się praktycznymi wskazówkami, jak je zrealizować. Nasze artykuły to mieszanka użytecznych porad, inspirujących historii i praktycznych rozwiązań. Mówimy prosto o sprawach skomplikowanych, pomagamy znaleźć nieoczywiste rozwiązania i dzielimy się doświadczeniem branżowych profesjonalistów. Zapraszamy do przestrzeni, gdzie każdy ślub staje się wyjątkową historią, a każdy artykuł pomaga uczynić go właśnie takim."
     },
     "quickLinks": {
       "title": "Szybkie linki"
     },
     "contact": {
       "title": "Skontaktuj się z nami",
+      "description": "Rozpocznijmy rozmowę - jesteśmy tu, by pomóc",
       "emailUs": "Napisz do nas",
       "faq": "FAQ",
       "helpCenter": "Centrum pomocy",
@@ -39,12 +40,14 @@
     },
     "newsletter": {
       "title": "Zapisz się do naszego newslettera",
+      "description": "Bądź pierwszym, który pozna nasze najnowsze treści",
       "placeholder": "Wpisz swój email",
       "submitButton": "Zapisz się",
       "successMessage": "Dziękujemy za subskrypcję!"
     },
     "feedback": {
       "title": "Chcielibyśmy usłyszeć Twoją opinię",
+      "description": "Twoja opinia pomaga nam się rozwijać",
       "namePlaceholder": "Twoje imię",
       "emailPlaceholder": "Twój email",
       "messagePlaceholder": "Twoja wiadomość",

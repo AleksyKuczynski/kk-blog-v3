@@ -19,6 +19,7 @@ export interface FooterTranslations {
   };
   contact: {
     title: string;
+    description: string;
     emailUs: string;
     faq: string;
     helpCenter: string;
@@ -41,12 +42,14 @@ export interface FooterTranslations {
   };
   newsletter: {
     title: string;
+    description: string;
     placeholder: string;
     submitButton: string;
     successMessage: string;
   };
   feedback: {
     title: string;
+    description: string;
     namePlaceholder: string;
     emailPlaceholder: string;
     messagePlaceholder: string;

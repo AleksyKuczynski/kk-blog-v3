@@ -1,16 +1,15 @@
 // src/main/components/Footer/ContactSection.tsx
+import { submitContact } from '@/main/lib/actions';
 import { Lang } from '@/main/lib/dictionaries/types';
-import ContactSectionClient from './ContactSectionClient';
+import FormSectionServer from './FormSectionServer';
 
 interface ContactSectionProps {
   lang: Lang;
   translations: {
     title: string;
+    description: string;
     emailUs: string;
-    faq: string;
-    helpCenter: string;
     form: {
-      button: string;
       emailPlaceholder: string;
       messagePlaceholder: string;
       sendButton: string;
@@ -18,11 +17,44 @@ interface ContactSectionProps {
   };
 }
 
-export default function ContactSection({ lang, translations }: ContactSectionProps) {
+export default function ContactSection({ translations }: ContactSectionProps) {
+  const contactForm = (
+    <form action={submitContact} className="space-y-4">
+      <input
+        type="email"
+        name="email"
+        placeholder={translations.form.emailPlaceholder}
+        className="w-full p-2 border rounded"
+        required
+      />
+      <textarea
+        name="message"
+        placeholder={translations.form.messagePlaceholder}
+        rows={3}
+        className="w-full p-2 border rounded"
+        required
+      />
+      <button 
+        type="submit"
+        className="w-full bg-prcolor text-white py-2 rounded hover:bg-prcolor-dark transition-colors"
+      >
+        {translations.form.sendButton}
+      </button>
+    </form>
+  );
+
+  // Dostosowujemy strukturę translations do wymagań FormSectionServer
+  const sectionTranslations = {
+    title: translations.title,
+    description: translations.description,
+    submitButton: translations.form.sendButton,
+    successMessage: "Message sent successfully!" // TODO: Add to translations
+  };
+
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">{translations.title}</h2>
-      <ContactSectionClient lang={lang} translations={translations} />
-    </div>
+    <FormSectionServer
+      translations={sectionTranslations}
+      form={contactForm}
+    />
   );
 }
