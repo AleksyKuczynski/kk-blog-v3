@@ -1,8 +1,25 @@
-// /frontend/src/main/lib/markdown/processBalloonTips.ts
-
+// src/main/lib/markdown/processBalloonTips.ts
 import { ContentChunk } from './types';
 
-const URL_REGEX = /^(https?:\/\/)/i;
+const balloonContainerStyles = [
+  // Base styles
+  'relative inline-block group cursor-help',
+  // Theme variants
+  'theme-default:border-b theme-default:border-dotted theme-default:border-txcolor-muted',
+  'theme-rounded:border-b theme-rounded:border-dotted theme-rounded:border-txcolor-muted',
+  'theme-sharp:border-b theme-sharp:border-dashed theme-sharp:border-prcolor'
+].join(' ');
+
+const balloonTipStyles = [
+  // Base styles
+  'absolute bottom-full left-1/2 transform -translate-x-1/2 min-w-[200px] max-w-xs',
+  'opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10',
+  'p-2 text-xs text-bgcolor bg-txcolor shadow-lg',
+  // Theme variants
+  'theme-default:rounded',
+  'theme-rounded:rounded-xl',
+  'theme-sharp:border theme-sharp:border-prcolor'
+].join(' ');
 
 export function processBalloonTips(chunks: ContentChunk[]): ContentChunk[] {
   return chunks.map(chunk => {
@@ -10,18 +27,15 @@ export function processBalloonTips(chunks: ContentChunk[]): ContentChunk[] {
       chunk.content = chunk.content.replace(
         /\[([^\]]+)\]\(([^)]+)\)/g,
         (match, text, url) => {
-          if (URL_REGEX.test(url)) {
-            // Regular link, keep as is
-            return match;
-          } else {
-            // Convert to Tailwind-styled tooltip
-            return `<span class="relative inline-block group cursor-help border-b border-dotted border-gray-500">
+          if (!/^(https?:\/\/)/i.test(url)) {
+            return `<span class="${balloonContainerStyles}">
               ${text}
-              <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+              <span class="${balloonTipStyles}">
                 ${url}
               </span>
             </span>`;
           }
+          return match;
         }
       );
     }

@@ -99,12 +99,12 @@ const config: Config = {
   },
   plugins: [
     function({ addVariant }: PluginAPI) {
-      addVariant('theme-default', 'body[data-theme="default"] &')
-      addVariant('theme-rounded', 'body[data-theme="rounded"] &')
-      addVariant('theme-sharp', 'body[data-theme="sharp"] &')
-      addVariant('scheme-default', 'body[data-color-scheme="default"] &')
-      addVariant('scheme-1', 'body[data-color-scheme="scheme1"] &')
-      addVariant('scheme-2', 'body[data-color-scheme="scheme2"] &')
+      addVariant('theme-default', 'html[data-theme="default"] &')
+      addVariant('theme-rounded', 'html[data-theme="rounded"] &')
+      addVariant('theme-sharp', 'html[data-theme="sharp"] &')
+      addVariant('scheme-default', 'html[data-color-scheme="default"] &')
+      addVariant('scheme-1', 'html[data-color-scheme="scheme1"] &')
+      addVariant('scheme-2', 'html[data-color-scheme="scheme2"] &')
     },
     require('@tailwindcss/typography'),
   ],
