@@ -4,6 +4,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 import { CarouselItem } from '@/main/lib/markdown/types';
+import { ArticleImage } from './elements/Image';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -26,16 +27,18 @@ export function CarouselContent({ images }: CarouselContentProps) {
       {images.map((item, index) => (
         <SwiperSlide key={index} className="flex flex-col items-center justify-center w-full h-full">
           <div className="relative w-full h-full">
-            <div 
-              className="w-full h-full"
-              dangerouslySetInnerHTML={{ __html: item.content || '' }}
+            <ArticleImage
+              src={item.imageAttributes.src}
+              alt={item.imageAttributes.alt}
+              width={item.imageAttributes.width || 1200}
+              height={item.imageAttributes.height || 800}
+              caption={item.caption}
             />
           </div>
           {item.caption && (
-            <div 
-              className="absolute bottom-0 left-0 right-0 p-4 bg-bgcolor-alt bg-opacity-80 text-txcolor"
-              dangerouslySetInnerHTML={{ __html: item.caption }} 
-            />
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-bgcolor-alt bg-opacity-80 text-txcolor">
+              {item.caption}
+            </div>
           )}
         </SwiperSlide>
       ))}

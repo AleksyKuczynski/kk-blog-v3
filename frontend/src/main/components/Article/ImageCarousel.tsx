@@ -1,7 +1,6 @@
 // src/main/components/Article/ImageCarousel.tsx
 import { CarouselItem } from "@/main/lib/markdown/types";
 import { CarouselContent } from "./CarouselContent";
-import Image from 'next/image';
 
 interface ImageCarouselProps {
   images: CarouselItem[];

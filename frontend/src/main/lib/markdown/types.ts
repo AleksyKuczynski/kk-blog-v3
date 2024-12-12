@@ -6,6 +6,7 @@ export interface ContentChunk {
   blockquoteType?: '1' | '2' | '3' | '4';
   caption?: string;
   images?: CarouselItem[];
+  imageAttributes?: ImageAttributes;
 }
 
 export interface TocItem {
@@ -18,8 +19,15 @@ export interface ProcessedContent {
   toc: TocItem[];
 }
 
+export interface ImageAttributes {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+}
+
 export interface CarouselItem {
   type: 'image' | 'figure';
-  content: string;
+  imageAttributes: ImageAttributes;
   caption?: string;
 }

@@ -6,6 +6,7 @@ import { CustomBlockquote } from './CustomBlockquote';
 import dynamic from 'next/dynamic';
 import { markdownToBlockquoteProps } from '@/main/lib/markdown/markdownToBlockquoteProps';
 import { ContentChunk } from '@/main/lib/markdown/types';
+import { ArticleImage } from './elements/Image';
 
 const ImageCarousel = dynamic(() => import('./ImageCarousel'), { ssr: false });
 
@@ -27,16 +28,23 @@ export const CustomRenderer: React.FC<{ chunks: ContentChunk[] }> = ({ chunks })
               return chunk.images && chunk.images.length > 0 ? (
                 <ImageCarousel key={index} images={chunk.images} />
               ) : null;
-            case 'image':
-              return <div key={index} dangerouslySetInnerHTML={{ __html: chunk.content || '' }} />;
-            case 'figure':
-              return (
-                <figure key={index}>
-                  <div dangerouslySetInnerHTML={{ __html: chunk.content || '' }} />
-                  {chunk.caption && <figcaption dangerouslySetInnerHTML={{ __html: chunk.caption }} />}
-                </figure>
-              );
-            default:
+              case 'image':
+                return chunk.imageAttributes ? (
+                  <ArticleImage
+                    key={index}
+                    {...chunk.imageAttributes}
+                  />
+                ) : null;
+              case 'figure':
+                return chunk.imageAttributes ? (
+                  <figure key={index}>
+                    <ArticleImage
+                      {...chunk.imageAttributes}
+                      caption={chunk.caption}
+                    />
+                  </figure>
+                ) : null;
+              default:
               console.warn(`Unknown chunk type for chunk ${index}: ${chunk.type}`);
               return null;
           }

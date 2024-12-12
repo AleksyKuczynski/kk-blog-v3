@@ -1,20 +1,20 @@
 // src/main/lib/markdown/parseCarousels.ts
 
-import { ContentChunk, CarouselItem } from './types';
-import { convertMarkdownToHtmlSync } from './markdownToHtml';
+import { ContentChunk, CarouselItem, ImageAttributes } from './types';
 
-function convertMarkdownImageToHtml(markdown: string): string {
-  const match = markdown.match(/!\[(.*?)\]\((.*?)\)/);
-  if (match) {
-    const [, alt, src] = match;
-    return `<img src="${src}" alt="${alt}" />`;
+function parseImageAttributes(markdown: string): ImageAttributes {
+  const match = markdown.match(/!\[(.*?)\]\((.*?)(\s+".*?")?\)/);
+  if (!match) {
+    throw new Error('Invalid image markdown format');
   }
-  return markdown;
-}
-
-function convertCaptionToHtml(caption: string | undefined): string | undefined {
-  if (!caption) return undefined;
-  return convertMarkdownToHtmlSync(caption);
+  
+  const [, alt, src] = match;
+  
+  // For now, we'll let Next.js handle the image dimensions
+  return {
+    src: src.trim(),
+    alt: alt.trim() || 'Article image',
+  };
 }
 
 export function parseCarousels(chunks: ContentChunk[]): ContentChunk[] {
@@ -25,18 +25,14 @@ export function parseCarousels(chunks: ContentChunk[]): ContentChunk[] {
     if (currentCarousel.length > 1) {
       processedChunks.push({
         type: 'carousel',
-        images: currentCarousel.map(item => ({
-          ...item,
-          content: convertMarkdownImageToHtml(item.content),
-          caption: convertCaptionToHtml(item.caption)
-        })),
+        images: currentCarousel,
         content: ''
       });
     } else if (currentCarousel.length === 1) {
       processedChunks.push({
-        ...currentCarousel[0],
-        content: convertMarkdownImageToHtml(currentCarousel[0].content),
-        caption: convertCaptionToHtml(currentCarousel[0].caption)
+        type: currentCarousel[0].type,
+        imageAttributes: currentCarousel[0].imageAttributes,
+        caption: currentCarousel[0].caption
       } as ContentChunk);
     }
     currentCarousel = [];
@@ -44,9 +40,10 @@ export function parseCarousels(chunks: ContentChunk[]): ContentChunk[] {
 
   for (const chunk of chunks) {
     if (chunk.type === 'image' || chunk.type === 'figure') {
+      const imageAttributes = parseImageAttributes(chunk.content || '');
       currentCarousel.push({
         type: chunk.type,
-        content: chunk.content || '',
+        imageAttributes,
         caption: chunk.type === 'figure' ? chunk.caption : undefined
       });
     } else {
@@ -55,7 +52,6 @@ export function parseCarousels(chunks: ContentChunk[]): ContentChunk[] {
     }
   }
 
-  addCarousel(); // Handle any remaining carousel items
-
+  addCarousel();
   return processedChunks;
 }
