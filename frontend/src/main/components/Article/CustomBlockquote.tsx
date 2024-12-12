@@ -1,4 +1,5 @@
 // src/main/components/Article/CustomBlockquote.tsx
+import Image from 'next/image';
 import React from 'react';
 
 export interface CustomBlockquoteProps {
@@ -35,6 +36,17 @@ const contentStyles = [
   'theme-sharp:leading-snug theme-sharp:pl-4'
 ].join(' ');
 
+const avatarContainerStyles = [
+  // Layout styles
+  'float-left mr-4 mb-2 relative w-20 h-20',
+  // Theme variants
+  'theme-default:rounded',
+  'theme-rounded:rounded-full theme-rounded:shadow-md',
+  'theme-sharp:border-2 theme-sharp:border-prcolor'
+].join(' ');
+
+const avatarStyles = 'object-contain';
+
 export const CustomBlockquote: React.FC<CustomBlockquoteProps> = ({ 
   heading, 
   avatar, 
@@ -45,18 +57,15 @@ export const CustomBlockquote: React.FC<CustomBlockquoteProps> = ({
     <blockquote className={`${blockquoteBaseStyles} quote-type-${blockquoteType}`}>
       {heading && <h3 className={headingStyles}>{heading}</h3>}
       {avatar && (
-        <img 
-          src={avatar} 
-          alt="" 
-          className={[
-            // Base styles
-            'float-left mr-4 mb-2 w-20 h-20 object-cover',
-            // Theme variants
-            'theme-default:rounded',
-            'theme-rounded:rounded-full theme-rounded:shadow-md',
-            'theme-sharp:border-2 theme-sharp:border-prcolor'
-          ].join(' ')} 
-        />
+        <div className={avatarContainerStyles}>
+          <Image 
+            src={avatar}
+            alt=""
+            width={80}
+            height={80}
+            className={avatarStyles}
+          />
+        </div>
       )}
       <div className={contentStyles}>
         {content.map((paragraph, index) => (
