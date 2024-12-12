@@ -3,7 +3,6 @@
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
-import { ArticleImage } from './elements/Image';
 import { CarouselItem } from '@/main/lib/markdown/types';
 
 import 'swiper/css';
@@ -12,14 +11,9 @@ import 'swiper/css/pagination';
 
 interface CarouselContentProps {
   images: CarouselItem[];
-  styles: {
-    slide: string;
-    figure: string;
-    caption: string;
-  };
 }
 
-export function CarouselContent({ images, styles }: CarouselContentProps) {
+export function CarouselContent({ images }: CarouselContentProps) {
   return (
     <Swiper
       modules={[Navigation, Pagination]}
@@ -29,24 +23,22 @@ export function CarouselContent({ images, styles }: CarouselContentProps) {
       pagination={{ clickable: true }}
       className="w-full h-full"
     >
-      {images.map((item, index) => {
-        const match = item.content.match(/!\[(.*?)\]\((.*?)\)/);
-        if (!match) return null;
-        
-        const [, alt, src] = match;
-        
-        return (
-          <SwiperSlide key={index} className={styles.slide}>
-            <div className="flex items-center justify-center w-full h-full">
-              <ArticleImage 
-                src={src} 
-                alt={alt} 
-                caption={item.caption}
-              />
-            </div>
-          </SwiperSlide>
-        );
-      })}
+      {images.map((item, index) => (
+        <SwiperSlide key={index} className="flex flex-col items-center justify-center w-full h-full">
+          <div className="relative w-full h-full">
+            <div 
+              className="w-full h-full"
+              dangerouslySetInnerHTML={{ __html: item.content || '' }}
+            />
+          </div>
+          {item.caption && (
+            <div 
+              className="absolute bottom-0 left-0 right-0 p-4 bg-bgcolor-alt bg-opacity-80 text-txcolor"
+              dangerouslySetInnerHTML={{ __html: item.caption }} 
+            />
+          )}
+        </SwiperSlide>
+      ))}
     </Swiper>
   );
 }
