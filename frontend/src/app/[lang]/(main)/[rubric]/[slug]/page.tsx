@@ -4,6 +4,7 @@ import { Lang } from '@/main/lib/dictionaries/types';
 import { getArticlePageData } from '@/main/lib/actions';
 import { Header, Metadata, Content, ScrollToTopButton, TableOfContents } from '@/main/components/Article';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
+import { SeoBreadcrumbs } from '@/main/components/Main/SeoBreadcrumbs';
 
 export default async function ArticlePage({ 
   params,
@@ -31,6 +32,12 @@ export default async function ArticlePage({
   return (
     <article className="max-w-[1200px] mx-auto px-8">
       <ScrollToTopButton />
+      <SeoBreadcrumbs 
+        articleSlug={params.slug}
+        rubricSlug={params.rubric}
+        title={translation.title}
+        lang={params.lang}
+      />
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricBasics}
