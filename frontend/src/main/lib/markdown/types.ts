@@ -30,4 +30,5 @@ export interface CarouselItem {
   type: 'image' | 'figure';
   imageAttributes: ImageAttributes;
   caption?: string;
+  processedCaption?: string;
 }

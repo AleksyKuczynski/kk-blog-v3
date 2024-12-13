@@ -163,4 +163,78 @@ html {
   }
 }
 
+/* Swiper theme customization */
+.swiper {
+  // Navigation buttons
+  .swiper-button-next,
+  .swiper-button-prev {
+    color: var(--color-primary);
+    transition: var(--transition-duration);
+
+    &::after {
+      font-size: 1.5rem;
+    }
+
+    &:hover {
+      color: var(--color-primary-dark);
+    }
+  }
+
+  // Pagination
+  .swiper-pagination-bullet {
+    background: var(--color-text-muted);
+    opacity: 0.5;
+    transition: var(--transition-duration);
+
+    &-active {
+      background: var(--color-primary);
+      opacity: 1;
+    }
+  }
+
+  // Theme-specific styles
+  [data-theme="default"] & {
+    .swiper-button-next,
+    .swiper-button-prev {
+      background: var(--color-background-alt);
+      padding: 1.5rem;
+      border-radius: var(--border-radius-full);
+    }
+
+    .swiper-pagination-bullet {
+      border-radius: var(--border-radius-full);
+    }
+  }
+
+  [data-theme="rounded"] & {
+    .swiper-button-next,
+    .swiper-button-prev {
+      background: var(--color-background-alt);
+      padding: 2rem;
+      border-radius: var(--border-radius-xl);
+    }
+
+    .swiper-pagination-bullet {
+      border-radius: var(--border-radius-lg);
+      width: 2rem;
+      height: 0.5rem;
+    }
+  }
+
+  [data-theme="sharp"] & {
+    .swiper-button-next,
+    .swiper-button-prev {
+      background: var(--color-background-alt);
+      padding: 1.5rem;
+      border: 2px solid var(--color-primary);
+    }
+
+    .swiper-pagination-bullet {
+      border-radius: 0;
+      width: 1.5rem;
+      height: 0.5rem;
+      border: 1px solid var(--color-primary);
+    }
+  }
+}
 

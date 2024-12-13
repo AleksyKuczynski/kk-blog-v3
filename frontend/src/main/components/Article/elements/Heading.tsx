@@ -9,14 +9,35 @@ interface HeadingProps {
 
 export const Heading: React.FC<HeadingProps> = ({ level, id, children }) => {
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
-  const className = {
-    1: 'text-4xl font-bold mb-4',
-    2: 'text-3xl font-bold mb-3',
-    3: 'text-2xl font-bold mb-2',
-    4: 'text-xl font-bold mb-2',
-    5: 'text-lg font-bold mb-2',
-    6: 'text-base font-bold mb-2',
+  
+  const baseStyles = 'font-bold mb-4';
+  
+  const levelStyles = {
+    1: 'text-4xl',
+    2: 'text-3xl',
+    3: 'text-2xl',
+    4: 'text-xl',
+    5: 'text-lg',
+    6: 'text-base',
   }[level];
 
-  return <Tag id={id} className={className}>{children}</Tag>;
+  const themeStyles = [
+    // Base theme styles
+    'transition-colors duration-200',
+    // Default theme
+    'theme-default:border-b theme-default:border-prcolor theme-default:pb-2',
+    // Rounded theme
+    'theme-rounded:bg-bgcolor-alt theme-rounded:p-2 theme-rounded:rounded-lg theme-rounded:shadow-md',
+    // Sharp theme
+    'theme-sharp:border-l-2 theme-sharp:border-prcolor theme-sharp:pl-4'
+  ].join(' ');
+
+  return (
+    <Tag 
+      id={id} 
+      className={`${baseStyles} ${levelStyles} ${themeStyles}`}
+    >
+      {children}
+    </Tag>
+  );
 };
