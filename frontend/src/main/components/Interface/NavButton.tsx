@@ -10,29 +10,29 @@ interface NavButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const buttonStyles = {
-  base: 'transition-all duration-200 rounded-[var(--border-radius)]',
+  base: 'transition-all duration-200 text-on-sf-var',
   desktop: {
-    default: 'p-2 text-text-primary dark:text-text-inverted',
-    rounded: 'p-2 text-text-primary dark:text-text-inverted',
-    sharp: 'p-2 text-text-primary dark:text-text-inverted',
+    default: 'p-2',
+    rounded: 'p-2',
+    sharp: 'p-2',
   },
   mobile: {
-    default: 'px-3 py-1 text-sm font-medium',
-    rounded: 'px-3 py-1 text-sm font-medium',
-    sharp: 'px-3 py-1 text-sm font-medium',
+    default: 'px-3 py-1',
+    rounded: 'px-3 py-1',
+    sharp: 'px-3 py-1',
   },
   hamburger: {
-    default: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50',
-    rounded: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50',
-    sharp: 'fixed top-4 right-4 w-12 h-12 bg-primary text-text-inverted flex items-center justify-center z-50',
+    default: 'fixed top-4 right-4 w-12 h-12 flex items-center justify-center z-50',
+    rounded: 'fixed top-4 right-4 w-12 h-12 flex items-center justify-center z-50',
+    sharp: 'fixed top-4 right-4 w-12 h-12 flex items-center justify-center z-50',
   }
 };
 
 const hoverStyles = {
   desktop: {
-    default: 'hover:bg-primary-dark/50',
-    rounded: 'hover:bg-primary-dark/50',
-    sharp: 'hover:bg-primary-dark/50',
+    default: 'text-on-sf',
+    rounded: 'text-on-sf',
+    sharp: 'text-on-sf',
   },
 };
 

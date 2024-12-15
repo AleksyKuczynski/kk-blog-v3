@@ -15,30 +15,30 @@ const suggestionStyles = {
   // Base styles remain constant regardless of state
   base: `
     cursor-pointer 
-    transition-colors duration-200
+    transition-colors duration-300
   `,
   // Container styles vary by geometric theme
   container: {
     default: 'px-4 py-2',
     rounded: 'px-4 py-2 mx-2 first:mt-2 last:mb-2',
-    sharp: 'px-4 py-2 border-l-2 border-transparent'
+    sharp: 'px-4 py-2 border-2 border-transparent'
   },
   // State-based styles handle highlighting and selection
   states: {
     default: {
-      normal: 'text-txcolor hover:bg-bgcolor-accent',
-      highlighted: 'bg-prcolor text-txcolor-inverted',
-      selected: 'bg-prcolor text-txcolor-inverted font-medium'
+      normal: 'text-on-sf hover:bg-sf-cont hover:text-pr-fix rounded-lg',
+      highlighted: 'bg-pr-fix text-on-pr rounded-lg',
+      selected: 'bg-pr-cont text-on-pr rounded-lg'
     },
     rounded: {
-      normal: 'text-txcolor hover:bg-bgcolor-accent rounded-lg',
-      highlighted: 'bg-prcolor text-txcolor-inverted rounded-lg',
-      selected: 'bg-prcolor text-txcolor-inverted font-medium rounded-lg'
+      normal: 'text-on-sf hover:bg-sf-cont hover:text-pr-fix rounded-lg',
+      highlighted: 'bg-pr-fix text-on-pr rounded-lg',
+      selected: 'bg-pr-cont text-on-pr rounded-lg'
     },
     sharp: {
-      normal: 'text-txcolor hover:bg-gradient-to-r hover:from-bgcolor-accent hover:to-bgcolor hover:border-l-2 hover:border-prcolor',
-      highlighted: 'bg-gradient-to-r from-bgcolor-accent to-bgcolor border-l-2 border-prcolor',
-      selected: 'bg-gradient-to-r from-prcolor to-bgcolor border-l-2 border-prcolor text-txcolor-inverted font-medium'
+      normal: 'text-txcolor hover:border-ol hover:text-on-sf-var',
+      highlighted: 'bg-sf-cont border-pr-fix',
+      selected: 'bg-sf-cont border-pr-fix font-medium'
     }
   }
 };

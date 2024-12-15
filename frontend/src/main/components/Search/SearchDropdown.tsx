@@ -22,7 +22,7 @@ export default function SearchDropdown({
   const dropdownStyles = {
     container: {
       base: `
-        absolute z-50 shadow-lg bg-bgcolor-alt 
+        absolute z-50 shadow-lg bg-sf-hi 
         w-full
         top-full mt-2
         max-h-[80vh]
@@ -31,7 +31,7 @@ export default function SearchDropdown({
       theme: {
         default: 'rounded-lg',
         rounded: 'rounded-xl',
-        sharp: 'border border-prcolor'
+        sharp: 'border border-ol-var'
       },
       visibility: {
         'hidden': 'scale-y-0 opacity-0 -translate-y-4 pointer-events-none invisible',
@@ -54,9 +54,9 @@ export default function SearchDropdown({
     if (state.dropdown.content === 'message') {
       return (
         <div className={cn(
-          'px-4 py-2 text-txcolor-secondary',
+          'px-4 py-2 text-on-sf-var',
           currentTheme === 'rounded' && 'rounded-lg mx-2',
-          currentTheme === 'sharp' && 'border-l-2 border-prcolor'
+          currentTheme === 'sharp' && 'border border-prcolor'
         )}>
           {renderStatusMessage()}
         </div>
@@ -65,7 +65,7 @@ export default function SearchDropdown({
 
     if (state.dropdown.content === 'suggestions') {
       return (
-        <ul className="py-1">
+        <ul>
           {state.suggestions.map((suggestion, index) => (
             <SearchDropdownItem
               key={suggestion.slug}

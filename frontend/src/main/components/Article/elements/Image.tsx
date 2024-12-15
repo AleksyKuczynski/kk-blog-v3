@@ -1,6 +1,10 @@
 // src/main/components/Article/elements/Image.tsx
 import React from 'react';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
+import { createThemeStyles } from '@/main/lib/utils';
+
+const ImageViewer = dynamic(() => import('./ImageViewer'), { ssr: false });
 
 interface ImageProps {
   src: string;
@@ -10,46 +14,56 @@ interface ImageProps {
   caption?: string;
 }
 
-const imageStyles = [
-  // Base styles
-  'max-w-full h-auto',
-  // Theme variants
-  'theme-default:shadow-md',
-  'theme-rounded:rounded-xl theme-rounded:shadow-lg',
-  'theme-sharp:border-2 theme-sharp:border-prcolor'
-].join(' ');
+const imageStyles = createThemeStyles({
+  base: 'w-full h-auto object-contain',
+  default: '',
+  rounded: 'lg:rounded-xl lg:shadow-lg',
+  sharp: ''
+});
 
-const figureStyles = [
-  // Base styles
-  'my-6',
-  // Theme variants
-  'theme-default:text-center',
-  'theme-rounded:text-center theme-rounded:p-2',
-  'theme-sharp:border-l-2 theme-sharp:border-prcolor theme-sharp:pl-4'
-].join(' ');
+const figureStyles = createThemeStyles({
+  base: 'w-full',
+  default: 'text-center',
+  rounded: 'overflow-hidden',
+  sharp: ''
+});
 
-const captionStyles = [
-  // Base styles
-  'mt-2 text-sm text-txcolor-secondary',
-  // Theme variants
-  'theme-default:italic',
-  'theme-rounded:font-medium theme-rounded:bg-bgcolor-alt theme-rounded:rounded-lg theme-rounded:p-2',
-  'theme-sharp:uppercase theme-sharp:text-xs theme-sharp:tracking-wider'
-].join(' ');
+const captionStyles = createThemeStyles({
+  base: 'mt-2 text-on-sf-var',
+  default: 'text-center italic',
+  rounded: 'bg-sf-hi p-2 rounded-lg text-center',
+  sharp: 'pl-4 text-sm uppercase tracking-wider'
+});
 
-export const ArticleImage: React.FC<ImageProps> = ({ src, alt, width = 800, height = 600, caption }) => (
-  <figure className={figureStyles}>
-    <Image 
-      src={src} 
-      alt={alt} 
-      width={width} 
-      height={height} 
-      className={imageStyles}
-    />
-    {caption && (
-      <figcaption className={captionStyles}>
-        {caption}
-      </figcaption>
-    )}
-  </figure>
-);
+export const ArticleImage = ({ src, alt, width, height, caption }: ImageProps) => {
+  const defaultWidth = 1200;
+  const defaultHeight = Math.round(defaultWidth * (9/16)); // 16:9 aspect ratio
+
+  return (
+    <figure className={figureStyles}>
+      <div className="relative">
+        <Image 
+          src={src} 
+          alt={alt} 
+          width={width || defaultWidth}
+          height={height || defaultHeight}
+          className={imageStyles}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+          quality={75}
+          priority={false}
+        />
+        <ImageViewer
+          src={src}
+          alt={alt}
+          width={width || defaultWidth}
+          height={height || defaultHeight}
+        />
+      </div>
+      {caption && (
+        <figcaption className={captionStyles}>
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+};

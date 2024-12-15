@@ -59,7 +59,7 @@ export default function Breadcrumbs({ items, rubrics, lang, translations }: Brea
       itemScope 
       itemType="https://schema.org/BreadcrumbList"
     >
-      <ol className="list-none p-0 inline-flex">
+      <ol className="list-none inline-flex">
         {fullPath.map((item, index) => (
           <li 
             key={item.href} 
@@ -68,10 +68,10 @@ export default function Breadcrumbs({ items, rubrics, lang, translations }: Brea
             itemScope 
             itemType="https://schema.org/ListItem"
           >
-            {index > 0 && <ChevronRightIcon className="h-4 w-4 text-txcolor-secondary mx-2" aria-hidden="true" />}
+            {index > 0 && <ChevronRightIcon className="h-4 w-4 text-on-sf-var mx-2" aria-hidden="true" />}
             {index === fullPath.length - 1 ? (
               <span 
-                className="text-txcolor-muted"
+                className="text-on-sf-var"
                 itemProp="name"
                 aria-current="page"
               >
@@ -80,7 +80,7 @@ export default function Breadcrumbs({ items, rubrics, lang, translations }: Brea
             ) : (
               <Link 
                 href={item.href} 
-                className="text-prcolor hover:text-prcolor-dark hover:underline underline-offset-4 transition-colors duration-200"
+                className="text-pr-cont hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200"
                 itemProp="item"
               >
                 <span itemProp="name">{item.label}</span>

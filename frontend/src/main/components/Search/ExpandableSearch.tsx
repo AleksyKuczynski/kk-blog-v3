@@ -22,25 +22,28 @@ const containerStyles = {
     `,
     expanded: {
       default: `
-        bg-bgcolor-accent rounded-lg shadow-md 
+        bg-sf-hi border border-ol rounded-lg shadow-md 
         hover:shadow-lg 
         focus-within:outline-none
-        focus-within:ring-2
-        focus-within:ring-prcolor
+        focus-within:ring-1
+        focus-within:ring-pr-fix
         focus-within:ring-offset-0
       `,
       rounded: `
-        bg-bgcolor-accent rounded-lg shadow-lg 
+        bg-sf-hi border border-ol rounded-lg shadow-lg 
         hover:shadow-xl 
         focus-within:outline-none
-        focus-within:ring-2
-        focus-within:ring-prcolor
+        focus-within:ring-1
+        focus-within:ring-pr-fix
         focus-within:ring-offset-0
       `,
       sharp: `
-        bg-bgcolor-accent 
-        border-2 border-prcolor
-        hover:bg-bgcolor-accent/80
+        bg-sf-hi border border-ol  
+        hover:bg-sf-hst
+        focus-within:outline-none
+        focus-within:ring-1
+        focus-within:ring-pr-fix
+        focus-within:ring-offset-0
       `
     }
   },

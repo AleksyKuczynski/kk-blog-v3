@@ -1,9 +1,26 @@
 // src/main/lib/markdown/extractImagesAndCaptions.ts
-
-import { ContentChunk } from './types';
+import { ContentChunk, ImageAttributes } from './types';
 import { extractCaption } from './captionUtils';
+import { parseMarkdownImage } from '../utils';
+import { fetchAssetMetadata } from '../directus';
 
-export function extractImagesAndCaptions(content: string): { chunks: ContentChunk[], remainingContent: string } {
+async function getImageAttributes(markdown: string): Promise<ImageAttributes | undefined> {
+  const parsed = parseMarkdownImage(markdown);
+  if (!parsed) return undefined;
+
+  const { alt, src, assetId } = parsed;
+  
+  const metadata = await fetchAssetMetadata(assetId);
+
+  return {
+    src,
+    alt,
+    width: metadata?.width || 1200,
+    height: metadata?.height || 800
+  };
+}
+
+export async function extractImagesAndCaptions(content: string): Promise<{ chunks: ContentChunk[], remainingContent: string }> {
   const chunks: ContentChunk[] = [];
   const lines = content.split('\n');
   let currentMarkdown = '';
@@ -13,7 +30,6 @@ export function extractImagesAndCaptions(content: string): { chunks: ContentChun
     const line = lines[i].trim();
 
     if (line.match(/^!\[.*?\]\(.*?\)$/)) {
-      // If there's accumulated markdown content, create a chunk for it
       if (currentMarkdown.trim()) {
         chunks.push({
           type: 'markdown',
@@ -22,19 +38,27 @@ export function extractImagesAndCaptions(content: string): { chunks: ContentChun
         currentMarkdown = '';
       }
 
+      const imageAttributes = await getImageAttributes(line);
+      if (!imageAttributes) {
+        i++;
+        continue;
+      }
+
       const { caption, endIndex } = extractCaption(lines, i + 1);
 
       if (caption) {
         chunks.push({
           type: 'figure',
           content: line,
-          caption: caption
+          imageAttributes,
+          caption
         });
         i = endIndex + 1;
       } else {
         chunks.push({
           type: 'image',
-          content: line
+          content: line,
+          imageAttributes
         });
         i++;
       }
@@ -44,7 +68,6 @@ export function extractImagesAndCaptions(content: string): { chunks: ContentChun
     }
   }
 
-  // Add any remaining markdown content as a final chunk
   if (currentMarkdown.trim()) {
     chunks.push({
       type: 'markdown',
@@ -54,6 +77,6 @@ export function extractImagesAndCaptions(content: string): { chunks: ContentChun
 
   return {
     chunks,
-    remainingContent: '' // We've processed all content into chunks
+    remainingContent: ''
   };
 }

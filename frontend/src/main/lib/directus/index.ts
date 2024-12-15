@@ -8,6 +8,7 @@ export { fetchArticleCard } from '@/main/lib/directus/fetchArticleCard';
 export { fetchArticleCarousel } from '@/main/lib/directus/fetchArticleCarousel';
 export { fetchArticles } from '@/main/lib/directus/fetchArticles';
 export { fetchArticleSlugs } from '@/main/lib/directus/fetchArticleSlugs';
+export { fetchAssetMetadata } from '@/main/lib/directus/fetchAssetMetadata';
 export { fetchAuthorBySlug } from '@/main/lib/directus/fetchAuthorBySlug';
 export { fetchAuthorsForArticle } from '@/main/lib/directus/fetchAuthorsForArticle';
 export { fetchAllCategories } from '@/main/lib/directus/fetchAllCategories';

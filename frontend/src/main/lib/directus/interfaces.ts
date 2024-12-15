@@ -133,3 +133,11 @@ export interface SearchProposition { //  Results of search in translated titles 
   languages_code: string;
 }
 
+export interface Asset {
+  id: string;
+  width: number;
+  height: number;
+  type: string;
+  filename: string;
+}
+

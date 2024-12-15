@@ -16,7 +16,7 @@ const modalStyles = {
   overlay: {
     base: `
       fixed inset-0 
-      bg-bgcolor/80 
+      bg-sf/80 
       backdrop-blur-sm
       z-50 
       flex items-center justify-center
@@ -31,7 +31,7 @@ const modalStyles = {
   container: {
     base: `
       relative
-      bg-bgcolor-alt 
+      bg-sf-hst 
       shadow-xl
       max-w-lg w-full mx-4
       max-h-[90vh]
@@ -40,7 +40,7 @@ const modalStyles = {
     themes: {
       default: 'rounded-lg',
       rounded: 'rounded-2xl',
-      sharp: 'border-2 border-prcolor'
+      sharp: 'border-2 border-ol'
     },
     states: {
       'hidden': 'scale-95 translate-y-4 opacity-0',
@@ -82,11 +82,11 @@ export default function Modal({
       >
         {title && (
           <div className="p-6 pb-0">
-            <h2 id="modal-title" className="text-xl font-semibold text-txcolor">
+            <h2 id="modal-title" className="text-xl font-semibold text-on-sf">
               {title}
             </h2>
             {description && (
-              <p className="mt-2 text-txcolor-secondary">
+              <p className="mt-2 text-on-sf-var">
                 {description}
               </p>
             )}
@@ -97,7 +97,7 @@ export default function Modal({
         </div>
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-txcolor-muted hover:text-txcolor"
+          className="absolute top-4 right-4 text-on-sf-var hover:text-on-sfr"
           aria-label="Close modal"
         >
           ×

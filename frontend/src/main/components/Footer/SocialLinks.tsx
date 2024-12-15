@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { socialLinks, SocialLink } from './socialLinksData';
-import { Lang, FooterTranslations } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/types';
 
 interface SocialLinksProps {
     lang: Lang;
@@ -31,7 +31,7 @@ const SocialLinks: React.FC<SocialLinksProps> = ({ translations, className }) =>
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-txcolor-muted hover:text-prcolor transition-colors duration-300"
+              className="text-on-sf-var hover:text-on-sf transition-colors duration-300"
             >
               <span className="sr-only">{translations[link.name]}</span>
               <link.Icon className="w-8 h-8" aria-hidden="true" />

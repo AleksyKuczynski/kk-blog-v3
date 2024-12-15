@@ -8,7 +8,7 @@ import { cn } from '@/main/lib/utils';
 import type { DropdownContentProps } from './types';
 
 const dropdownStyles = {
-  base: 'absolute z-70 shadow-lg bg-bgcolor-alt transition-all duration-200 ease-in-out origin-top',
+  base: 'absolute z-70 shadow-lg bg-sf-hi transition-all duration-200 ease-in-out origin-top',
   width: {
     icon: 'w-40',
     narrow: 'w-48',
@@ -22,8 +22,8 @@ const dropdownStyles = {
   },
   theme: {
     default: 'rounded-lg',
-    rounded: 'rounded-xl',
-    sharp: 'border-2 border-prcolor'
+    rounded: 'rounded-lg',
+    sharp: 'border border-ol-var'
   },
   state: {
     open: 'opacity-100 scale-y-100 transform',

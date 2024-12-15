@@ -32,7 +32,7 @@ interface FormSectionServerProps {
     return (
       <div className="flex flex-col justify-between space-y-2">
         <h2 className="text-xl font-semibold grow">{translations.title}</h2>
-        <p className="text-sm text-txcolor-muted pb-4">{translations.description}</p>
+        <p className="text-sm text-on-sf-var pb-4">{translations.description}</p>
         
         {/* Hidden content for SEO */}
         <div className="hidden">

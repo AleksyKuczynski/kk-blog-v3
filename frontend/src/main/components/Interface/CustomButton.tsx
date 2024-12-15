@@ -27,18 +27,18 @@ const buttonClasses: Record<ButtonColor, {
   outlined: string;
 }> = {
   accent: {
-    filled: 'bg-accolor hover:bg-accolor-light focus:bg-accolor-dark text-bgcolor border-transparent',
-    outlined: 'bg-transparent hover:bg-accolor/10 border-accolor text-accolor'
+    filled: 'bg-tr-cont hover:bg-tr-fix focus:bg-tr-dim text-on-tr border-transparent',
+    outlined: 'bg-transparent hover:bg-tr-cont/10 border-tr-cont text-tr-cont'
   },
   primary: {
-    filled: 'bg-prcolor hover:bg-prcolor-light focus:bg-prcolor-dark text-bgcolor border-transparent',
-    outlined: 'bg-transparent hover:bg-prcolor/10 border-prcolor text-prcolor'
+    filled: 'bg-pr-cont hover:bg-pr-fix focus:bg-pr-dim text-on-pr border-transparent',
+    outlined: 'bg-transparent hover:bg-pr-cont/10 border-pr-cont text-pr-cont'
   }
 };
 
 const defaultClasses = {
-  filled: 'bg-txcolor-muted border-transparent text-bgcolor',
-  outlined: 'bg-transparent border-current text-current hover:bg-current/10'
+  filled: 'bg-on-sf-var border-transparent text-on-pr',
+  outlined: 'bg-transparent border-ol text-current hover:bg-ol/10'
 };
 
 export function CustomButton({ 

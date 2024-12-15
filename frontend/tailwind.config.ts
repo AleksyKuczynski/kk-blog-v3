@@ -69,26 +69,67 @@ const config: Config = {
         custom: ['var(--font-custom)'],
       },
       colors: {
-        bgcolor: {
+        bgcolor: { //outdated, must not be used
           DEFAULT: 'var(--color-background)',
           accent: 'var(--color-background-accent)',
           alt: 'var(--color-background-alt)',
         },
-        txcolor: {
+        txcolor: { //outdated, must not be used
           DEFAULT: 'var(--color-text)',
           secondary: 'var(--color-text-secondary)',
           muted: 'var(--color-text-muted)',
         },
-        prcolor: {
+        prcolor: { //outdated, must not be used
           DEFAULT: 'var(--color-primary)',
           dark: 'var(--color-primary-dark)',
           light: 'var(--color-primary-light)',
         },
-        accolor: {
+        accolor: { //outdated, must not be used
           DEFAULT: 'var(--color-accent)',
           dark: 'var(--color-accent-dark)',
           light: 'var(--color-accent-light)',
         },
+        // Surface colors
+        sf: {
+          DEFAULT: 'var(--color-surface)',
+          cont: 'var(--color-surface-container)',
+          hi: 'var(--color-surface-container-high)',
+          hst: 'var(--color-surface-container-highest)',
+        },
+        
+        // Primary colors
+        pr: {
+          cont: 'var(--color-primary-container)',
+          fix: 'var(--color-primary-fixed)',
+          dim: 'var(--color-primary-fixed-dim)',
+          inv: 'var(--color-primary-container-inverted)',
+          'fix-inv': 'var(--color-primary-fixed-inverted)',
+          'dim-inv': 'var(--color-primary-fixed-dim-inverted)',
+        },
+        
+        // Tertiary colors
+        tr: {
+          cont: 'var(--color-tertiary-container)',
+          fix: 'var(--color-tertiary-fixed)',
+          dim: 'var(--color-tertiary-fixed-dim)',
+        },
+        
+        // Text colors
+        on: {
+          sf: 'var(--color-on-surface)',
+          'sf-var': 'var(--color-on-surface-variant)',
+          pr: 'var(--color-on-primary-container)',
+          'pr-var': 'var(--color-on-primary-container-variant)',
+          tr: 'var(--color-on-tertiary-container)',
+          'tr-var': 'var(--color-on-tertiary-container-variant)',
+        },
+        
+        // Outline colors
+        ol: {
+          DEFAULT: 'var(--color-outline)',
+          var: 'var(--color-outline-variant)',
+        },
+
         // Direct color values
         success: '#06D6A0',
         error: '#EF476F',
@@ -109,10 +150,10 @@ const config: Config = {
     require('@tailwindcss/typography'),
   ],
   safelist: [
-    'shadow-sm',
-        'shadow-md',
-        'hover:shadow-md',
-        'hover:shadow-lg',
+    {
+      pattern: /^(bg|(p|m)(x|y|t|b|r|l)|-mx|space|font|text|underline|rounded|leading|md|lg|xl|marker)-.+/, // Pattern dla wszystkich klas utility
+      variants: ['theme-default', 'theme-rounded', 'theme-sharp']
+    }
   ],
 };
 export default config;

@@ -13,11 +13,11 @@ interface NavLinksClientProps {
 
 // Define classes that indicate state
 const stateClasses = {
-  text: ['text-txcolor-secondary', 'text-prcolor'],
-  background: ['bg-bgcolor-accent'],
+  text: ['text-on-sf-var', 'text-pr-cont'],
+  background: ['bg-sf'],
   font: ['font-bold'],
-  border: ['border-transparent', 'border-accolor', 'border-b-2'],
-  hover: ['hover:text-txcolor'],
+  border: ['border-transparent', 'border-pr-cont', 'border-b-2'],
+  hover: ['hover:text-on-sf'],
   transition: ['transition-colors', 'duration-200'],
   rounded: ['rounded-full']
 };
@@ -27,16 +27,16 @@ const cleanupClasses = Object.values(stateClasses).flat();
 
 const themeStyles = {
   default: {
-    normal: 'text-txcolor-secondary hover:text-txcolor transition-colors duration-200',
-    active: 'text-prcolor bg-bgcolor-accent font-bold'
+    normal: 'text-on-sf-var hover:text-on-sf transition-colors duration-200',
+    active: 'text-pr-cont bg-sf font-bold'
   },
   rounded: {
-    normal: 'text-txcolor-secondary hover:text-txcolor transition-colors duration-200',
-    active: 'text-prcolor bg-bgcolor-accent font-bold rounded-full'
+    normal: 'text-on-sf-var hover:text-on-sf transition-colors duration-200',
+    active: 'text-pr-cont bg-sf font-bold rounded-full'
   },
   sharp: {
-    normal: 'text-txcolor-secondary hover:text-txcolor border-b-2 border-transparent transition-colors duration-200',
-    active: 'text-prcolor bg-bgcolor-accent font-bold border-b-2 border-accolor'
+    normal: 'text-on-sf-var hover:text-on-sf border-b-2 border-transparent transition-colors duration-200',
+    active: 'text-pr-cont bg-sf font-bold border-b-2 border-pr-cont'
   },
 } as const;
 

@@ -23,7 +23,7 @@ export default function DesktopNavigation({
   const { currentTheme } = useTheme();
 
   return (
-    <nav className="hidden xl:block fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-bgcolor-alt/20 transition-all duration-300">
+    <nav className="hidden xl:block fixed top-0 left-0 right-0 z-50 backdrop-blur-lg transition-all duration-300">
       <div className="grid grid-cols-3 items-center h-24">
         <ul className="flex items-center justify-start pl-8">
           <NavLinks 

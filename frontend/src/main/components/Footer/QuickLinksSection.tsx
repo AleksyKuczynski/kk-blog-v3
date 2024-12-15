@@ -17,7 +17,7 @@ interface QuickLinksSectionProps {
   className: string;
 }
 
-const linkStyles = 'block text-txcolor-muted hover:text-txcolor transition-colors duration-200 py-1';
+const linkStyles = 'block text-on-sf-var hover:text-on-sf transition-colors duration-200 py-1';
 
 export default function QuickLinksSection({ 
   lang, 
@@ -38,7 +38,7 @@ export default function QuickLinksSection({
             disableClientDecorations = {true}
           />
         </ul> 
-        <div className="border-t border-txcolor-muted/20 pt-2 mt-4">
+        <div className="border-t border-ol-var pt-2 mt-4">
           <Link 
             href={`/${lang}/faq`} 
             className={linkStyles}

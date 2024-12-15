@@ -1,15 +1,14 @@
 // src/main/components/Article/elements/ListItem.tsx
 import React from 'react';
+import { createThemeStyles } from '@/main/lib/utils';
 
-const listItemStyles = [
-  // Base styles
-  'mb-2',
-  // Theme variants
-  'theme-default:pl-2',
-  'theme-rounded:pl-2 theme-rounded:marker:text-prcolor',
-  'theme-sharp:pl-2 theme-sharp:marker:text-prcolor'
-].join(' ');
+export const ListItem: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const itemStyles = createThemeStyles({
+    base: 'pl-2 last:mb-0',
+    default: '',
+    rounded: '',
+    sharp: ''
+  });
 
-export const ListItem: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <li className={listItemStyles}>{children}</li>
-);
+  return <li className={itemStyles}>{children}</li>;
+};

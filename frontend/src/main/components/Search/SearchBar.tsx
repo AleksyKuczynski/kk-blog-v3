@@ -20,7 +20,7 @@ const containerStyles = {
   wrapper: {
     base: `
       relative flex gap-2 items-center
-      bg-bgcolor-accent
+      bg-sf-hi
       group
     `,
     theme: {
@@ -29,7 +29,7 @@ const containerStyles = {
         hover:shadow-lg
         focus-within:outline-none
         focus-within:ring-2
-        focus-within:ring-prcolor
+        focus-within:ring-pr-fix
         focus-within:ring-offset-0
       `,
       rounded: `
@@ -37,12 +37,12 @@ const containerStyles = {
         hover:shadow-lg
         focus-within:outline-none
         focus-within:ring-2
-        focus-within:ring-prcolor
+        focus-within:ring-pr-fix
         focus-within:ring-offset-0
       `,
       sharp: `
-        border-2 border-prcolor
-        hover:bg-bgcolor-accent/80
+        border-2 border-pr-fix
+        hover:bg-bg-hst
       `
     },
     transition: `transition-[background-color,box-shadow] duration-200`

@@ -30,7 +30,7 @@ export default async function ArticlePage({
   } = data;
 
   return (
-    <article className="max-w-[1200px] mx-auto px-8">
+    <article className="container mx-auto max-w-[1200px]">
       <ScrollToTopButton />
       <SeoBreadcrumbs 
         articleSlug={params.slug}
@@ -48,6 +48,10 @@ export default async function ArticlePage({
           allAuthors: dict.sections.authors.ourAuthors,
         }}
       />
+      <Metadata 
+        categories={article.categories}
+        lang={params.lang}
+      />
       <Header 
         title={translation.title}
         publishedDate={formattedDate}
@@ -55,15 +59,9 @@ export default async function ArticlePage({
         lang={params.lang}
         editorialText={dict.common.editorial}
         imagePath={article.article_heading_img}
+        lead={translation.lead}
       />
-      <Metadata 
-        categories={article.categories}
-        lang={params.lang}
-      />
-      {translation.lead && (
-        <div className="text-lead font-bold mb-8 max-w-[800px] mx-auto">{translation.lead}</div>
-      )}
-      
+
       {processedContent.toc.length > 1 && (
         <TableOfContents items={processedContent.toc} title={dict.common.tableOfContents} />
       )}

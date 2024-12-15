@@ -2,18 +2,11 @@
 import { Dictionary, Lang } from '@/main/lib/dictionaries/types';
 import AboutUsSection from './AboutUsSection';
 import QuickLinksSection from './QuickLinksSection';
-import ContactSection from './ContactSection';
 import SocialLinks from './SocialLinks';
 import CredentialsSection from './CredentialsSection';
-import SearchSection from './SearchSection';
 import KuKraftSection from './KuKraftSection';
 import { socialLinks } from './socialLinksData';
-import dynamic from 'next/dynamic';
 import InteractiveForms from './InteractiveForms';
-
-const SurpriseSection = dynamic(() => import('./SurpriseSection'), { ssr: false });
-const NewsletterSection = dynamic(() => import('./NewsletterSection'), { ssr: false });
-const FeedbackSection = dynamic(() => import('./FeedbackSection'), { ssr: false });
 
 interface FooterProps {
   lang: Lang;
@@ -38,12 +31,12 @@ export default function Footer({ lang, translations }: FooterProps) {
   };
 
   return (
-    <footer className="bg-bgcolor-alt text-txcolor-muted py-16">
+    <footer className="bg-sf-cont text-on-sf-var py-16">
       <div className="container mx-auto px-4">
         <div className="flex flex-col">
         
 
-          <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-16 md:max-lg:gap-y-24 xl:gap-y-24 py-16 border-t border-b border-txcolor-muted">
+          <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-16 md:max-lg:gap-y-24 xl:gap-y-24 py-16 border-t border-b border-ol-var">
             <AboutUsSection 
               lang={lang} 
               about={footer.about}

@@ -25,7 +25,7 @@ export default async function RootLayout({
     >
       <ThemeProvider initialTheme={initialTheme} initialColorMode={initialColorMode}>
         <ColorProvider initialColorScheme={initialColorScheme}>
-          <body data-color-scheme={initialColorScheme} className={`flex flex-col min-h-screen bg-bgcolor text-txcolor theme-${initialTheme} transition-colors duration-300`}>
+          <body data-color-scheme={initialColorScheme} className={`flex flex-col min-h-screen bg-sf text-on-sf theme-${initialTheme} transition-colors duration-300`}>
             {children}
           </body>
         </ColorProvider>

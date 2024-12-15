@@ -57,11 +57,11 @@ const heroStyles: HeroStyles = {
       image: '',
       content: 'grow space-y-2 xl:space-y-3 leading-loose flex flex-col',
       title: 'lg:max-xl:grow mb-2',
-      date: 'text-xs lg:text-sm text-txcolor-muted',
+      date: 'text-xs lg:text-sm text-on-sf-var',
       description: 'text-sm lg:text-base line-clamp-3 mb-4 max-sm:hidden',
       readMore: 'sm:max-lg:grow text-sm font-medium transition-colors duration-200 flex justify-end items-end',
-      authorWrapper: 'hidden bg-bgcolor-alt bg-opacity-80 top-2 left-2 pb-1 px-3 rounded-md',
-      authorLink: 'text-xs sm:text-sm inline-block mr-1 last:mr-0 hover:text-prcolor transition-colors duration-200',
+      authorWrapper: 'hidden bg-sf-cont bg-opacity-80 top-2 left-2 pb-1 px-3 rounded-md',
+      authorLink: 'text-xs sm:text-sm inline-block mr-1 last:mr-0 hover:text-pr-cont transition-colors duration-200',
     },
     themeSensitive: {
       default: {
@@ -87,7 +87,7 @@ const heroStyles: HeroStyles = {
       rounded: {
         container: '',
         contentWrapper: `
-          bg-bgcolor-alt
+          bg-sf-cont
           rounded-3xl 
           shadow-md
           hover:shadow-lg
@@ -108,7 +108,7 @@ const heroStyles: HeroStyles = {
       },
       sharp: {
         container: '',
-        contentWrapper: 'gap-2 bg-gradient-to-br from-bgcolor-alt via-bgcolor-accent to-bgcolor border-4 p-1',
+        contentWrapper: 'gap-2 bg-sf border border-ol-var p-3',
         imageWrapper: `
         `,
         image: '',

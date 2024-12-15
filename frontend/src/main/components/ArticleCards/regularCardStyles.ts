@@ -5,7 +5,7 @@ const commonStyles = {
   container: `
     relative 
     overflow-hidden
-    bg-bgcolor-alt 
+    bg-sf-cont 
   `,
   contentWrapper: `
     lg:h-full
@@ -32,7 +32,7 @@ const commonStyles = {
     transition-colors
     duration-600
   `,
-  date: 'text-xs lg:text-sm text-txcolor-muted',
+  date: 'text-xs lg:text-sm text-on-sf-var',
   description: `
     max-sm:hidden
     text-sm lg:text-base line-clamp-3 mb-4 
@@ -48,7 +48,7 @@ const commonStyles = {
   image: '',
   authorWrapper: `
     hidden
-    bg-bgcolor-alt bg-opacity-80
+    bg-sf-cont bg-opacity-80
     top-2 left-2 
     py-1 px-3 
     rounded-md
@@ -59,7 +59,7 @@ const commonStyles = {
     inline-block 
     mr-1 
     last:mr-0 
-    hover:text-prcolor
+    hover:text-pr-fix
     transition-colors 
     duration-200 
   `,
@@ -86,27 +86,29 @@ export const regularCardStyles: Record<Theme, CardThemeStyles> = {
     `,
     readMore: `
       ${commonStyles.readMore}
-      text-prcolor hover:text-prcolor-dark 
+      text-pr-cont hover:text-pr-fix 
     `,
   },
   rounded: {
     ...commonStyles,
     container: `
       ${commonStyles.container}
+      border
+      border-ol-var
       shadow-sm
       hover:shadow-md
       dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)]
       transition-shadow
       duration-200
-      rounded-3xl
+      rounded-2xl
     `,
     contentWrapper: `
       ${commonStyles.contentWrapper}
-      p-2
+      p-0
     `,
     imageWrapper: `
       ${commonStyles.imageWrapper}
-      rounded-2xl 
+      rounded-xl 
     `,
     title: `
       ${commonStyles.title}
@@ -117,13 +119,16 @@ export const regularCardStyles: Record<Theme, CardThemeStyles> = {
     `,
     readMore: `
       ${commonStyles.readMore}
-      text-prcolor hover:text-prcolor-dark 
+      text-pr-cont hover:text-pr-fix 
     `,
   },
   sharp: {
     ...commonStyles,
     container: `
       ${commonStyles.container}
+      border
+      border-ol-var
+      p-2
       shadow-sm
       hover:shadow-md
       dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)]
@@ -138,7 +143,7 @@ export const regularCardStyles: Record<Theme, CardThemeStyles> = {
     `,
     readMore: `
       ${commonStyles.readMore}
-      text-prcolor hover:text-prcolor-dark
+      text-pr-cont hover:text-pr-fix
     `,
   },
 };

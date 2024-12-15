@@ -13,13 +13,16 @@ export async function processContent(content: string): Promise<ProcessedContent>
   const addHeadingIds = createAddHeadingIds();
 
   try {
+    // Wszystkie operacje są asynchroniczne
     const blockquoteChunks = await parseBlockquotes(content);
     let processedChunks: ContentChunk[] = [];
 
     for (const chunk of blockquoteChunks) {
       if (chunk.type === 'markdown' && chunk.content) {
-        const { chunks } = extractImagesAndCaptions(chunk.content);
-        const carouselChunks = parseCarousels(chunks);
+        // Czekamy na zakończenie extractImagesAndCaptions
+        const { chunks } = await extractImagesAndCaptions(chunk.content);
+        // Carousels też musi być async
+        const carouselChunks = await parseCarousels(chunks);
         const balloonTipChunks = processBalloonTips(carouselChunks);
         
         const htmlChunks = await Promise.all(balloonTipChunks.map(async (c) => {
@@ -32,13 +35,15 @@ export async function processContent(content: string): Promise<ProcessedContent>
         }));
         
         processedChunks = [...processedChunks, ...htmlChunks];
-      } else if (chunk.type === 'blockquote') {
-        // Keep blockquote chunks as raw markdown
+      } else {
         processedChunks.push(chunk);
       }
     }
 
-    const toc = generateToc(processedChunks.filter(chunk => chunk.type === 'markdown' && chunk.content).map(chunk => chunk.content!).join('\n'));
+    const toc = generateToc(processedChunks
+      .filter(chunk => chunk.type === 'markdown' && chunk.content)
+      .map(chunk => chunk.content!)
+      .join('\n'));
 
     return { chunks: processedChunks, toc };
   } catch (error) {

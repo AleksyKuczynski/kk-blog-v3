@@ -20,7 +20,7 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
     ...commonStyles,
     readMore: `
       ${commonStyles.readMore}
-      text-accolor hover:text-accolor-dark
+      text-tr-cont hover:text-tr-fix
     `,
   },
   rounded: {
@@ -39,14 +39,14 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
     `,
     readMore: `
       ${commonStyles.readMore}
-      text-accolor hover:text-accolor-dark 
+      text-tr-cont hover:text-tr-fix 
     `,
   },
   sharp: {
     ...commonStyles,
     contentWrapper: `
       ${commonStyles.contentWrapper}
-      border-accolor
+      border-ol-var
     `,
     imageWrapper: `
       ${commonStyles.imageWrapper}
@@ -59,7 +59,7 @@ export const promotedCardStyles: Record<Theme, CardThemeStyles> = {
     `,
     readMore: `
       ${commonStyles.readMore}
-      text-accolor hover:text-accolor-dark
+      text-tr-cont hover:text-tr-fix
        
     `,
   },

@@ -12,7 +12,7 @@ interface GridStyles {
 
 export interface CardStyles {
   common: CardThemeStyles;
-  themeSensitive: Record<Theme, CardThemeStyles>;
+  themeSensitive?: Record<Theme, CardThemeStyles>;
 }
 
 export interface HeroStyles {

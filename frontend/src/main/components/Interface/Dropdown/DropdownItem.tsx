@@ -9,7 +9,7 @@ import { useDropdownContext } from './DropdownContext';
 import { cn } from '@/main/lib/utils';
 
 const itemStyles = {
-  base: 'flex items-center justify-between transition-colors duration-200 outline-none', // Added outline-none
+  base: 'flex items-center justify-between transition-colors duration-200 outline-none cursor-default',
   container: {
     default: 'px-4 py-2',
     rounded: 'px-4 py-2 mx-2 first:mt-2 last:mb-2',
@@ -17,19 +17,19 @@ const itemStyles = {
   },
   state: {
     selected: {
-      default: 'text-prcolor',
-      rounded: 'text-prcolor',
-      sharp: 'text-prcolor'
+      default: 'text-pr-cont cursor-default',
+      rounded: 'text-pr-cont cursor-default',
+      sharp: 'font-bold cursor-default'
     },
     focused: {
-      default: 'bg-prcolor text-txcolor-inverted',
-      rounded: 'bg-prcolor text-txcolor-inverted rounded-lg',
-      sharp: 'bg-gradient-to-r from-bgcolor-accent to-bgcolor border-l-2 border-prcolor'
+      default: 'bg-pr-cont text-on-pr',
+      rounded: 'bg-pr-cont text-on-pr rounded-lg',
+      sharp: 'bg-sf-cont border-l-2 border-ol'
     },
     normal: {
-      default: 'text-txcolor hover:bg-bgcolor-accent',
-      rounded: 'text-txcolor hover:bg-bgcolor-accent rounded-lg',
-      sharp: 'text-txcolor hover:bg-gradient-to-r hover:from-bgcolor-accent hover:to-bgcolor hover:border-l-2 hover:border-prcolor'
+      default: 'text-on-sf hover:bg-sf-hst cursor-pointer',
+      rounded: 'text-on-sf hover:bg-sf-hst hover:text-pr-cont rounded-lg cursor-pointer',
+      sharp: 'text-on-sf hover:border-l-3 hover:border-ol cursor-pointer'
     }
   }
 };

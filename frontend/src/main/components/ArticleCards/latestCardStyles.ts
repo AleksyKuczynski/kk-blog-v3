@@ -28,7 +28,7 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
     `,
     readMore: `
       ${commonStyles.readMore}
-      text-prcolor hover:text-prcolor-dark 
+      text-pr-cont hover:text-pr-fix 
     `,
   },
   rounded: {
@@ -45,14 +45,14 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
     `,
     readMore: `
       ${commonStyles.readMore}
-      text-prcolor hover:text-prcolor-dark 
+      text-pr-cont hover:text-pr-fix 
     `,
   },
   sharp: {
     ...commonStyles,
     contentWrapper: `
       ${commonStyles.contentWrapper}
-      border-prcolor
+      border-ol
     `,
     imageWrapper: `
       ${commonStyles.imageWrapper}
@@ -66,7 +66,7 @@ export const latestCardStyles: Record<Theme, CardThemeStyles> = {
     `,
     readMore: `
       ${commonStyles.readMore}
-      text-prcolor hover:text-prcolor-dark
+      text-pr-cont hover:text-pr-fix
       
     `,
   },

@@ -90,7 +90,7 @@ export default function MobileNavigation({
   const getMenuClassName = () => {
     const base = `
       fixed top-0 right-0 h-full 
-      bg-bgcolor-alt/95 backdrop-blur-xl 
+      backdrop-blur-lg 
       max-w-[430px] w-full
       z-60
       transition-all duration-300

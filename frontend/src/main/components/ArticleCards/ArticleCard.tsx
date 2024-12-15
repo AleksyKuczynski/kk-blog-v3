@@ -7,6 +7,7 @@ import { getDictionary } from '@/main/lib/dictionaries';
 import { ArticleCardProps } from './interfaces';
 import { DIRECTUS_URL } from '@/main/lib/directus';
 import { getTheme } from '../ThemeSwitcher';
+import { IMAGE_RATIO } from '../constants';
 
 
 export default async function ArticleCard({ 
@@ -41,7 +42,7 @@ export default async function ArticleCard({
   const imageProps = article.article_heading_img ? {
     src: `${DIRECTUS_URL}/assets/${article.article_heading_img}`,
     alt: translation.title,
-    aspectRatio: 1100 / 1200,
+    aspectRatio: IMAGE_RATIO,
   } : null;
 
   return (

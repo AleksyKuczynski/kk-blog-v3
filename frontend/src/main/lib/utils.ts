@@ -4,6 +4,24 @@ import { twMerge } from 'tailwind-merge'
 import { ReadonlyURLSearchParams } from 'next/navigation';
 import { fetchRubricSlug } from '@/main/lib/directus/index';
 
+type ThemeStyles = {
+  base?: string;
+  default?: string;
+  rounded?: string;
+  sharp?: string;
+};
+
+export function createThemeStyles(styles: ThemeStyles): string {
+  const { base = '', default: defaultStyles = '', rounded = '', sharp = '' } = styles;
+  
+  return cn(
+    base,
+    defaultStyles.split(' ').map(s => `theme-default:${s}`).join(' '),
+    rounded.split(' ').map(s => `theme-rounded:${s}`).join(' '),
+    sharp.split(' ').map(s => `theme-sharp:${s}`).join(' ')
+  );
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -79,4 +97,20 @@ export async function generateArticleLinkAsync(
   }
 
   return basePath;
+}
+
+export function parseMarkdownImage(markdown: string): { alt: string; src: string; assetId: string } | null {
+  const match = markdown.match(/!\[(.*?)\]\((.*?)(\s+".*?")?\)/);
+  if (!match) {
+    return null;
+  }
+  
+  const [, alt, src] = match;
+  const assetId = src.split('/').pop() || '';
+
+  return {
+    alt: alt.trim() || 'Article image',
+    src: src.trim(),
+    assetId
+  };
 }

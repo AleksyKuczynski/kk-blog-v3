@@ -17,11 +17,11 @@ function parseImageAttributes(markdown: string): ImageAttributes {
   };
 }
 
-export function parseCarousels(chunks: ContentChunk[]): ContentChunk[] {
+export async function parseCarousels(chunks: ContentChunk[]): Promise<ContentChunk[]> {
   const processedChunks: ContentChunk[] = [];
   let currentCarousel: CarouselItem[] = [];
 
-  function addCarousel() {
+  async function addCarousel() {
     if (currentCarousel.length > 1) {
       processedChunks.push({
         type: 'carousel',
@@ -45,18 +45,17 @@ export function parseCarousels(chunks: ContentChunk[]): ContentChunk[] {
 
   for (const chunk of chunks) {
     if (chunk.type === 'image' || chunk.type === 'figure') {
-      const imageAttributes = parseImageAttributes(chunk.content || '');
       currentCarousel.push({
         type: chunk.type,
-        imageAttributes,
+        imageAttributes: chunk.imageAttributes!,
         caption: chunk.type === 'figure' ? chunk.caption : undefined
       });
     } else {
-      addCarousel();
+      await addCarousel();
       processedChunks.push(chunk);
     }
   }
 
-  addCarousel();
+  await addCarousel();
   return processedChunks;
 }

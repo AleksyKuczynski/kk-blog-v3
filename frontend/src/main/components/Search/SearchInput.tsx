@@ -39,7 +39,7 @@ export default function SearchInput({
       base: `
         w-full h-full
         py-2 px-3
-        text-txcolor placeholder-txcolor-muted
+        text-on-sf placeholder-on-sf-var
         bg-transparent
         focus:outline-none
       `

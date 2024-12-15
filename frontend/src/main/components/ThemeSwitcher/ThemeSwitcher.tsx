@@ -58,7 +58,7 @@ export function ThemeSwitcher({
         <div className="grid grid-cols-2 divide-x divide-bgcolor-alt min-w-[320px]">
           {/* Theme Section */}
           <div role="group" aria-label={themeTranslations.name} className="py-1">
-            <div className="px-4 py-2 text-sm font-medium text-txcolor-secondary whitespace-nowrap">
+            <div className="px-4 py-2 text-sm font-medium text-on-sf-var whitespace-nowrap">
               {themeTranslations.name}
             </div>
             <ul>
@@ -76,7 +76,7 @@ export function ThemeSwitcher({
 
           {/* Color Scheme Section */}
           <div role="group" aria-label={colorTranslations.name} className="py-1 px-2">
-            <div className="px-2 py-2 text-sm font-medium text-txcolor-secondary whitespace-nowrap">
+            <div className="px-2 py-2 text-sm font-medium text-on-sf-var swhitespace-nowrap">
               {colorTranslations.name}
             </div>
             <ul>
