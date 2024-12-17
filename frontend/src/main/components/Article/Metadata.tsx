@@ -12,7 +12,7 @@ interface MetadataProps {
 export function Metadata({ categories, lang }: MetadataProps) {
   const containerStyles = twMerge(
     // Base styles
-    'text-sm mb-8 text-center space-x-4',
+    'text-sm md:text-lg xl:text-xl mb-8 xl:mb-12 text-center space-x-4 md:space-x-8 xl:space-x-12',
     // Theme variants
     'theme-default:text-pr-cont',
     'theme-rounded:text-on-sf-var',

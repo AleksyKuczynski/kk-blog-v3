@@ -17,17 +17,17 @@ export const Heading: React.FC<HeadingProps> = ({ level, id, children }) => {
   // Different styles based on heading level
   const levelStyles = {
     2: 'text-2xl md:text-4xl',
-    3: 'text-2xl md:text-3xl',
-    4: 'text-xl md:text-2xl',
-    5: 'text-lg md:text-xl',
-    6: 'text-base md:text-lg',
+    3: 'font-medium text-2xl md:text-4xl',
+    4: 'font-extrabold text-xl md:text-3xl',
+    5: 'font-medium text-xl md:text-3xl',
+    6: 'font-extrabold text-lg md:text-2xl',
   }[level];
 
   // Theme specific styles with font differentiation for h2
   const themeStyles = level === 2 
     ? twMerge(
         'text-center',
-        'theme-default:font-custom',
+        'theme-default:font-custom theme-default:md:[line-height:1.6rem] theme-default:md:[line-height:3.2rem]',
         'theme-rounded:font-display theme-rounded:px-4',
         'theme-sharp:font-sans theme-sharp:tracking-tight theme-sharp:px-2'
       )

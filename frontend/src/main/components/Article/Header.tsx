@@ -39,7 +39,12 @@ export function Header({
     // Base styles
     'mb-8 lg:pl-6 xl:pl-8 font-bold',
     // Theme variants
-    'theme-default:font-custom theme-default:tracking-wide theme-default:text-center theme-default:lg:text-left theme-default:text-3xl theme-default:md:text-4xl theme-default:xl:text-5xl',
+    ` theme-default:font-custom 
+      theme-default:text-center theme-default:lg:text-left 
+      theme-default:text-3xl theme-default:[line-height:2.4rem] 
+      theme-default:md:text-4xl theme-default:md:[line-height:3.2rem] 
+      theme-default:xl:text-5xl theme-default:xl:[line-height:4rem]
+    `,
     'theme-rounded:font-display',
     'theme-sharp:tracking-tight theme-sharp:font-semibold'
   );
@@ -57,9 +62,9 @@ export function Header({
 
   const metaContainerStyles = twMerge(
     // Base styles
-    'text-sm text-on-sf-var mx-auto flex justify-between col-span-2 w-full lg:max-w-[800px] lg:py-6',
+    'text-sm xl:text-base text-on-sf-var mx-auto flex justify-between col-span-2 w-full lg:max-w-[800px] lg:py-6 xl:py-8',
     // Theme variants
-    'theme-default:md:max-lg:w-3/4',
+    'theme-default:px-4 theme-default:md:max-lg:w-3/4',
     'theme-rounded:-mx-6 theme-rounded:bg-sf-cont theme-rounded:rounded-b-2xl theme-rounded:xl:rounded-2xl theme-rounded:xl:mt-8 theme-rounded:p-6 theme-rounded:shadow-sm',
   );
 
