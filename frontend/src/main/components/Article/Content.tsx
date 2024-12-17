@@ -24,7 +24,7 @@ export function Content({ chunks, toc, title, author, datePublished }: ContentPr
   } : null;
 
   return (
-    <article className="prose-lg dark:prose-invert max-w-none">
+    <article className="prose-lg dark:prose-invert pb-12">
       {structuredData && (
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}

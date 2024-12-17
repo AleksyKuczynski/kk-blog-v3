@@ -20,6 +20,12 @@ interface BreadcrumbsProps {
   };
 }
 
+const Chevron = () => (
+  <span className="mx-2 flex-shrink-0">
+    <ChevronRightIcon className="w-3 h-3 text-pr-cont" aria-hidden="true" />
+  </span>
+);
+
 export default function Breadcrumbs({ items, rubrics, lang, translations }: BreadcrumbsProps) {
   const rubricMap = new Map(rubrics.map(r => [r.slug, r.name]));
   const fullPath: BreadcrumbItem[] = [
@@ -55,11 +61,11 @@ export default function Breadcrumbs({ items, rubrics, lang, translations }: Brea
   return (
     <nav 
       aria-label="Breadcrumb" 
-      className="text-sm mb-4"
+      className="text-sm mb-8 overflow-x-auto"
       itemScope 
       itemType="https://schema.org/BreadcrumbList"
     >
-      <ol className="list-none inline-flex">
+      <ol className="list-none inline-flex items-center whitespace-nowrap">
         {fullPath.map((item, index) => (
           <li 
             key={item.href} 
@@ -68,10 +74,10 @@ export default function Breadcrumbs({ items, rubrics, lang, translations }: Brea
             itemScope 
             itemType="https://schema.org/ListItem"
           >
-            {index > 0 && <ChevronRightIcon className="h-4 w-4 text-on-sf-var mx-2" aria-hidden="true" />}
+            {index > 0 && <Chevron />}
             {index === fullPath.length - 1 ? (
               <span 
-                className="text-on-sf-var"
+                className="text-on-sf-var line-clamp-1"
                 itemProp="name"
                 aria-current="page"
               >
@@ -80,7 +86,7 @@ export default function Breadcrumbs({ items, rubrics, lang, translations }: Brea
             ) : (
               <Link 
                 href={item.href} 
-                className="text-pr-cont hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200"
+                className="text-pr-cont hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200 capitalize"
                 itemProp="item"
               >
                 <span itemProp="name">{item.label}</span>

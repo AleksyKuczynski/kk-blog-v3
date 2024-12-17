@@ -2,9 +2,9 @@
 import React from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
-import { createThemeStyles } from '@/main/lib/utils';
+import { twMerge } from 'tailwind-merge';
 
-const ImageViewer = dynamic(() => import('./ImageViewer'), { ssr: false });
+const ImageTrigger = dynamic(() => import('./ImageTrigger'), { ssr: false });
 
 interface ImageProps {
   src: string;
@@ -14,30 +14,28 @@ interface ImageProps {
   caption?: string;
 }
 
-const imageStyles = createThemeStyles({
-  base: 'w-full h-auto object-contain',
-  default: '',
-  rounded: 'lg:rounded-xl lg:shadow-lg',
-  sharp: ''
-});
-
-const figureStyles = createThemeStyles({
-  base: 'w-full',
-  default: 'text-center',
-  rounded: 'overflow-hidden',
-  sharp: ''
-});
-
-const captionStyles = createThemeStyles({
-  base: 'mt-2 text-on-sf-var',
-  default: 'text-center italic',
-  rounded: 'bg-sf-hi p-2 rounded-lg text-center',
-  sharp: 'pl-4 text-sm uppercase tracking-wider'
-});
-
 export const ArticleImage = ({ src, alt, width, height, caption }: ImageProps) => {
   const defaultWidth = 1200;
-  const defaultHeight = Math.round(defaultWidth * (9/16)); // 16:9 aspect ratio
+  const defaultHeight = Math.round(defaultWidth * (9/16));
+
+  const figureStyles = twMerge(
+    'w-screen md:w-full overflow-hidden',
+    'theme-default:-mx-3 theme-default:md:mx-0 theme-default:md:shadow-md theme-default:md:rounded-lg',
+    'theme-rounded:md:shadow-lg theme-rounded:bg-sf-hi theme-rounded:md:rounded-3xl',
+    ''
+  );
+
+  const imageStyles = twMerge(
+    'object-cover mt-0 mb-0 w-full'
+  );
+
+  const captionStyles = twMerge(
+    'text-center text-on-sf-var',
+    'theme-default:my-2',
+    'theme-rounded:m-3 theme-rounded:font-serif theme-rounded:text-center',
+    'theme-sharp:font-medium theme-sharp:tracking-wider'
+  );
+
 
   return (
     <figure className={figureStyles}>
@@ -50,14 +48,8 @@ export const ArticleImage = ({ src, alt, width, height, caption }: ImageProps) =
           className={imageStyles}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
           quality={75}
-          priority={false}
         />
-        <ImageViewer
-          src={src}
-          alt={alt}
-          width={width || defaultWidth}
-          height={height || defaultHeight}
-        />
+        <ImageTrigger src={src} alt={alt} />
       </div>
       {caption && (
         <figcaption className={captionStyles}>

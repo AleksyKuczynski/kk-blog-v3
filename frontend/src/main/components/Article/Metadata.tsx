@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Category } from '@/main/lib/directus/interfaces';
 import { Lang } from '@/main/lib/dictionaries/types';
-import { createThemeStyles } from '@/main/lib/utils';
+import { twMerge } from 'tailwind-merge';
 
 interface MetadataProps {
   categories: Category[];
@@ -10,20 +10,24 @@ interface MetadataProps {
 }
 
 export function Metadata({ categories, lang }: MetadataProps) {
-  const containerStyles = createThemeStyles({
-    base: 'text-sm text-on-sf-var mb-8 text-center space-x-4',
-    default: 'px-4',
-    rounded: 'px-6',
-    sharp: 'px-4'
-  });
-
-  const linkStyles = createThemeStyles({
-    base: 'hover:text-pr-fix transition-colors duration-200',
-    default: 'underline underline-offset-4',
-    rounded: 'bg-sf-hi px-3 py-1 rounded-lg',
-    sharp: 'px-1 border border-ol-var hover:border-pr-fix'
-  });
-
+  const containerStyles = twMerge(
+    // Base styles
+    'text-sm mb-8 text-center space-x-4',
+    // Theme variants
+    'theme-default:text-pr-cont',
+    'theme-rounded:text-on-sf-var',
+    'theme-sharp:text-on-sf-var'
+  );
+  
+  const linkStyles = twMerge(
+    // Base styles
+    'hover:text-pr-fix transition-colors duration-200',
+    // Theme variants
+    'theme-default:underline theme-default:underline-offset-4',
+    'theme-rounded:bg-sf-hi theme-rounded:px-3 theme-rounded:py-1 theme-rounded:rounded-lg',
+    'theme-sharp:px-2 theme-sharp:border theme-sharp:border-ol theme-sharp:hover:border-pr-fix'
+  );
+  
   return (
     <div className={containerStyles}>
       {categories.map((category) => (

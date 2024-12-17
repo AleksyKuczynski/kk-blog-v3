@@ -149,11 +149,11 @@ const config: Config = {
     },
     require('@tailwindcss/typography'),
   ],
-  safelist: [
-    {
-      pattern: /^(bg|(p|m)(x|y|t|b|r|l)|-mx|space|font|text|underline|rounded|leading|md|lg|xl|marker)-.+/, // Pattern dla wszystkich klas utility
-      variants: ['theme-default', 'theme-rounded', 'theme-sharp']
-    }
-  ],
+  //safelist: [
+  //  {
+  //    pattern: /^(bg|(p|m)(x|y|t|b|r|l)|-mx|space|font|text|underline|rounded|leading|md|lg|xl|marker)-.+/, // Pattern dla wszystkich klas utility
+  //    variants: ['theme-default', 'theme-rounded', 'theme-sharp']
+  //  }
+  //],
 };
 export default config;

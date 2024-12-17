@@ -1,6 +1,6 @@
 // src/main/components/Article/elements/Heading.tsx
-import { createThemeStyles } from '@/main/lib/utils';
 import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface HeadingProps {
   level: 2 | 3 | 4 | 5 | 6;
@@ -11,12 +11,12 @@ interface HeadingProps {
 export const Heading: React.FC<HeadingProps> = ({ level, id, children }) => {
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
   
-  // Base styles common for all headings
-  const baseStyles = 'mb-8 font-bold text-on-sf';
+  // Base styles for all heading levels
+  const baseStyles = 'font-bold text-on-sf';
   
   // Different styles based on heading level
   const levelStyles = {
-    2: 'text-3xl md:text-4xl mb-12',
+    2: 'text-2xl md:text-4xl',
     3: 'text-2xl md:text-3xl',
     4: 'text-xl md:text-2xl',
     5: 'text-lg md:text-xl',
@@ -25,18 +25,18 @@ export const Heading: React.FC<HeadingProps> = ({ level, id, children }) => {
 
   // Theme specific styles with font differentiation for h2
   const themeStyles = level === 2 
-    ? createThemeStyles({
-        base: 'text-center',
-        default: 'font-custom px-3',
-        rounded: 'font-display px-4',
-        sharp: 'font-sans tracking-tight px-2'
-      })
-    : createThemeStyles({
-        base: 'font-sans',
-        default: 'px-3',
-        rounded: 'px-4',
-        sharp: 'px-2 tracking-tight'
-      });
+    ? twMerge(
+        'text-center',
+        'theme-default:font-custom',
+        'theme-rounded:font-display theme-rounded:px-4',
+        'theme-sharp:font-sans theme-sharp:tracking-tight theme-sharp:px-2'
+      )
+    : twMerge(
+        'font-sans',
+        'theme-default:text-center',
+        'theme-rounded:px-4',
+        'theme-sharp:px-2 theme-sharp:tracking-tight'
+      );
 
   return (
     <Tag 

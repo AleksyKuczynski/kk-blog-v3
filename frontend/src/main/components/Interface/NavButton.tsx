@@ -20,11 +20,6 @@ const buttonStyles = {
     default: 'px-3 py-1',
     rounded: 'px-3 py-1',
     sharp: 'px-3 py-1',
-  },
-  hamburger: {
-    default: 'fixed top-4 right-4 w-12 h-12 flex items-center justify-center z-50',
-    rounded: 'fixed top-4 right-4 w-12 h-12 flex items-center justify-center z-50',
-    sharp: 'fixed top-4 right-4 w-12 h-12 flex items-center justify-center z-50',
   }
 };
 
@@ -49,7 +44,7 @@ export const NavButton = forwardRef<HTMLButtonElement, NavButtonProps>(
 
     const getButtonStyles = () => {
       const baseStyle = buttonStyles.base;
-      const contextStyle = isHamburger ? buttonStyles.hamburger[currentTheme] : buttonStyles[context][currentTheme];
+      const contextStyle = buttonStyles[context][currentTheme];
       const hoverStyle = !noHover && context === 'desktop' ? hoverStyles.desktop[currentTheme] : '';
       return `${baseStyle} ${contextStyle} ${hoverStyle} ${className}`;
     };

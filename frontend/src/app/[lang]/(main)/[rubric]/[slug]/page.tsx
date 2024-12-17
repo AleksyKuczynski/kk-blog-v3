@@ -5,6 +5,7 @@ import { getArticlePageData } from '@/main/lib/actions';
 import { Header, Metadata, Content, ScrollToTopButton, TableOfContents } from '@/main/components/Article';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { SeoBreadcrumbs } from '@/main/components/Main/SeoBreadcrumbs';
+import { twMerge } from 'tailwind-merge';
 
 export default async function ArticlePage({ 
   params,
@@ -30,7 +31,14 @@ export default async function ArticlePage({
   } = data;
 
   return (
-    <article className="container mx-auto max-w-[1200px]">
+    <article className={twMerge(
+      // Base styles
+      'container mx-auto max-w-[1200px]',
+      // Theme variants
+      'theme-default:px-3',
+      'theme-rounded:px-4',
+      'theme-sharp:px-2'
+    )}>
       <ScrollToTopButton />
       <SeoBreadcrumbs 
         articleSlug={params.slug}
