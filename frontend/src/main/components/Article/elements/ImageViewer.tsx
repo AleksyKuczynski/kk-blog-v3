@@ -3,7 +3,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { createThemeStyles } from '@/main/lib/utils';
+import { createThemeStyles } from '@/main/lib/utils/utils';
 import { twMerge } from 'tailwind-merge';
 
 interface ImageViewerProps {

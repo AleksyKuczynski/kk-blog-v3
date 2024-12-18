@@ -1,7 +1,7 @@
 // src/main/components/Search/SearchInput.tsx
 import React from 'react';
 import { SearchUIState } from './types';
-import { cn } from '@/main/lib/utils';
+import { cn } from '@/main/lib/utils/utils';
 import { ANIMATION_DURATION } from '../Interface/constants';
 
 interface SearchInputProps {

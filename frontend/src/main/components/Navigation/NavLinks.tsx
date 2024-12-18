@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Lang, NavigationTranslations } from '@/main/lib/dictionaries/types';
 import NavLinksClient from './NavLinksClient';
-import { cn } from '@/main/lib/utils';
+import { cn } from '@/main/lib/utils/utils';
 
 interface NavLinksProps {
   lang: Lang;

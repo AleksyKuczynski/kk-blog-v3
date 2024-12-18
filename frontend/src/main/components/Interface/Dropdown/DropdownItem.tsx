@@ -6,7 +6,7 @@ import { useTheme } from '@/main/components/ThemeSwitcher';
 import { DropdownItemProps } from './types';
 import { CheckIcon } from '../Icons';
 import { useDropdownContext } from './DropdownContext';
-import { cn } from '@/main/lib/utils';
+import { cn } from '@/main/lib/utils/utils';
 
 const itemStyles = {
   base: 'flex items-center justify-between transition-colors duration-200 outline-none cursor-default',

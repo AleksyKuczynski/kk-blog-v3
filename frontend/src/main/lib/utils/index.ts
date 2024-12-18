@@ -1,0 +1,9 @@
+// src/main/lib/utils/index.ts
+export { calculateCarouselDimensions } from '@/main/lib/utils/calculateCarouselDimensions';
+export { createSearchUrl } from '@/main/lib/utils/createSearchUrl';
+export { generateArticleLinkAsync } from '@/main/lib/utils/generateArticleLinkAsync';
+export { generateArticleLink } from '@/main/lib/utils/generateArticleLink';
+export { generateToc } from '@/main/lib/utils/generateToc';
+export { parseMarkdownImage } from '@/main/lib/utils/parseMarkdownImage';
+export { smoothScrollTo } from '@/main/lib/utils/smoothScrollTo';
+

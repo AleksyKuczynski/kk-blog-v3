@@ -3,7 +3,7 @@ import React from 'react';
 import { useTheme } from '../ThemeSwitcher';
 import { SearchUIState } from './types';
 import { SearchTranslations } from '@/main/lib/dictionaries/types';
-import { cn } from '@/main/lib/utils';
+import { cn } from '@/main/lib/utils/utils';
 import SearchDropdownItem from './SearchDropdownItem';
 
 interface SearchDropdownProps {

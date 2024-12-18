@@ -1,6 +1,5 @@
 // src/main/components/Footer/InteractiveForms.tsx
 import { Dictionary, Lang } from '@/main/lib/dictionaries/types';
-import { cn } from '@/main/lib/utils';
 import ContactSection from './ContactSection';
 import NewsletterSection from './NewsletterSection';
 import FeedbackSection from './FeedbackSection';

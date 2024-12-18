@@ -8,7 +8,7 @@ import { markdownToBlockquoteProps } from '@/main/lib/markdown/markdownToBlockqu
 import { ContentChunk } from '@/main/lib/markdown/types';
 import { ArticleImage } from './elements/Image';
 
-const ImageCarousel = dynamic(() => import('./ImageCarousel'), { ssr: false });
+const ImageCarousel = dynamic(() => import('./Carousel/ImageCarousel'), { ssr: false });
 
 export const CustomRenderer: React.FC<{ chunks: ContentChunk[] }> = ({ chunks }) => {
   return (

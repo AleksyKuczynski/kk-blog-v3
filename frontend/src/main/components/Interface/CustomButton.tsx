@@ -4,7 +4,7 @@
 import React from 'react';
 import { useTheme } from '../ThemeSwitcher/ThemeContext';
 import { Theme } from '../ThemeSwitcher/themeTypes';
-import { cn } from '@/main/lib/utils';
+import { cn } from '@/main/lib/utils/utils';
 
 type ButtonColor = 'accent' | 'primary';
 

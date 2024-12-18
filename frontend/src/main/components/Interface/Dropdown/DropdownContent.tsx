@@ -4,7 +4,7 @@
 import React from 'react';
 import { useTheme } from '@/main/components/ThemeSwitcher';
 import { useDropdownContext } from './DropdownContext';
-import { cn } from '@/main/lib/utils';
+import { cn } from '@/main/lib/utils/utils';
 import type { DropdownContentProps } from './types';
 
 const dropdownStyles = {

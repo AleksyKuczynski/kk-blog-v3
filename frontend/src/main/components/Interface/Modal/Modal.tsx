@@ -1,5 +1,5 @@
 // src/main/components/Interface/Modal/Modal.tsx
-import { cn } from '@/main/lib/utils';
+import { cn } from '@/main/lib/utils/utils';
 import { ModalVisibility } from './types';
 
 interface ModalProps {

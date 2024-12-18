@@ -45,7 +45,10 @@ export function Header({
       theme-default:md:text-4xl theme-default:md:[line-height:3.2rem] 
       theme-default:xl:text-5xl theme-default:xl:[line-height:4rem]
     `,
-    'theme-rounded:font-display',
+    `
+      theme-rounded:font-display theme-rounded:text-3xl
+      theme-rounded:text-center theme-rounded:lg:text-left
+    `,
     'theme-sharp:tracking-tight theme-sharp:font-semibold'
   );
 
@@ -54,7 +57,7 @@ export function Header({
     `relative mx-auto ${IMAGE_RATIO_STRING} overflow-hidden order-first h-full w-full md:max-lg:w-3/4`,
     // Theme variants
     'theme-default:xl:mx-0 theme-default:rounded-lg',
-    'theme-rounded:-mx-6 theme-rounded:xl:mx-0 theme-rounded:rounded-t-2xl theme-rounded:xl:rounded-2xl',
+    'theme-rounded:rounded-t-2xl theme-rounded:lg:rounded-2xl',
     'theme-sharp:-mx-4 theme-sharp:xl:mx-0'
   );
 
@@ -62,10 +65,10 @@ export function Header({
 
   const metaContainerStyles = twMerge(
     // Base styles
-    'text-sm xl:text-base text-on-sf-var mx-auto flex justify-between col-span-2 w-full lg:max-w-[800px] lg:py-6 xl:py-8',
+    'font-medium text-sm xl:text-base text-on-sf-var mx-auto flex justify-between col-span-2 w-full lg:max-w-[800px] lg:py-6 xl:py-8',
     // Theme variants
     'theme-default:px-4 theme-default:md:max-lg:w-3/4',
-    'theme-rounded:-mx-6 theme-rounded:bg-sf-cont theme-rounded:rounded-b-2xl theme-rounded:xl:rounded-2xl theme-rounded:xl:mt-8 theme-rounded:p-6 theme-rounded:shadow-sm',
+    'theme-rounded:bg-sf-cont theme-rounded:md:max-lg:w-3/4 theme-rounded:rounded-b-2xl theme-rounded:lg:rounded-2xl theme-rounded:lg:mt-8 theme-rounded:p-6 theme-rounded:shadow-sm',
   );
 
   const authorLinkStyles = twMerge(

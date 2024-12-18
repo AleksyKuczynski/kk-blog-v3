@@ -1,6 +1,5 @@
 // src/main/components/Main/CardGrid.tsx
 import React from 'react';
-import { Theme } from '@/main/components/ThemeSwitcher/themeTypes';
 import { getTheme } from '../ThemeSwitcher';
 
 interface CardGridProps {

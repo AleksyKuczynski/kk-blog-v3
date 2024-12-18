@@ -1,26 +1,10 @@
-// src/main/lib/actions.ts
+// src/main/lib/actions/getArticlePageData.ts
 'use server'
 
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { Lang } from '@/main/lib/dictionaries/types'
-import { AuthorDetails, SearchProposition, fetchAllRubrics, fetchArticleCard, fetchAuthorBySlug, fetchAuthorsForArticle, fetchFullArticle, fetchRubricDetails, fetchSearchPropositions } from '@/main/lib/directus/index'
-import { getDictionary } from './dictionaries'
-import { processContent } from './markdown/processContent'
-
-export async function switchLanguage(lang: Lang, fullPath: string) {
-  cookies().set('NEXT_LOCALE', lang)
-  redirect(fullPath)
-}
-
-export async function getSearchSuggestions(query: string, lang: Lang): Promise<SearchProposition[]> {
-  if (query.length < 3) return []
-  return await fetchSearchPropositions(query, lang)
-}
-
-export async function getArticleCardData(slug: string, lang: Lang) {
-  return await fetchArticleCard(slug, lang);
-}
+import { getDictionary } from "../dictionaries";
+import { Lang } from "../dictionaries/types";
+import { AuthorDetails, fetchAllRubrics, fetchAuthorBySlug, fetchAuthorsForArticle, fetchFullArticle, fetchRubricDetails } from "../directus";
+import { processContent } from "../markdown/processContent";
 
 export async function getArticlePageData(params: { rubric: string, slug: string, lang: Lang }, searchParams: { author?: string }) {
   const [article, dict, rubrics, rubricDetails] = await Promise.all([
@@ -80,33 +64,4 @@ export async function getArticlePageData(params: { rubric: string, slug: string,
     processedContent,
     dict,
   };
-}
-
-export async function submitFeedback(formData: FormData) {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Log the data that would be sent
-  console.log('Feedback submitted:', {
-    name: formData.get('name'),
-    email: formData.get('email'),
-    message: formData.get('message')
-  });
-}
-
-export async function submitContact(formData: FormData) {
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  console.log('Contact form submitted:', {
-    email: formData.get('email'),
-    message: formData.get('message')
-  });
-}
-
-export async function subscribeNewsletter(formData: FormData) {
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  console.log('Newsletter subscription:', {
-    email: formData.get('email'),
-  });
 }

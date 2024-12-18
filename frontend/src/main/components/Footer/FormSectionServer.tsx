@@ -1,4 +1,3 @@
-import { cn } from "@/main/lib/utils";
 import FormSectionClient from "./FormSectionClient";
 
 // src/main/components/Footer/FormSectionServer.tsx

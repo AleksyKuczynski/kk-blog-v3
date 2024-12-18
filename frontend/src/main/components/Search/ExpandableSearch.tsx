@@ -3,7 +3,7 @@ import React from 'react';
 import { SearchTranslations, Lang } from '@/main/lib/dictionaries/types';
 import { SearchIcon, NavButton, CloseIcon } from '../Interface';
 import { useTheme } from '../ThemeSwitcher';
-import { cn } from '@/main/lib/utils';
+import { cn } from '@/main/lib/utils/utils';
 import SearchInput from './SearchInput';
 import SearchDropdown from './SearchDropdown';
 import { useSearchLogic } from './useSearchLogic';

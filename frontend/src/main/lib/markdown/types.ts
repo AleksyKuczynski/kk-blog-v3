@@ -33,4 +33,5 @@ export interface CarouselItem {
   imageAttributes: ImageAttributes;
   caption?: string;
   processedCaption?: string;
+  expandedCaption: boolean;
 }

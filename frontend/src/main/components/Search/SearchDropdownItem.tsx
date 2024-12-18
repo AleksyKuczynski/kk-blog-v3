@@ -2,7 +2,7 @@
 import React from 'react';
 import { useTheme } from '../ThemeSwitcher';
 import { SearchProposition } from '@/main/lib/directus/interfaces';
-import { cn } from '@/main/lib/utils';
+import { cn } from '@/main/lib/utils/utils';
 
 interface SearchDropdownItemProps {
   suggestion: SearchProposition;
