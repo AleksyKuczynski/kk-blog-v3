@@ -4,92 +4,97 @@ import Image from 'next/image';
 import { twMerge } from "tailwind-merge";
 
 interface ServerCarouselProps {
-    images: CarouselItem[];
-    dimensions: {
-      width: number;
-      height: number;
-      imageHeight: number;
-    };
-    currentIndex: number;
-    expandedCaptions: Set<number>;
-    onCaptionToggle: (index: number) => void;
-    className?: string;
-  }
-  
-  export function ServerCarousel({ 
-    images, 
-    dimensions,
+  images: CarouselItem[];
+  activeIndexes: number[];
+  currentIndex: number;
+}
+
+export function ServerCarousel({ 
+  images,
+  activeIndexes,
+  currentIndex,
+}: ServerCarouselProps) {
+  // Dodajmy logging dla debugowania
+  console.log('ServerCarousel render:', {
+    activeIndexes,
     currentIndex,
-    expandedCaptions,
-    onCaptionToggle,
-    className 
-  }: ServerCarouselProps) {
-    return (
-      <div 
-        className={twMerge(
-          "relative w-full overflow-hidden",
-          className
-        )}
-        style={{ height: dimensions.imageHeight }}
-      >
-        {images.map((image, index) => (
+    imagesData: images.map(img => ({
+      src: img.imageAttributes.src,
+      width: img.imageAttributes.width,
+      height: img.imageAttributes.height
+    }))
+  });
+
+  const slideBaseStyles = twMerge(
+    'absolute inset-0 w-full h-full',
+    'transition-transform duration-300',
+    'theme-default:rounded-lg theme-default:shadow-md',
+    'theme-rounded:rounded-xl theme-rounded:shadow-lg',
+    'theme-sharp:border theme-sharp:border-ol'
+  );
+
+  const captionBaseStyles = twMerge(
+    'absolute bottom-0 w-full p-4',
+    'theme-default:bg-sf-cont/90',
+    'theme-rounded:bg-sf-cont/95 theme-rounded:backdrop-blur-sm',
+    'theme-sharp:bg-sf-cont theme-sharp:border-t theme-sharp:border-ol'
+  );
+
+  const captionTextStyles = twMerge(
+    'prose prose-sm max-w-none',
+    'theme-default:text-on-sf',
+    'theme-rounded:text-on-sf-var',
+    'theme-sharp:text-on-sf-var'
+  );
+
+  const getPositionKey = (arrayIndex: number): -1 | 0 | 1 => {
+    const relativeIndex = arrayIndex - 1;
+    return relativeIndex as -1 | 0 | 1;
+  };
+
+  return (
+    <div className="relative w-full h-full overflow-hidden">
+      {activeIndexes.map((index, arrayIndex) => {
+        const image = images[index];
+        const { imageAttributes } = image;
+        const positionKey = getPositionKey(arrayIndex);
+        const assetId = imageAttributes.src.split('/').pop() || '';
+        
+        // Utworzenie unikalnego klucza
+        const slideKey = `slide-${currentIndex}-${assetId}-${positionKey}`;
+        
+        return (
           <div
-            key={index}
-            className={twMerge(
-              "absolute inset-0 w-full h-full transition-all duration-300",
-              index === currentIndex ? "translate-x-0" : 
-              index < currentIndex ? "-translate-x-full" : "translate-x-full"
-            )}
-            data-carousel-item=""
+            key={slideKey}
+            className={slideBaseStyles}
             aria-hidden={index !== currentIndex}
+            style={{
+              transform: `translateX(${positionKey * 100}%)`,
+            }}
           >
             <Image
-              src={image.imageAttributes.src}
-              alt={image.imageAttributes.alt}
+              src={imageAttributes.src}
+              alt={imageAttributes.alt}
+              title={imageAttributes.title}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
               className="object-cover"
               priority={index === currentIndex}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
               quality={75}
             />
             {image.processedCaption && (
-              <div 
-                className={twMerge(
-                  "absolute bottom-0 left-0 right-0 bg-bgcolor-alt/75",
-                  "transition-[height] duration-300 ease-out"
-                )}
-                style={{
-                  height: expandedCaptions.has(index) ? 'auto' : '5.5rem' // ~4 lines
-                }}
-              >
+              <div className={captionBaseStyles}>
                 <div 
-                  className={twMerge(
-                    "prose prose-sm max-w-none text-txcolor p-4",
-                    !expandedCaptions.has(index) && "line-clamp-4"
-                  )}
-                  dangerouslySetInnerHTML={{ __html: image.processedCaption }}
+                  className={captionTextStyles}
+                  dangerouslySetInnerHTML={{ 
+                    __html: image.processedCaption 
+                  }}
                 />
-                {image.processedCaption.split('\n').length > 4 && (
-                  <button
-                    onClick={() => onCaptionToggle(index)}
-                    className={twMerge(
-                      "absolute bottom-2 right-2 px-2 py-1",
-                      "text-xs text-txcolor-secondary",
-                      "hover:text-txcolor transition-colors",
-                      "theme-default:bg-bgcolor/10 theme-default:hover:bg-bgcolor/20",
-                      "theme-rounded:rounded-lg",
-                      "theme-sharp:border theme-sharp:border-prcolor/20"
-                    )}
-                    type="button"
-                    aria-expanded={expandedCaptions.has(index)}
-                  >
-                    {expandedCaptions.has(index) ? 'Show less' : 'Read more'}
-                  </button>
-                )}
               </div>
             )}
           </div>
-        ))}
-      </div>
-    );
-  }
+        );
+      })}
+    </div>
+  );
+}

@@ -1,5 +1,4 @@
 // src/main/components/Article/ScrollToTopButton.tsx
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -18,24 +17,13 @@ export function ScrollToTopButton() {
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
-
   if (!isVisible) {
     return null;
   }
 
   return (
-    <button
-      onClick={scrollToTop}
-    >
-      <FloatingButton>
-        <ChevronUpIcon className="h-6 w-6" />
-      </FloatingButton>
-    </button>
+    <FloatingButton onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+      <ChevronUpIcon className="h-6 w-6" />
+    </FloatingButton>
   );
 }

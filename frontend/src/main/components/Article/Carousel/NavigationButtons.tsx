@@ -8,8 +8,6 @@ interface NavigationButtonsProps {
   onPrevious: () => void;
   onNext: () => void;
   onSlideSelect: (index: number) => void;
-  canGoPrev: boolean;
-  canGoNext: boolean;
 }
 
 export function NavigationButtons({
@@ -18,25 +16,29 @@ export function NavigationButtons({
   onPrevious,
   onNext,
   onSlideSelect,
-  canGoPrev,
-  canGoNext
 }: NavigationButtonsProps) {
+  const buttonStyles = twMerge(
+    "flex items-center justify-center transition-colors duration-200",
+    "theme-default:w-8 theme-default:h-8 theme-default:rounded-full",
+    "theme-default:bg-sf-hi theme-default:hover:bg-sf-hst",
+    "theme-rounded:w-8 theme-rounded:h-8 theme-rounded:rounded-md",
+    "theme-rounded:bg-sf-hi theme-rounded:hover:bg-sf-hst",
+    "theme-sharp:text-pr-cont"
+  );
+
+  const iconStyles = twMerge(
+    "h-4 w-4",
+    "theme-sharp:h-8 theme-sharp:w-8"
+  );
+
   return (
-    <div className="flex items-center justify-between gap-2 py-4">
+    <div className="flex items-center justify-between gap-2 mx-auto p-4 md:w-5/6 z-50">
       <button
         onClick={onPrevious}
-        disabled={!canGoPrev}
-        className={twMerge(
-          "flex items-center justify-center transition-colors duration-200",
-          "theme-default:w-8 theme-default:h-8 theme-default:rounded-full",
-          "theme-default:bg-bgcolor theme-default:hover:bg-bgcolor-alt"
-        )}
+        className={buttonStyles}
         aria-label="Previous slide"
       >
-        <ChevronUpIcon className={twMerge(
-          "h-4 w-4 -rotate-90",
-          !canGoPrev && "opacity-50"
-        )} />
+        <ChevronUpIcon className={twMerge("-rotate-90", iconStyles)} />
       </button>
 
       <div className="flex gap-1.5">
@@ -45,9 +47,11 @@ export function NavigationButtons({
             key={idx}
             onClick={() => onSlideSelect(idx)}
             className={twMerge(
-              "w-1.5 h-1.5 rounded-full transition-all",
-              "theme-default:bg-bgcolor hover:bg-bgcolor-alt",
-              idx === currentSlide && "w-2 theme-default:bg-prcolor"
+              "transition-all",
+              "theme-default:w-3.5 theme-default:h-1.5 theme-default:rounded-full theme-default:bg-sf-hi hover:bg-pr-fix",
+              "theme-rounded:w-4 theme-rounded:h-3 theme-rounded:rounded-sm theme-rounded:bg-sf-hi hover:bg-pr-fix",
+              "theme-sharp:w-4 theme-sharp:h-2.5 theme-sharp:border-2 theme-sharp:border-ol-var",
+              idx === currentSlide && "theme-default:w-1.5 theme-default:bg-tr-fix theme-rounded:w-2 theme-rounded:bg-tr-fix theme-sharp:border-pr-fix theme-sharp:w-2"
             )}
             aria-label={`Go to slide ${idx + 1}`}
             aria-current={idx === currentSlide}
@@ -57,18 +61,10 @@ export function NavigationButtons({
 
       <button
         onClick={onNext}
-        disabled={!canGoNext}
-        className={twMerge(
-          "flex items-center justify-center transition-colors duration-200",
-          "theme-default:w-8 theme-default:h-8 theme-default:rounded-full",
-          "theme-default:bg-bgcolor theme-default:hover:bg-bgcolor-alt"
-        )}
+        className={buttonStyles}
         aria-label="Next slide"
       >
-        <ChevronUpIcon className={twMerge(
-          "h-4 w-4 rotate-90",
-          !canGoNext && "opacity-50"
-        )} />
+        <ChevronUpIcon className={twMerge("rotate-90", iconStyles)} />
       </button>
     </div>
   );

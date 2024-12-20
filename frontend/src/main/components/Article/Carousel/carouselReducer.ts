@@ -1,22 +1,41 @@
 // src/main/components/Article/Carousel/carouselReducer.ts
-import { CarouselState, CarouselAction } from './types';
+import { CarouselDimensions } from "@/main/lib/utils/calculateCarouselDimensions";
+
+interface CarouselState {
+  currentIndex: number;
+  direction: 'next' | 'prev' | null;
+  touchStart?: number;
+  dimensions: CarouselDimensions | null;
+}
+
+type CarouselAction =
+  | { type: 'NEXT_SLIDE'; payload: { totalSlides: number } }
+  | { type: 'PREV_SLIDE'; payload: { totalSlides: number } }
+  | { type: 'SET_SLIDE'; payload: { index: number } }
+  | { type: 'TOUCH_START'; payload: { x: number } }
+  | { type: 'TOUCH_END'; payload: { endX: number; totalSlides: number } }
+  | { type: 'UPDATE_DIMENSIONS'; payload: CarouselDimensions };
+
+const SWIPE_THRESHOLD = 50;
 
 export const initialCarouselState: CarouselState = {
   currentIndex: 0,
-  isTransitioning: false,
-  animation: {
-    direction: null,
-    progress: 0
-  },
-  preloadIndexes: [0, 1], // Start with first two slides
-  captions: {
-    expandedIndexes: new Set(),
-    isTransitioning: false
-  },
-  input: {
-    isEnabled: true
-  }
+  direction: null,
+  touchStart: undefined,
+  dimensions: null
 };
+
+function getNextIndex(current: number, direction: 'next' | 'prev', total: number): number {
+  if (total === 2) {
+    // Dla 2 slajdów zawsze przełączamy między 0 i 1
+    return current === 0 ? 1 : 0;
+  }
+
+  // Standardowa logika dla 3+ slajdów
+  return direction === 'next'
+    ? (current + 1) % total
+    : (current - 1 + total) % total;
+}
 
 export function carouselReducer(
   state: CarouselState,
@@ -26,125 +45,60 @@ export function carouselReducer(
     case 'NEXT_SLIDE':
       return {
         ...state,
-        currentIndex: state.currentIndex + 1,
-        animation: {
-          ...state.animation,
-          direction: 'right'
-        },
-        preloadIndexes: [
-          state.currentIndex + 1,
-          state.currentIndex + 2
-        ]
+        currentIndex: getNextIndex(state.currentIndex, 'next', action.payload.totalSlides),
+        direction: 'next'
       };
 
     case 'PREV_SLIDE':
       return {
         ...state,
-        currentIndex: state.currentIndex - 1,
-        animation: {
-          ...state.animation,
-          direction: 'left'
-        },
-        preloadIndexes: [
-          state.currentIndex - 1,
-          state.currentIndex - 2
-        ]
+        currentIndex: getNextIndex(state.currentIndex, 'prev', action.payload.totalSlides),
+        direction: 'prev'
       };
 
-    case 'GOTO_SLIDE':
+    case 'SET_SLIDE':
       return {
         ...state,
-        currentIndex: action.payload,
-        animation: {
-          ...state.animation,
-          direction: action.payload > state.currentIndex ? 'right' : 'left'
-        },
-        preloadIndexes: [
-          action.payload,
-          action.payload + 1
-        ]
+        currentIndex: action.payload.index,
+        direction: action.payload.index > state.currentIndex ? 'next' : 'prev'
       };
 
-    case 'SET_ANIMATION_DIRECTION':
+    case 'TOUCH_START':
       return {
         ...state,
-        animation: {
-          ...state.animation,
-          direction: action.payload
-        }
+        touchStart: action.payload.x
       };
 
-    case 'SET_ANIMATION_PROGRESS':
-      return {
-        ...state,
-        animation: {
-          ...state.animation,
-          progress: action.payload
-        }
-      };
+    case 'TOUCH_END': {
+      if (typeof state.touchStart === 'undefined') {
+        return state;
+      }
 
-
-    case 'START_TRANSITION':
-      return {
-        ...state,
-        isTransitioning: true,
-        input: { ...state.input, isEnabled: false }
-      };
-
-    case 'END_TRANSITION':
-      return {
-        ...state,
-        isTransitioning: false,
-        input: { ...state.input, isEnabled: true }
-      };
-
-      case 'TOGGLE_CAPTION':
+      const diff = action.payload.endX - state.touchStart;
+      if (Math.abs(diff) < SWIPE_THRESHOLD) {
         return {
           ...state,
-          captions: {
-            ...state.captions,
-            expandedIndexes: new Set(
-              state.captions.expandedIndexes.has(action.payload)
-                ? Array.from(state.captions.expandedIndexes).filter(i => i !== action.payload)
-                : [...state.captions.expandedIndexes, action.payload]
-            )
-          }
+          touchStart: undefined
         };
-      
-      case 'START_CAPTION_TRANSITION':
-        return {
-          ...state,
-          captions: {
-            ...state.captions,
-            isTransitioning: true
-          }
-        };
-      
-      case 'END_CAPTION_TRANSITION':
-        return {
-          ...state,
-          captions: {
-            ...state.captions,
-            isTransitioning: false
-          }
-        };
+      }
 
-    case 'START_TOUCH':
+      const direction = diff > 0 ? 'prev' : 'next';
       return {
         ...state,
-        input: {
-          ...state.input,
-          lastTouchX: action.payload
-        }
+        currentIndex: getNextIndex(
+          state.currentIndex, 
+          direction, 
+          action.payload.totalSlides
+        ),
+        direction,
+        touchStart: undefined
       };
+    }
 
-    case 'END_TOUCH':
+    case 'UPDATE_DIMENSIONS':
       return {
         ...state,
-        input: {
-          ...state.input,
-          lastTouchX: undefined
-        }
+        dimensions: action.payload
       };
 
     default:

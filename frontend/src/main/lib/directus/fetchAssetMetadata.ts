@@ -4,35 +4,23 @@ import { Asset } from "./interfaces";
 
 export async function fetchAssetMetadata(assetId: string): Promise<Asset | null> {
   try {
-    const url = `${DIRECTUS_URL}/assets/${assetId}`;
+    const url = `${DIRECTUS_URL}/files/${assetId}`;
     const response = await fetch(url);
     
     if (!response.ok) return null;
-
-    const buffer = await response.arrayBuffer();
-    const view = new DataView(buffer);
-
-    // Check if it's a JPEG file
-    if (view.getUint16(0) === 0xFFD8) {
-      let offset = 2;
-      while (offset < view.byteLength) {
-        // Look for SOF0 marker (Start of Frame)
-        if (view.getUint16(offset) === 0xFFC0) {
-          return {
-            id: assetId,
-            height: view.getUint16(offset + 5), // Height comes first in JPEG
-            width: view.getUint16(offset + 7),
-            type: response.headers.get('content-type') || 'image/jpeg',
-            filename: response.headers.get('content-disposition')?.match(/filename="(.+?)"/)?.[1] || ''
-          };
-        }
-        offset += 2 + view.getUint16(offset + 2);
-      }
-    }
-
-    return null;
+    
+    const { data } = await response.json();
+    
+    return {
+      id: data.id,
+      width: data.width || 1200,
+      height: data.height || 800,
+      type: data.type || 'image/jpeg',
+      filename: data.filename_download,
+      title: data.title || data.filename_download
+    };
   } catch (error) {
-    console.error('Error in fetchAssetMetadata:', error);
+    console.error('Error fetching asset metadata:', error);
     return null;
   }
 }

@@ -2,18 +2,24 @@
 
 import { convertSimpleMarkdownToHtml } from './markdownToHtml';
 import { ContentChunk, CarouselItem, ImageAttributes } from './types';
+import { fetchAssetMetadata } from '../directus';
+import { parseMarkdownImage } from '../utils/parseMarkdownImage';
 
-function parseImageAttributes(markdown: string): ImageAttributes {
-  const match = markdown.match(/!\[(.*?)\]\((.*?)(\s+".*?")?\)/);
-  if (!match) {
+async function enrichImageAttributes(markdown: string): Promise<ImageAttributes> {
+  const parsed = parseMarkdownImage(markdown);
+  if (!parsed) {
     throw new Error('Invalid image markdown format');
   }
   
-  const [, alt, src] = match;
+  const metadata = await fetchAssetMetadata(parsed.assetId);
   
   return {
-    src: src.trim(),
-    alt: alt.trim() || 'Article image',
+    src: parsed.src,
+    alt: metadata?.title || parsed.alt,
+    width: metadata?.width,
+    height: metadata?.height,
+    title: metadata?.title,
+    filename: metadata?.filename
   };
 }
 
@@ -45,10 +51,12 @@ export async function parseCarousels(chunks: ContentChunk[]): Promise<ContentChu
 
   for (const chunk of chunks) {
     if (chunk.type === 'image' || chunk.type === 'figure') {
+      const enrichedAttributes = await enrichImageAttributes(chunk.content || '');
       currentCarousel.push({
         type: chunk.type,
-        imageAttributes: chunk.imageAttributes!,
-        caption: chunk.type === 'figure' ? chunk.caption : undefined
+        imageAttributes: enrichedAttributes,
+        caption: chunk.type === 'figure' ? chunk.caption : undefined,
+        expandedCaption: false
       });
     } else {
       await addCarousel();

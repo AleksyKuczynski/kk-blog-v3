@@ -24,8 +24,8 @@ export interface ImageAttributes {
   alt: string;
   width?: number;
   height?: number;
-  filesize?: number;
-  description?: string;
+  title?: string;
+  filename?: string;
 }
 
 export interface CarouselItem {

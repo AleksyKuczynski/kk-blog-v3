@@ -139,5 +139,6 @@ export interface Asset {
   height: number;
   type: string;
   filename: string;
+  title: string;
 }
 
