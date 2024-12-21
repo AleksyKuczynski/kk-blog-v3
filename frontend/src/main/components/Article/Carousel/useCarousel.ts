@@ -1,7 +1,7 @@
 // src/main/components/Article/Carousel/useCarousel.ts
 import { useReducer, useCallback, RefObject } from 'react';
 import { CarouselItem } from "@/main/lib/markdown/types";
-import { calculateCarouselDimensions } from '@/main/lib/utils/calculateCarouselDimensions';
+import { calculateCaptionDimensions, calculateCarouselDimensions } from '@/main/lib/utils/calculateCarouselDimensions';
 import { carouselReducer, initialCarouselState } from './carouselReducer';
 
 interface UseCarouselProps {
@@ -21,10 +21,10 @@ const DEFAULT_DIMENSIONS = {
 export function useCarousel({ images, containerRef }: UseCarouselProps) {
   const [state, dispatch] = useReducer(carouselReducer, {
     ...initialCarouselState,
-    dimensions: DEFAULT_DIMENSIONS // Bezpieczna wartość początkowa
+    dimensions: DEFAULT_DIMENSIONS
   });
-  
-  const getVisibleIndexes = useCallback(() => {
+
+  const getVisibleIndexes = useCallback((): number[] => {
     const totalSlides = images.length;
     if (totalSlides === 0) return [];
     
@@ -49,6 +49,9 @@ export function useCarousel({ images, containerRef }: UseCarouselProps) {
     ];
   }, [images.length, state.currentIndex]);
 
+  const activeIndexes = getVisibleIndexes();
+  const activeItems = activeIndexes.map(idx => images[idx]);
+  
   const calculateDimensions = useCallback(() => {
     if (typeof window === 'undefined' || !containerRef.current) {
       return DEFAULT_DIMENSIONS;
@@ -56,7 +59,6 @@ export function useCarousel({ images, containerRef }: UseCarouselProps) {
 
     const containerWidth = containerRef.current.offsetWidth;
     const calculated = calculateCarouselDimensions(
-      // Teraz przekazujemy całe obiekty CarouselItem
       images,
       images.map(img => ({
         lines: img.processedCaption?.split('\n').length || 0,
@@ -66,8 +68,18 @@ export function useCarousel({ images, containerRef }: UseCarouselProps) {
       window.innerHeight
     );
 
-    return calculated || DEFAULT_DIMENSIONS;
-  }, [images, containerRef]);
+    // Dodajemy obliczenia podpisów
+    const captionDimensions = calculateCaptionDimensions(
+      activeItems,
+      containerWidth,
+      window.innerHeight
+    );
+
+    return {
+      ...calculated,
+      ...captionDimensions
+    };
+  }, [images, activeItems, containerRef]);
 
   const handlePrevious = useCallback(() => {
     dispatch({ type: 'PREV_SLIDE', payload: { totalSlides: images.length } });
@@ -112,7 +124,7 @@ export function useCarousel({ images, containerRef }: UseCarouselProps) {
 
   return {
     currentIndex: state.currentIndex,
-    activeIndexes: getVisibleIndexes(),
+    activeIndexes,
     dimensions: state.dimensions || calculateDimensions(),
     handlers: {
       handlePrevious,

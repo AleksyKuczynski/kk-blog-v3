@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { MarkdownContent } from './MarkdownContent';
-import { CustomBlockquote } from './CustomBlockquote';
+import { CustomBlockquote } from './Blockquote/CustomBlockquote';
 import dynamic from 'next/dynamic';
-import { markdownToBlockquoteProps } from '@/main/lib/markdown/markdownToBlockquoteProps';
 import { ContentChunk } from '@/main/lib/markdown/types';
 import { ArticleImage } from './elements/Image';
 
@@ -19,11 +18,9 @@ export const CustomRenderer: React.FC<{ chunks: ContentChunk[] }> = ({ chunks })
             case 'markdown':
               return chunk.content ? <MarkdownContent key={index} content={chunk.content} /> : null;
             case 'blockquote':
-              if (chunk.content && chunk.blockquoteType) {
-                const blockquoteProps = markdownToBlockquoteProps(chunk.content, chunk.blockquoteType);
-                return <CustomBlockquote key={index} {...blockquoteProps} />;
-              }
-              return null;
+              return chunk.blockquoteProps ? (
+                <CustomBlockquote key={index} {...chunk.blockquoteProps} />
+              ) : null;
             case 'carousel':
               return chunk.images && chunk.images.length > 0 ? (
                 <ImageCarousel key={index} images={chunk.images} />

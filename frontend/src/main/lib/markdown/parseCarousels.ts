@@ -3,7 +3,7 @@
 import { convertSimpleMarkdownToHtml } from './markdownToHtml';
 import { ContentChunk, CarouselItem, ImageAttributes } from './types';
 import { fetchAssetMetadata } from '../directus';
-import { parseMarkdownImage } from '../utils/parseMarkdownImage';
+import { parseMarkdownImage } from './parseMarkdownImage';
 
 async function enrichImageAttributes(markdown: string): Promise<ImageAttributes> {
   const parsed = parseMarkdownImage(markdown);

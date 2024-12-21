@@ -1,4 +1,4 @@
-// src/main/lib/utils/parseMarkdownImage.ts
+// src/main/lib/markdown/parseMarkdownImage.ts
 export function parseMarkdownImage(markdown: string): { alt: string; src: string; assetId: string } | null {
   const match = markdown.match(/!\[(.*?)\]\((.*?)(\s+".*?")?\)/);
   if (!match) {
