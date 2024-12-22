@@ -1,0 +1,41 @@
+// src/main/components/Article/Carousel/Carousel.module.scss
+
+.carouselContainer {
+    --transition-duration: 300ms;
+    --caption-collapsed-height: 2.5rem;
+    --caption-expanded-height: 8rem;
+    aspect-ratio: var(--desktop-landscape-ratio);
+    
+    @media (max-width: 767px) and (orientation: portrait) {
+        aspect-ratio: var(--mobile-portrait-ratio);
+    }
+    
+    @media (max-width: 767px) and (orientation: landscape) {
+        aspect-ratio: var(--mobile-landscape-ratio);
+    }
+    
+    @media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
+        aspect-ratio: var(--tablet-portrait-ratio);
+    }
+    
+    @media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+        aspect-ratio: var(--tablet-landscape-ratio);
+    }
+    
+    @media (min-width: 1024px) and (orientation: portrait) {
+        aspect-ratio: var(--desktop-portrait-ratio);
+    }
+    
+    @media (min-width: 1024px) and (orientation: landscape) {
+        aspect-ratio: var(--desktop-landscape-ratio);
+    }
+}
+
+.caption {
+    height: var(--caption-collapsed-height);
+    transition: height var(--transition-duration) ease-in-out;
+    
+    &.expanded {
+        height: var(--caption-expanded-height);
+    }
+}

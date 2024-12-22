@@ -1,37 +1,29 @@
 // src/main/components/Article/Carousel/useCarousel.ts
-import { useReducer, useCallback, RefObject } from 'react';
-import { CarouselItem } from "@/main/lib/markdown/types";
-import { calculateCaptionDimensions, calculateCarouselDimensions } from '@/main/lib/utils/calculateCarouselDimensions';
+import { useReducer, useCallback } from 'react';
+import { CarouselItem, ImageSetAnalysis } from "@/main/lib/markdown/types";
 import { carouselReducer, initialCarouselState } from './carouselReducer';
 
 interface UseCarouselProps {
   images: CarouselItem[];
-  containerRef: RefObject<HTMLDivElement>;
+  initialAnalysis?: ImageSetAnalysis;
 }
 
-const DEFAULT_DIMENSIONS = {
-  width: 1200,
-  height: 800,
-  imageHeight: 600,
-  captionHeight: 100,
-  maxCaptionHeight: 200,
-  imageDisplayMode: 'center-vertical' as const
-};
-
-export function useCarousel({ images, containerRef }: UseCarouselProps) {
+export function useCarousel({ 
+  images, 
+  initialAnalysis
+}: UseCarouselProps) {
   const [state, dispatch] = useReducer(carouselReducer, {
     ...initialCarouselState,
-    dimensions: DEFAULT_DIMENSIONS
+    images: images.map(img => ({...img, expanded: false}))
   });
 
   const getVisibleIndexes = useCallback((): number[] => {
     const totalSlides = images.length;
     if (totalSlides === 0) return [];
     
-    // Bezpieczny currentIndex
     const safeCurrentIndex = state.currentIndex % totalSlides;
     
-    // Dla 2 slajdów
+    // Logic for 2 slides
     if (totalSlides === 2) {
       const baseIndex = safeCurrentIndex % 2;
       return [
@@ -41,7 +33,7 @@ export function useCarousel({ images, containerRef }: UseCarouselProps) {
       ];
     }
 
-    // Dla 3+ slajdów
+    // Logic for 3+ slides
     return [
       (safeCurrentIndex - 1 + totalSlides) % totalSlides,
       safeCurrentIndex,
@@ -49,90 +41,54 @@ export function useCarousel({ images, containerRef }: UseCarouselProps) {
     ];
   }, [images.length, state.currentIndex]);
 
-  const activeIndexes = getVisibleIndexes();
-  const activeItems = activeIndexes.map(idx => images[idx]);
-  
-  const calculateDimensions = useCallback(() => {
-    if (typeof window === 'undefined' || !containerRef.current) {
-      return DEFAULT_DIMENSIONS;
-    }
+  // Podstawowe handlery
+  const handlers = {
+    handlePrevious: useCallback(() => {
+      dispatch({ type: 'PREV_SLIDE', payload: { totalSlides: images.length } });
+    }, [images.length]),
 
-    const containerWidth = containerRef.current.offsetWidth;
-    const calculated = calculateCarouselDimensions(
-      images,
-      images.map(img => ({
-        lines: img.processedCaption?.split('\n').length || 0,
-        isExpandable: (img.processedCaption?.split('\n').length || 0) > 4
-      })),
-      containerWidth,
-      window.innerHeight
-    );
+    handleNext: useCallback(() => {
+      dispatch({ type: 'NEXT_SLIDE', payload: { totalSlides: images.length } });
+    }, [images.length]),
 
-    // Dodajemy obliczenia podpisów
-    const captionDimensions = calculateCaptionDimensions(
-      activeItems,
-      containerWidth,
-      window.innerHeight
-    );
+    handleSlideSelect: useCallback((index: number) => {
+      dispatch({ type: 'SET_SLIDE', payload: { index } });
+    }, []),
 
-    return {
-      ...calculated,
-      ...captionDimensions
-    };
-  }, [images, activeItems, containerRef]);
+    handleKeyDown: useCallback((e: React.KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        dispatch({ type: 'PREV_SLIDE', payload: { totalSlides: images.length } });
+      } else if (e.key === 'ArrowRight') {
+        dispatch({ type: 'NEXT_SLIDE', payload: { totalSlides: images.length } });
+      }
+    }, [images.length]),
 
-  const handlePrevious = useCallback(() => {
-    dispatch({ type: 'PREV_SLIDE', payload: { totalSlides: images.length } });
-  }, [images.length]);
+    handleTouchStart: useCallback((e: React.TouchEvent) => {
+      dispatch({ 
+        type: 'TOUCH_START', 
+        payload: { x: e.touches[0].clientX } 
+      });
+    }, []),
 
-  const handleNext = useCallback(() => {
-    dispatch({ type: 'NEXT_SLIDE', payload: { totalSlides: images.length } });
-  }, [images.length]);
+    handleTouchEnd: useCallback((e: React.TouchEvent) => {
+      dispatch({ 
+        type: 'TOUCH_END', 
+        payload: { 
+          endX: e.changedTouches[0].clientX,
+          totalSlides: images.length 
+        } 
+      });
+    }, [images.length]),
 
-  const handleSlideSelect = useCallback((index: number) => {
-    dispatch({ type: 'SET_SLIDE', payload: { index } });
-  }, []);
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    switch (e.key) {
-      case 'ArrowLeft':
-        handlePrevious();
-        break;
-      case 'ArrowRight':
-        handleNext();
-        break;
-    }
-  }, [handlePrevious, handleNext]);
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    dispatch({ 
-      type: 'TOUCH_START', 
-      payload: { x: e.touches[0].clientX } 
-    });
-  }, []);
-
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    dispatch({ 
-      type: 'TOUCH_END', 
-      payload: { 
-        endX: touchEndX,
-        totalSlides: images.length 
-      } 
-    });
-  }, [images.length]);
+    handleCaptionClick: useCallback((index: number) => {
+      dispatch({ type: 'TOGGLE_CAPTION', payload: { index } });
+    }, []),
+  };
 
   return {
     currentIndex: state.currentIndex,
-    activeIndexes,
-    dimensions: state.dimensions || calculateDimensions(),
-    handlers: {
-      handlePrevious,
-      handleNext,
-      handleSlideSelect,
-      handleKeyDown,
-      handleTouchStart,
-      handleTouchEnd
-    }
+    activeIndexes: getVisibleIndexes(),
+    images,
+    handlers
   };
 }

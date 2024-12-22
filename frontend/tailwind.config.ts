@@ -9,6 +9,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      height: {
+        '[var(--carousel-max-height)]': 'var(--carousel-max-height)',
+        // Allow CSS variables in height classes
+        '[var(--carousel-height)]': 'var(--carousel-height)',
+        '[var(--image-height)]': 'var(--image-height)',
+        '[var(--caption-height)]': 'var(--caption-height)',
+      },
+      aspectRatio: {
+        '[var(--carousel-ratio)]': 'var(--carousel-ratio)',
+      },
       zIndex: {
         '40': '40',
         '50': '50',

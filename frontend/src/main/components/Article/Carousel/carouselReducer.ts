@@ -1,11 +1,13 @@
 // src/main/components/Article/Carousel/carouselReducer.ts
-import { CarouselDimensions } from "@/main/lib/utils/calculateCarouselDimensions";
+
+import { CarouselDimensions, CarouselItem } from "@/main/lib/markdown/types";
 
 interface CarouselState {
   currentIndex: number;
   direction: 'next' | 'prev' | null;
   touchStart?: number;
   dimensions: CarouselDimensions | null;
+  images: CarouselItem[];
 }
 
 type CarouselAction =
@@ -14,7 +16,8 @@ type CarouselAction =
   | { type: 'SET_SLIDE'; payload: { index: number } }
   | { type: 'TOUCH_START'; payload: { x: number } }
   | { type: 'TOUCH_END'; payload: { endX: number; totalSlides: number } }
-  | { type: 'UPDATE_DIMENSIONS'; payload: CarouselDimensions };
+  | { type: 'UPDATE_DIMENSIONS'; payload: CarouselDimensions }
+  | { type: 'TOGGLE_CAPTION'; payload: { index: number } };
 
 const SWIPE_THRESHOLD = 50;
 
@@ -22,7 +25,8 @@ export const initialCarouselState: CarouselState = {
   currentIndex: 0,
   direction: null,
   touchStart: undefined,
-  dimensions: null
+  dimensions: null,
+  images: []
 };
 
 function getNextIndex(current: number, direction: 'next' | 'prev', total: number): number {
@@ -99,6 +103,16 @@ export function carouselReducer(
       return {
         ...state,
         dimensions: action.payload
+      };
+
+    case 'TOGGLE_CAPTION':
+      return {
+        ...state,
+        images: state.images.map((image, i) => 
+          i === action.payload.index 
+            ? { ...image, expanded: !image.expandedCaption }
+            : image
+        )
       };
 
     default:

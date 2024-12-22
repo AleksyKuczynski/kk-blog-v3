@@ -32,7 +32,7 @@ export function NavigationButtons({
   );
 
   return (
-    <div className="flex items-center justify-between gap-2 mx-auto p-4 md:w-5/6 z-50">
+    <div className="flex items-center justify-between gap-2 mx-auto p-3 md:w-5/6 z-50">
       <button
         onClick={onPrevious}
         className={buttonStyles}
