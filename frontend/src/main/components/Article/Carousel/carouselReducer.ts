@@ -1,6 +1,7 @@
 // src/main/components/Article/Carousel/carouselReducer.ts
 
-import { CarouselDimensions, CarouselItem } from "@/main/lib/markdown/types";
+import { CarouselItem } from "@/main/lib/markdown/types";
+import { CarouselDimensions } from "./carouselTypes";
 
 interface CarouselState {
   currentIndex: number;
@@ -10,14 +11,32 @@ interface CarouselState {
   images: CarouselItem[];
 }
 
+// Rozdzielamy typy akcji dla lepszej kontroli typów
 type CarouselAction =
-  | { type: 'NEXT_SLIDE'; payload: { totalSlides: number } }
-  | { type: 'PREV_SLIDE'; payload: { totalSlides: number } }
-  | { type: 'SET_SLIDE'; payload: { index: number } }
-  | { type: 'TOUCH_START'; payload: { x: number } }
-  | { type: 'TOUCH_END'; payload: { endX: number; totalSlides: number } }
-  | { type: 'UPDATE_DIMENSIONS'; payload: CarouselDimensions }
-  | { type: 'TOGGLE_CAPTION'; payload: { index: number } };
+  | { 
+      type: 'NEXT_SLIDE' | 'PREV_SLIDE'; 
+      payload: { totalSlides: number } 
+    }
+  | { 
+      type: 'SET_SLIDE'; 
+      payload: { index: number } 
+    }
+  | { 
+      type: 'TOUCH_START'; 
+      payload: { x: number } 
+    }
+  | { 
+      type: 'TOUCH_END'; 
+      payload: { endX: number; totalSlides: number } 
+    }
+  | { 
+      type: 'UPDATE_DIMENSIONS'; 
+      payload: CarouselDimensions 
+    }
+  | { 
+      type: 'TOGGLE_CAPTION'; 
+      payload: { index: number } 
+    };
 
 const SWIPE_THRESHOLD = 50;
 
@@ -31,11 +50,8 @@ export const initialCarouselState: CarouselState = {
 
 function getNextIndex(current: number, direction: 'next' | 'prev', total: number): number {
   if (total === 2) {
-    // Dla 2 slajdów zawsze przełączamy między 0 i 1
     return current === 0 ? 1 : 0;
   }
-
-  // Standardowa logika dla 3+ slajdów
   return direction === 'next'
     ? (current + 1) % total
     : (current - 1 + total) % total;
@@ -110,7 +126,7 @@ export function carouselReducer(
         ...state,
         images: state.images.map((image, i) => 
           i === action.payload.index 
-            ? { ...image, expanded: !image.expandedCaption }
+            ? { ...image, expandedCaption: !image.expandedCaption }
             : image
         )
       };

@@ -1,41 +1,65 @@
 // src/main/components/Article/Carousel/Carousel.module.scss
 
 .carouselContainer {
-    --transition-duration: 300ms;
-    --caption-collapsed-height: 2.5rem;
-    --caption-expanded-height: 8rem;
+  --transition-duration: 300ms;
+  position: relative;
+  overflow: hidden;
+
+  // Default aspect ratio
+  aspect-ratio: var(--desktop-landscape-ratio);
+  
+  // Mobile Portrait
+  @media (max-width: 767px) and (orientation: portrait) {
+    aspect-ratio: var(--mobile-portrait-ratio);
+  }
+  
+  // Mobile Landscape
+  @media (max-width: 767px) and (orientation: landscape) {
+    aspect-ratio: var(--mobile-landscape-ratio);
+  }
+  
+  // Tablet Portrait
+  @media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
+    aspect-ratio: var(--tablet-portrait-ratio);
+  }
+  
+  // Tablet Landscape
+  @media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+    aspect-ratio: var(--tablet-landscape-ratio);
+  }
+  
+  // Desktop Portrait
+  @media (min-width: 1024px) and (orientation: portrait) {
+    aspect-ratio: var(--desktop-portrait-ratio);
+  }
+  
+  // Desktop Landscape
+  @media (min-width: 1024px) and (orientation: landscape) {
     aspect-ratio: var(--desktop-landscape-ratio);
-    
-    @media (max-width: 767px) and (orientation: portrait) {
-        aspect-ratio: var(--mobile-portrait-ratio);
-    }
-    
-    @media (max-width: 767px) and (orientation: landscape) {
-        aspect-ratio: var(--mobile-landscape-ratio);
-    }
-    
-    @media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
-        aspect-ratio: var(--tablet-portrait-ratio);
-    }
-    
-    @media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
-        aspect-ratio: var(--tablet-landscape-ratio);
-    }
-    
-    @media (min-width: 1024px) and (orientation: portrait) {
-        aspect-ratio: var(--desktop-portrait-ratio);
-    }
-    
-    @media (min-width: 1024px) and (orientation: landscape) {
-        aspect-ratio: var(--desktop-landscape-ratio);
-    }
+  }
+}
+
+.slide {
+  transition: opacity var(--transition-duration) ease-in-out;
+}
+
+.carouselImage {
+  transition: transform var(--transition-duration) ease-in-out;
+  
+  &.center-horizontal {
+    object-position: center;
+  }
+  
+  &.center-vertical {
+    object-position: center;
+  }
+  
+  &.square {
+    object-fit: cover;
+  }
 }
 
 .caption {
-    height: var(--caption-collapsed-height);
-    transition: height var(--transition-duration) ease-in-out;
-    
-    &.expanded {
-        height: var(--caption-expanded-height);
-    }
+  transition: transform var(--transition-duration) ease-in-out,
+              opacity var(--transition-duration) ease-in-out;
 }

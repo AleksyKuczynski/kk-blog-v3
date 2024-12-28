@@ -1,16 +1,18 @@
 // src/main/components/Article/Carousel/ImageCarousel.tsx
 'use client'
 
-import { CarouselDimensions, CarouselItem, ImageSetAnalysis } from "@/main/lib/markdown/types";
+import { CarouselItem } from "@/main/lib/markdown/types";
 import { ServerCarousel } from "./ServerCarousel";
 import { NavigationButtons } from "./NavigationButtons";
 import { twMerge } from "tailwind-merge";
-import { useCarousel } from './useCarousel';
+import { CarouselDimensions, ImageSetAnalysis } from "./carouselTypes";
+import { useCarouselLayout } from './hooks/useCarouselLayout';
+import { useCarousel } from "./hooks/useCarousel";
 
 interface CarouselProps {
   images: CarouselItem[];
   dimensions: CarouselDimensions;
-  initialAnalysis?: ImageSetAnalysis;
+  initialAnalysis: ImageSetAnalysis;
 }
 
 export default function ImageCarousel({ 
@@ -18,18 +20,22 @@ export default function ImageCarousel({
   dimensions,
   initialAnalysis 
 }: CarouselProps) {
+  const { navigationLayout, setContainerRef } = useCarouselLayout(initialAnalysis);
+  
   const { 
     currentIndex,
     activeIndexes,
     images: carouselImages,
     handlers 
   } = useCarousel({ 
-    images,
-    initialAnalysis
+    images, 
+    initialAnalysis,
+    dimensions
   });
 
   return (
     <div 
+      ref={setContainerRef}
       className={twMerge(
         "relative mx-auto mb-24 outline-none",
         "theme-default:focus:ring-2 theme-default:focus:ring-pr-fix/50",
@@ -50,16 +56,16 @@ export default function ImageCarousel({
         currentIndex={currentIndex}
         dimensions={dimensions}
         handlers={handlers}
+        navigationLayout={navigationLayout}
       />
-      <div className="">
-        <NavigationButtons
-          totalSlides={carouselImages.length}
-          currentSlide={currentIndex}
-          onPrevious={handlers.handlePrevious}
-          onNext={handlers.handleNext}
-          onSlideSelect={handlers.handleSlideSelect}
-        />
-      </div>
+      <NavigationButtons
+        layout={navigationLayout}
+        totalSlides={carouselImages.length}
+        currentSlide={currentIndex}
+        onPrevious={handlers.handlePrevious}
+        onNext={handlers.handleNext}
+        onSlideSelect={handlers.handleSlideSelect}
+      />
     </div>
   );
 }

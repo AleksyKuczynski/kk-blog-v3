@@ -1,6 +1,8 @@
 // src/main/components/Article/Carousel/utils/viewportUtils.ts
+import { ViewportBreakpoint } from "../carouselTypes";
 
-import { DeviceType, ViewportBreakpoint, ViewportOrientation } from "@/main/lib/markdown/types";
+export type DeviceType = 'mobile' | 'tablet' | 'desktop';
+export type ViewportOrientation = 'landscape' | 'portrait';
 
 export function getDeviceType(width: number): DeviceType {
   if (width < 768) return 'mobile';

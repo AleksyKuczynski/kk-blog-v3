@@ -1,5 +1,7 @@
 // src/main/lib/markdown/types.ts
 
+import { CarouselDimensions, ImageSetAnalysis } from "@/main/components/Article/Carousel/carouselTypes";
+
 export interface ContentChunk {
   type: 'markdown' | 'blockquote' | 'carousel' | 'figure' | 'image';
   content?: string;
@@ -31,74 +33,12 @@ export interface ImageAttributes {
   filename?: string;
 }
 
-export interface BreakpointDimensions {
-  ratio: number;
-  maxHeight: number;
-  imageDisplayMode: 'center-horizontal' | 'center-vertical' | 'square';
-}
-
-export interface CarouselDimensions extends BreakpointDimensions {
-  breakpointDimensions: BreakpointDimensions[];
-}
-
-export interface ImageSetAnalysis {
-  medianRatio: number;
-  averageRatio: number;
-  ratioDistribution: {
-    landscape: number;
-    portrait: number;
-    square: number;
-  };
-  recommendedDisplayMode: 'landscape' | 'portrait' | 'square';
-}
-
-export type ViewportOrientation = 'portrait' | 'landscape';
-export type DeviceType = 'mobile' | 'tablet' | 'desktop';
-export type ViewportBreakpoint = 
-  | 'mobile-portrait' 
-  | 'mobile-landscape'
-  | 'tablet-portrait'
-  | 'tablet-landscape'
-  | 'desktop-portrait'
-  | 'desktop-landscape';
-
-export interface BreakpointConstraints {
-  maxRatio: number;
-  minRatio: number;
-  maxHeight: number;
-  preferredRatio: number;
-}
-
-export interface CaptionDimensions {
-  actualHeight: number;
-  collapsedHeight: number;
-  isExpandable: boolean;
-}
-
-export interface CarouselDimensionsWithCaptions extends CarouselDimensions {
-  captionStates: {
-    [index: number]: CaptionDimensions;
-  };
-  shouldCollapseAll: boolean;
-}
-
 export interface CarouselItem {
   type: 'image' | 'figure';
   imageAttributes: ImageAttributes;
   caption?: string;
   processedCaption?: string;
   expandedCaption: boolean;
-}
-
-export interface ImageSetAnalysis {
-  medianRatio: number;
-  averageRatio: number;
-  ratioDistribution: {
-    landscape: number;
-    portrait: number;
-    square: number;
-  };
-  recommendedDisplayMode: 'landscape' | 'portrait' | 'square';
 }
 
 export interface BlockquoteBase {
