@@ -1,13 +1,14 @@
 // src/main/components/Article/Carousel/ImageCarousel.tsx
 'use client'
 
+import React, { memo } from 'react';
 import { CarouselItem } from "@/main/lib/markdown/types";
-import { ServerCarousel } from "./ServerCarousel";
-import { NavigationButtons } from "./NavigationButtons";
-import { twMerge } from "tailwind-merge";
 import { CarouselDimensions, ImageSetAnalysis } from "./carouselTypes";
-import { useCarouselLayout } from './hooks/useCarouselLayout';
-import { useCarousel } from "./hooks/useCarousel";
+import { CarouselTrack } from './CarouselTrack';
+import { CarouselNavigation } from './CarouselNavigation';
+import { twMerge } from "tailwind-merge";
+import { determineNavigationLayout } from "./utils/carouselUtils";
+import { useCarousel } from './hooks/useCarousel';
 
 interface CarouselProps {
   images: CarouselItem[];
@@ -15,27 +16,28 @@ interface CarouselProps {
   initialAnalysis: ImageSetAnalysis;
 }
 
-export default function ImageCarousel({ 
+const ImageCarousel = memo(function ImageCarousel({ 
   images, 
   dimensions,
   initialAnalysis 
 }: CarouselProps) {
-  const { navigationLayout, setContainerRef } = useCarouselLayout(initialAnalysis);
-  
   const { 
     currentIndex,
-    activeIndexes,
     images: carouselImages,
     handlers 
   } = useCarousel({ 
     images, 
-    initialAnalysis,
     dimensions
   });
 
+  const navigationLayout = determineNavigationLayout(
+    typeof window !== 'undefined' ? window.innerWidth : 1200,
+    typeof window !== 'undefined' ? window.innerHeight : 800,
+    initialAnalysis
+  );
+
   return (
     <div 
-      ref={setContainerRef}
       className={twMerge(
         "relative mx-auto mb-24 outline-none",
         "theme-default:focus:ring-2 theme-default:focus:ring-pr-fix/50",
@@ -50,15 +52,15 @@ export default function ImageCarousel({
       onTouchStart={handlers.handleTouchStart}
       onTouchEnd={handlers.handleTouchEnd}
     >
-      <ServerCarousel
+      <CarouselTrack
         images={carouselImages}
-        activeIndexes={activeIndexes}
         currentIndex={currentIndex}
         dimensions={dimensions}
-        handlers={handlers}
         navigationLayout={navigationLayout}
+        handlers={handlers}
       />
-      <NavigationButtons
+
+      <CarouselNavigation
         layout={navigationLayout}
         totalSlides={carouselImages.length}
         currentSlide={currentIndex}
@@ -68,4 +70,6 @@ export default function ImageCarousel({
       />
     </div>
   );
-}
+});
+
+export default ImageCarousel;

@@ -21,8 +21,8 @@ export const ArticleImage = ({ src, alt, width, height, caption }: ImageProps) =
   const figureStyles = twMerge(
     'w-screen md:w-full overflow-hidden',
     'theme-default:-mx-3 theme-default:md:mx-0 theme-default:md:shadow-md theme-default:md:rounded-lg',
-    'theme-rounded:md:shadow-lg theme-rounded:bg-sf-hi theme-rounded:md:rounded-3xl',
-    ''
+    'theme-rounded:-mx-4 theme-rounded:md:mx-0 theme-rounded:md:shadow-lg theme-rounded:bg-sf-hi theme-rounded:md:rounded-3xl',
+    'theme-sharp:-mx-2 theme-sharp:md:mx-0'
   );
 
   const imageStyles = twMerge(

@@ -29,12 +29,12 @@ export const Heading: React.FC<HeadingProps> = ({ level, id, children }) => {
         'text-center',
         'theme-default:font-custom theme-default:md:[line-height:1.6rem] theme-default:md:[line-height:3.2rem]',
         'theme-rounded:font-display theme-rounded:px-4',
-        'theme-sharp:font-sans theme-sharp:tracking-tight theme-sharp:px-2'
+        'theme-sharp:text-left theme-sharp:font-sans theme-sharp:tracking-tight theme-sharp:px-2'
       )
     : twMerge(
         'font-sans',
         'theme-default:text-center',
-        'theme-rounded:px-4',
+        'theme-rounded:px-4 theme-rounded:text-center',
         'theme-sharp:px-2 theme-sharp:tracking-tight'
       );
 

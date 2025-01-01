@@ -49,7 +49,7 @@ export function Header({
       theme-rounded:font-display theme-rounded:text-3xl
       theme-rounded:text-center theme-rounded:lg:text-left
     `,
-    'theme-sharp:tracking-tight theme-sharp:font-semibold'
+    'theme-sharp:tracking-tight theme-sharp:font-bold theme-sharp:text-3xl theme-sharp:md:text-5xl'
   );
 
   const imageWrapperStyles = twMerge(
@@ -58,7 +58,7 @@ export function Header({
     // Theme variants
     'theme-default:xl:mx-0 theme-default:rounded-lg',
     'theme-rounded:rounded-t-2xl theme-rounded:lg:rounded-2xl',
-    'theme-sharp:-mx-4 theme-sharp:xl:mx-0'
+    'theme-sharp:my-0 theme-sharp:-mx-4 theme-sharp:md:mx-auto'
   );
 
   const imageStyles = twMerge('w-full h-full object-cover');
@@ -84,6 +84,7 @@ export function Header({
     // Theme variants
     'theme-default:px-4 theme-default:leading-snug',
     'theme-rounded:pt-6',
+    'theme-sharp:md:px-16'
   );
 
   return (

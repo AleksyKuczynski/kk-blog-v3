@@ -1,5 +1,4 @@
 // src/main/components/Article/Carousel/carouselReducer.ts
-
 import { CarouselItem } from "@/main/lib/markdown/types";
 import { CarouselDimensions } from "./carouselTypes";
 
@@ -7,86 +6,49 @@ interface CarouselState {
   currentIndex: number;
   direction: 'next' | 'prev' | null;
   touchStart?: number;
-  dimensions: CarouselDimensions | null;
   images: CarouselItem[];
 }
 
-// Rozdzielamy typy akcji dla lepszej kontroli typów
 type CarouselAction =
-  | { 
-      type: 'NEXT_SLIDE' | 'PREV_SLIDE'; 
-      payload: { totalSlides: number } 
-    }
-  | { 
-      type: 'SET_SLIDE'; 
-      payload: { index: number } 
-    }
-  | { 
-      type: 'TOUCH_START'; 
-      payload: { x: number } 
-    }
-  | { 
-      type: 'TOUCH_END'; 
-      payload: { endX: number; totalSlides: number } 
-    }
-  | { 
-      type: 'UPDATE_DIMENSIONS'; 
-      payload: CarouselDimensions 
-    }
-  | { 
-      type: 'TOGGLE_CAPTION'; 
-      payload: { index: number } 
-    };
+  | { type: 'NEXT_SLIDE' }
+  | { type: 'PREV_SLIDE' }
+  | { type: 'SET_SLIDE'; index: number }
+  | { type: 'TOUCH_START'; x: number }
+  | { type: 'TOUCH_END'; endX: number }
+  | { type: 'TOGGLE_CAPTION'; index: number };
 
 const SWIPE_THRESHOLD = 50;
 
-export const initialCarouselState: CarouselState = {
-  currentIndex: 0,
-  direction: null,
-  touchStart: undefined,
-  dimensions: null,
-  images: []
-};
+export function carouselReducer(state: CarouselState, action: CarouselAction): CarouselState {
+  const totalSlides = state.images.length;
 
-function getNextIndex(current: number, direction: 'next' | 'prev', total: number): number {
-  if (total === 2) {
-    return current === 0 ? 1 : 0;
-  }
-  return direction === 'next'
-    ? (current + 1) % total
-    : (current - 1 + total) % total;
-}
-
-export function carouselReducer(
-  state: CarouselState,
-  action: CarouselAction
-): CarouselState {
   switch (action.type) {
     case 'NEXT_SLIDE':
       return {
         ...state,
-        currentIndex: getNextIndex(state.currentIndex, 'next', action.payload.totalSlides),
+        currentIndex: (state.currentIndex + 1) % totalSlides,
         direction: 'next'
       };
 
     case 'PREV_SLIDE':
       return {
         ...state,
-        currentIndex: getNextIndex(state.currentIndex, 'prev', action.payload.totalSlides),
+        currentIndex: (state.currentIndex - 1 + totalSlides) % totalSlides,
         direction: 'prev'
       };
 
     case 'SET_SLIDE':
       return {
         ...state,
-        currentIndex: action.payload.index,
-        direction: action.payload.index > state.currentIndex ? 'next' : 'prev'
+        currentIndex: action.index,
+        direction: action.index > state.currentIndex ? 'next' : 'prev'
       };
 
     case 'TOUCH_START':
       return {
         ...state,
-        touchStart: action.payload.x
+        touchStart: action.x,
+        direction: null
       };
 
     case 'TOUCH_END': {
@@ -94,7 +56,7 @@ export function carouselReducer(
         return state;
       }
 
-      const diff = action.payload.endX - state.touchStart;
+      const diff = action.endX - state.touchStart;
       if (Math.abs(diff) < SWIPE_THRESHOLD) {
         return {
           ...state,
@@ -102,34 +64,28 @@ export function carouselReducer(
         };
       }
 
-      const direction = diff > 0 ? 'prev' : 'next';
+      const newIndex = diff > 0 
+        ? (state.currentIndex - 1 + totalSlides) % totalSlides
+        : (state.currentIndex + 1) % totalSlides;
+
       return {
         ...state,
-        currentIndex: getNextIndex(
-          state.currentIndex, 
-          direction, 
-          action.payload.totalSlides
-        ),
-        direction,
+        currentIndex: newIndex,
+        direction: diff > 0 ? 'prev' : 'next',
         touchStart: undefined
       };
     }
 
-    case 'UPDATE_DIMENSIONS':
+    case 'TOGGLE_CAPTION': {
       return {
         ...state,
-        dimensions: action.payload
-      };
-
-    case 'TOGGLE_CAPTION':
-      return {
-        ...state,
-        images: state.images.map((image, i) => 
-          i === action.payload.index 
-            ? { ...image, expandedCaption: !image.expandedCaption }
-            : image
+        images: state.images.map((img, idx) => 
+          idx === action.index 
+            ? { ...img, expandedCaption: !img.expandedCaption }
+            : img
         )
       };
+    }
 
     default:
       return state;

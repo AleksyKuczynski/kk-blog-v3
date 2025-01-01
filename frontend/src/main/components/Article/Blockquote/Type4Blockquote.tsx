@@ -8,45 +8,49 @@ interface Type4Props {
   avatarUrl: string;
 }
 
-export function Type4Blockquote({ content, author, avatarUrl }: Type4Props) {  const containerStyles = twMerge(
-  // Base styles
-  'relative mb-6 p-6 overflow-hidden',
-  // Theme variants
-  'theme-default:bg-sf-cont theme-default:border-l-4 theme-default:border-pr-cont',
-  'theme-rounded:bg-sf-cont theme-rounded:rounded-xl theme-rounded:shadow-lg',
-  'theme-sharp:bg-sf-cont theme-sharp:border-2 theme-sharp:border-prcolor'
-);
-
+export function Type4Blockquote({ content, author, avatarUrl }: Type4Props) {  
+  const containerStyles = twMerge(
+    // Base styles
+    'mb-6 px-6 md:mx-8 lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4',
+    'before:text-start before:text-pr-cont before:absolute',
+    // Theme variants
+    'theme-default:border-l-2 theme-default:border-pr-cont',
+    'theme-default:xl:px-8',
+    'theme-rounded:grid theme-rounded:grid-cols-2 theme-rounded:pt-6',
+    'theme-rounded:bg-sf-cont theme-rounded:rounded-xl theme-rounded:shadow-md',
+    'theme-sharp:pb-0'
+  );
   const authorStyles = twMerge(
     // Base styles
-    'text-2xl font-bold mb-4 text-on-sf-var',
+    'text-on-sf-var',
     // Theme variants
-    'theme-default:border-b theme-default:border-prcolor theme-default:pb-2',
-    'theme-rounded:bg-prcolor theme-rounded:text-bgcolor theme-rounded:p-2 theme-rounded:rounded-lg',
-    'theme-sharp:border-b-2 theme-sharp:border-prcolor theme-sharp:uppercase theme-sharp:tracking-wider'
+    'theme-default:font-medium theme-default:text-base',
+    'theme-rounded:self-center theme-rounded:my-0 theme-rounded:font-serif theme-rounded:font-semibold theme-rounded:text-2xl',
+    'theme-sharp:text-base theme-sharp:font-semibold theme-sharp:tracking-wide'
   );
 
   const avatarContainerStyles = twMerge(
     // Layout styles
-    'float-left mr-4 mb-2 relative w-20 h-20',
+    'mr-4 mb-2 relative w-20 h-20 overflow-hidden',
     // Theme variants
-    'theme-default:rounded',
-    'theme-rounded:rounded-full theme-rounded:shadow-md',
-    'theme-sharp:border-2 theme-sharp:border-prcolor'
+    'theme-default:rounded-full',
+    'theme-rounded:justify-self-end theme-rounded:rounded-2xl theme-rounded:shadow-md',
+    ''
   );
 
   const contentStyles = twMerge(
     // Base styles
-    'text-on-sf-var space-y-4',
+    'text-on-sf-var pb-1',
     // Theme variants
-    'theme-default:italic',
-    'theme-rounded:leading-relaxed theme-rounded:font-medium',
-    'theme-sharp:leading-snug theme-sharp:pl-4'
+    'theme-default:text-base theme-default:font-serif theme-default:font-medium theme-default:italic theme-default:leading-relaxed',
+    'theme-rounded:col-span-2',
+    'theme-rounded:pb-3 theme-rounded:text-base theme-rounded:font-medium theme-rounded:font-serif',
+    'theme-sharp:ml-6 theme-sharp:border-b theme-sharp:border-ol-var',
+    'theme-sharp:font-light theme-sharp:text-lg theme-sharp:leading-snug'
   );
 
   return (
     <blockquote className={containerStyles}>
-      <h3 className={authorStyles}>{author}</h3>
       {avatarUrl && (
         <div className={avatarContainerStyles}>
           <Image 
@@ -54,10 +58,11 @@ export function Type4Blockquote({ content, author, avatarUrl }: Type4Props) {  c
             alt=""
             width={80}
             height={80}
-            className="object-contain"
+            className="h-full w-full object-cover my-0"
           />
         </div>
       )}
+      <p className={authorStyles}>{author}</p>
       <div className={contentStyles}>
         {content.split('\n\n').map((paragraph, index) => (
           <p key={index}>{paragraph}</p>

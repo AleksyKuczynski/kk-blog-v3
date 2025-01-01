@@ -1,8 +1,9 @@
-// src/main/components/Article/Carousel/NavigationButtons.tsx
+// src/main/components/Article/Carousel/CarouselNavigation.tsx
+import { memo } from 'react';
 import { ChevronUpIcon } from '@/main/components/Interface/Icons';
 import { twMerge } from 'tailwind-merge';
 
-interface NavigationButtonsProps {
+interface CarouselNavigationProps {
   layout: 'horizontal' | 'vertical';
   totalSlides: number;
   currentSlide: number;
@@ -11,17 +12,17 @@ interface NavigationButtonsProps {
   onSlideSelect: (index: number) => void;
 }
 
-export function NavigationButtons({
+export const CarouselNavigation = memo(function CarouselNavigation({
   layout,
   totalSlides,
   currentSlide,
   onPrevious,
   onNext,
-  onSlideSelect,
-}: NavigationButtonsProps) {
-  // Base button styles
+  onSlideSelect
+}: CarouselNavigationProps) {
   const navigationButtonStyles = twMerge(
     "flex items-center justify-center transition-colors duration-200",
+    "pointer-events-auto",
     layout === 'horizontal' ? [
       "w-8 h-8",
       "theme-default:rounded-full theme-default:bg-sf-hi theme-default:hover:bg-sf-hst",
@@ -35,58 +36,47 @@ export function NavigationButtons({
     ].join(' ')
   );
 
-  // Container styles
-  const containerStyles = twMerge(
-    layout === 'horizontal' ? [
-      "flex items-center justify-between gap-2 mx-auto p-3 md:w-5/6",
-      "absolute bottom-0 left-0 right-0 z-10"
-    ].join(' ') : [
+  return (
+    <div className={twMerge(
       "absolute inset-y-0 w-full",
       "flex items-center justify-between",
-      "px-2 md:px-4",
+      layout === 'horizontal' ? 'px-2' : 'px-4',
       "pointer-events-none z-10"
-    ].join(' ')
-  );
-
-  // Indicators styles
-  const indicatorsContainerStyles = twMerge(
-    "flex gap-1.5",
-    layout === 'vertical' && "absolute bottom-4 left-1/2 -translate-x-1/2"
-  );
-
-  return (
-    <div className={containerStyles}>
+    )}>
       <button
         onClick={onPrevious}
-        className={twMerge(
-          navigationButtonStyles,
-          layout === 'vertical' && "pointer-events-auto"
-        )}
+        className={navigationButtonStyles}
         aria-label="Previous slide"
       >
-        <ChevronUpIcon className={twMerge(
-          "h-4 w-4 theme-sharp:h-8 theme-sharp:w-8",
-          layout === 'horizontal' ? "-rotate-90" : "-rotate-0"
-        )} />
+        <ChevronUpIcon 
+          className={twMerge(
+            "h-4 w-4 theme-sharp:h-8 theme-sharp:w-8",
+            layout === 'horizontal' ? "-rotate-90" : "-rotate-0"
+          )} 
+        />
       </button>
 
-      <div className={indicatorsContainerStyles}>
+      <div className={twMerge(
+        "flex gap-1.5",
+        layout === 'vertical' && "absolute bottom-4 left-1/2 -translate-x-1/2"
+      )}>
         {Array.from({ length: totalSlides }).map((_, idx) => (
           <button
             key={idx}
             onClick={() => onSlideSelect(idx)}
             className={twMerge(
               "transition-all pointer-events-auto",
-              idx === currentSlide ? [
-                "theme-default:w-1.5 theme-default:bg-tr-fix",
-                "theme-rounded:w-2 theme-rounded:bg-tr-fix",
-                "theme-sharp:border-pr-fix theme-sharp:w-2"
-              ].join(' ') : [
-                "theme-default:w-3.5 theme-default:bg-sf-hi",
-                "theme-rounded:w-4 theme-rounded:bg-sf-hi",
-                "theme-sharp:border-ol-var"
-              ].join(' '),
-              // Common height styles
+              idx === currentSlide 
+                ? [
+                  "theme-default:w-1.5 theme-default:bg-tr-fix",
+                  "theme-rounded:w-2 theme-rounded:bg-tr-fix",
+                  "theme-sharp:border-pr-fix theme-sharp:w-2"
+                ].join(' ') 
+                : [
+                  "theme-default:w-3.5 theme-default:bg-sf-hi",
+                  "theme-rounded:w-4 theme-rounded:bg-sf-hi",
+                  "theme-sharp:border-ol-var"
+                ].join(' '),
               "theme-default:h-1.5 theme-default:rounded-full",
               "theme-rounded:h-3 theme-rounded:rounded-sm",
               "theme-sharp:h-2.5 theme-sharp:border-2",
@@ -100,17 +90,16 @@ export function NavigationButtons({
 
       <button
         onClick={onNext}
-        className={twMerge(
-          navigationButtonStyles,
-          layout === 'vertical' && "pointer-events-auto"
-        )}
+        className={navigationButtonStyles}
         aria-label="Next slide"
       >
-        <ChevronUpIcon className={twMerge(
-          "h-4 w-4 theme-sharp:h-8 theme-sharp:w-8",
-          layout === 'horizontal' ? "rotate-90" : "rotate-180"
-        )} />
+        <ChevronUpIcon 
+          className={twMerge(
+            "h-4 w-4 theme-sharp:h-8 theme-sharp:w-8",
+            layout === 'horizontal' ? "rotate-90" : "rotate-180"
+          )} 
+        />
       </button>
     </div>
   );
-}
+});

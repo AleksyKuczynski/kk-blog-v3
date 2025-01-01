@@ -10,38 +10,38 @@ interface Type3Props {
 export function Type3Blockquote({ content, author, source }: Type3Props) {
   const containerStyles = twMerge(
     // Base styles
-    'relative mb-6 p-6',
+    'relative mb-6 p-4 pl-12 md:pl-0 md:pr-12 flex flex-col items-end',
     // Theme variants
-    'theme-default:bg-sf-cont theme-default:border-l-4 theme-default:border-pr-cont',
-    'theme-rounded:bg-sf-cont theme-rounded:rounded-xl theme-rounded:shadow-md',
-    'theme-sharp:bg-sf-cont theme-sharp:border theme-sharp:border-pr-fix'
+    'theme-default:pl-12 theme-default:md:pl-0',
+    'theme-rounded:pl-12 theme-rounded:md:pl-0',
+    'theme-sharp:pl-12'
   );
 
   const contentStyles = twMerge(
     // Base styles
-    'text-on-sf-var mb-4',
+    'text-on-sf-var mb-4 md:w-1/2',
     // Theme variants
     'theme-default:text-lg theme-default:font-serif theme-default:leading-relaxed theme-default:italic',
-    'theme-rounded:text-xl theme-rounded:font-serif theme-rounded:leading-loose',
-    'theme-sharp:font-sans theme-sharp:leading-snug'
+    'theme-rounded:text-lg theme-rounded:font-serif',
+    'theme-sharp:leading-snug theme-sharp:font-light theme-sharp:text-lg'
   );
 
   const authorStyles = twMerge(
     // Base styles
-    'text-on-sf-var text-right mb-1',
+    'text-on-sf-var mb-1 md:w-1/2 text-right',
     // Theme variants
-    'theme-default:font-medium theme-default:text-lg',
-    'theme-rounded:font-serif theme-rounded:text-xl',
-    'theme-sharp:font-semibold theme-sharp:tracking-wider'
+    'theme-default:font-medium theme-default:text-base',
+    'theme-rounded:font-serif theme-rounded:font-semibold theme-rounded:text-base',
+    'theme-sharp:font-semibold theme-sharp:tracking-wide theme-sharp:text-sm'
   );
 
   const sourceStyles = twMerge(
     // Base styles
-    'text-on-sf-var text-right text-sm',
+    'text-on-sf-var text-right text-sm mt-0',
     // Theme variants
-    'theme-default:text-on-sf-var/75 theme-default:italic',
+    'theme-default:text-on-sf-var/75 theme-default:italic theme-default:md:w-1/2',
     'theme-rounded:font-serif theme-rounded:text-on-sf-var/80',
-    'theme-sharp:font-medium theme-sharp:tracking-wide theme-sharp:text-pr-cont'
+    'theme-sharp:tracking-wide'
   );
 
   return (
