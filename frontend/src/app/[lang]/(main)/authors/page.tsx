@@ -4,7 +4,7 @@ import { fetchAllAuthors, fetchRubricBasics } from '@/main/lib/directus/index';
 import AuthorCard from '@/main/components/Main/AuthorCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { getDictionary } from '@/main/lib/dictionaries';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { Metadata } from 'next';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';

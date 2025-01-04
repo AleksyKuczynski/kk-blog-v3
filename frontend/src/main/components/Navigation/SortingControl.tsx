@@ -2,7 +2,7 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { SortingTranslations, Lang } from '@/main/lib/dictionaries/types';
+import { SortingTranslations, Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { NavButton } from '../Interface';
 import { ChevronDownIcon } from '../Interface/Icons';
 import type { DropdownItemType } from '../Interface/Dropdown/types';

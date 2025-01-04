@@ -1,7 +1,7 @@
 // src/main/components/Main/RubricCard.tsx
 import Link from 'next/link';
-import { Rubric } from '@/main/lib/directus/interfaces';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Rubric } from '@/main/lib/directus/directusInterfaces';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { DateSortUpIcon } from '../Interface/Icons'; // Assuming we have this icon
 
 interface RubricCardProps {

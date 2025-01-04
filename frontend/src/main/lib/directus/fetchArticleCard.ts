@@ -1,7 +1,7 @@
 // src/main/lib/directus/fetchArticleCard.ts
 
 import { ArticleCardType, DIRECTUS_URL } from "./index";
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { fetchAuthorsForArticle } from './fetchAuthorsForArticle';
 
 const API_TOKEN = process.env.DIRECTUS_API_TOKEN;

@@ -1,8 +1,8 @@
 // src/main/lib/directus/fetchRubricBasics.ts
 
-import { DIRECTUS_URL } from './constants';
-import { RubricBasic } from './interfaces';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { DIRECTUS_URL } from './directusConstants';
+import { RubricBasic } from './directusInterfaces';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 export async function fetchRubricBasics(lang: Lang): Promise<RubricBasic[]> {
   try {

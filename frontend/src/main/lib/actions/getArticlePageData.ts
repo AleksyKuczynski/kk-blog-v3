@@ -2,7 +2,7 @@
 'use server'
 
 import { getDictionary } from "../dictionaries";
-import { Lang } from "../dictionaries/types";
+import { Lang } from "../dictionaries/dictionariesTypes";
 import { AuthorDetails, fetchAllRubrics, fetchAuthorBySlug, fetchAuthorsForArticle, fetchFullArticle, fetchRubricDetails } from "../directus";
 import { processContent } from "../markdown/processContent";
 

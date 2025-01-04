@@ -1,10 +1,10 @@
 // src/main/components/Article/Header.tsx
 import Image from 'next/image';
 import Link from 'next/link';
-import { DIRECTUS_URL } from '@/main/lib/directus/constants';
-import { AuthorDetails } from '@/main/lib/directus/interfaces';
-import { Lang } from '@/main/lib/dictionaries/types';
-import { IMAGE_RATIO_STRING } from '../constants';
+import { DIRECTUS_URL } from '@/main/lib/directus/directusConstants';
+import { AuthorDetails } from '@/main/lib/directus/directusInterfaces';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { IMAGE_RATIO_STRING } from '../mainConstants';
 import { twMerge } from 'tailwind-merge';
 
 interface HeaderProps {

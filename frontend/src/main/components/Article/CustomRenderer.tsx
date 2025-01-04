@@ -3,7 +3,7 @@
 import React from 'react';
 import { MarkdownContent } from './MarkdownContent';
 import { CustomBlockquote } from './Blockquote/CustomBlockquote';
-import { ContentChunk } from '@/main/lib/markdown/types';
+import { ContentChunk } from '@/main/lib/markdown/markdownTypes';
 import { ArticleImage } from './elements/Image';
 import ImageCarousel from './Carousel/ImageCarousel';
 

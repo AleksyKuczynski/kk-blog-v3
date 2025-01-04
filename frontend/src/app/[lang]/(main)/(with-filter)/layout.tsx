@@ -2,7 +2,7 @@
 import FilterGroup from '@/main/components/Navigation/FilterGroup';
 import { fetchAllCategories } from '@/main/lib/directus';
 import { getDictionary } from '@/main/lib/dictionaries';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 export default async function WithFilterLayout({
   children,

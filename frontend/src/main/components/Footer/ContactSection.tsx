@@ -1,6 +1,6 @@
 // src/main/components/Footer/ContactSection.tsx
 import { submitContact } from '@/main/lib/actions';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import FormSectionServer from './FormSectionServer';
 
 interface ContactSectionProps {

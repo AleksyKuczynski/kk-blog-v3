@@ -1,5 +1,5 @@
 // src/main/lib/markdown/processBalloonTips.ts
-import { ContentChunk } from './types';
+import { ContentChunk } from './markdownTypes';
 
 const balloonContainerStyles = [
   // Base styles

@@ -1,7 +1,7 @@
 // SearchDropdownItem.tsx
 import React from 'react';
 import { useTheme } from '../ThemeSwitcher';
-import { SearchProposition } from '@/main/lib/directus/interfaces';
+import { SearchProposition } from '@/main/lib/directus/directusInterfaces';
 import { cn } from '@/main/lib/utils/utils';
 
 interface SearchDropdownItemProps {

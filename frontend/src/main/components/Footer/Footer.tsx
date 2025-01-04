@@ -1,5 +1,5 @@
 // src/main/components/Footer/FooterNew.tsx
-import { Dictionary, Lang } from '@/main/lib/dictionaries/types';
+import { Dictionary, Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import AboutUsSection from './AboutUsSection';
 import QuickLinksSection from './QuickLinksSection';
 import SocialLinks from './SocialLinks';

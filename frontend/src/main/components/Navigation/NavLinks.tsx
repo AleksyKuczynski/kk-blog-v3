@@ -1,6 +1,6 @@
 // src/main/components/Navigation/NavLinks.tsx
 import Link from 'next/link';
-import { Lang, NavigationTranslations } from '@/main/lib/dictionaries/types';
+import { Lang, NavigationTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
 import NavLinksClient from './NavLinksClient';
 import { cn } from '@/main/lib/utils/utils';
 

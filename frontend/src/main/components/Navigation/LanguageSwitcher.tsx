@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { switchLanguage } from '@/main/lib/actions';
 import { NavButton } from '../Interface';
 import { LanguageIcon } from '../Interface/Icons';

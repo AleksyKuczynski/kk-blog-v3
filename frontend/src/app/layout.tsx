@@ -3,7 +3,7 @@
 import '@/app/globals.scss';
 import { fontSans, fontSerif, fontDisplay, fontCustom } from '@/app/fonts/fonts';
 import { ThemeProvider, ColorProvider, getColorMode, getColorScheme, getTheme } from '@/main/components/ThemeSwitcher';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 export default async function RootLayout({
   children,

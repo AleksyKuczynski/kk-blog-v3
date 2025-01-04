@@ -1,7 +1,7 @@
 // src/main/components/Search/SearchBar.tsx
 import React from 'react';
-import { SearchTranslations } from '@/main/lib/dictionaries/types';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { SearchTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { SearchIcon, NavButton, CloseIcon } from '../Interface';
 import { useTheme } from '../ThemeSwitcher';
 import { cn } from '@/main/lib/utils/utils';

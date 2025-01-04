@@ -5,9 +5,9 @@ import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
 import { getDictionary } from '@/main/lib/dictionaries';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { fetchArticleSlugs, fetchAllCategories } from '@/main/lib/directus';
-import { ArticleSlugInfo, Category } from '@/main/lib/directus/interfaces';
+import { ArticleSlugInfo, Category } from '@/main/lib/directus/directusInterfaces';
 
 export default async function CategoryPage({ 
   params,

@@ -1,6 +1,6 @@
 // src/main/components/Article/Carousel/CarouselSlide.tsx
 import { memo } from 'react';
-import { CarouselItem } from "@/main/lib/markdown/types";
+import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions } from "./carouselTypes";
 import { CarouselImage } from "./CarouselImage";
 import { CarouselCaption } from "./CarouselCaption";

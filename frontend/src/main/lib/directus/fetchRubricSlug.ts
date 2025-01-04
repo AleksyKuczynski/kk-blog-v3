@@ -1,4 +1,4 @@
-import { DIRECTUS_URL } from "./constants";
+import { DIRECTUS_URL } from "./directusConstants";
 
 export async function fetchRubricSlug(articleSlug: string): Promise<string | null> {
     try {

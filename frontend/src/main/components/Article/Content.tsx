@@ -1,7 +1,7 @@
 // src/main/components/Article/Content.tsx
 import React from 'react';
 import { CustomRenderer } from './CustomRenderer';
-import { ContentChunk, TocItem } from '@/main/lib/markdown/types';
+import { ContentChunk, TocItem } from '@/main/lib/markdown/markdownTypes';
 
 interface ContentProps {
   chunks: ContentChunk[];

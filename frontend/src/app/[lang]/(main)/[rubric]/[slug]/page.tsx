@@ -1,6 +1,6 @@
 // src/app/[lang]/(main)/[rubric]/[slug]/page.tsx
 import { notFound } from 'next/navigation';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { getArticlePageData } from '@/main/lib/actions';
 import { Header, Metadata, Content, ScrollToTopButton, TableOfContents } from '@/main/components/Article';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';

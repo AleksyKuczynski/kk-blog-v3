@@ -1,5 +1,5 @@
 // src/main/components/Article/Carousel/carouselReducer.ts
-import { CarouselItem } from "@/main/lib/markdown/types";
+import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions } from "./carouselTypes";
 
 interface CarouselState {

@@ -1,7 +1,7 @@
 // src/main/components/Footer/AboutUsSection.tsx
 import React from 'react';
 import Logo from '../Logo';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 interface AboutUsSectionProps {
     lang: Lang;

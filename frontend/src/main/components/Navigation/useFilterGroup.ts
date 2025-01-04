@@ -1,8 +1,8 @@
 // src/main/components/Navigation/useFilterGroup.ts
 import { useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { Category } from '@/main/lib/directus/interfaces';
-import { Lang, CategoryTranslations } from '@/main/lib/dictionaries/types';
+import { Category } from '@/main/lib/directus/directusInterfaces';
+import { Lang, CategoryTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
 import type { DropdownItemType } from '../Interface/Dropdown/types';
 
 interface UseFilterGroupProps {

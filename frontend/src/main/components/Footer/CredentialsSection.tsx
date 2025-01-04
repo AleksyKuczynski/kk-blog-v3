@@ -1,7 +1,7 @@
 // src/main/components/Footer/CredentialsSection.tsx
 import React from 'react';
 import Link from 'next/link';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 interface CredentialsSectionProps {
   lang: Lang;

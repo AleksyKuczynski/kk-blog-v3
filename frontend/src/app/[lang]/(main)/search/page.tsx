@@ -5,8 +5,8 @@ import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import { fetchArticleSlugs } from '@/main/lib/directus/index';
 import { Metadata } from 'next';
 import { getDictionary } from '@/main/lib/dictionaries';
-import { Lang } from '@/main/lib/dictionaries/types';
-import { ArticleSlugInfo } from '@/main/lib/directus/interfaces';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import Section from '@/main/components/Main/Section';
 import SortingControl from '@/main/components/Navigation/SortingControl';
 

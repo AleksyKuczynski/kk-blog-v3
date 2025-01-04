@@ -1,26 +1,17 @@
-// src/main/components/ArticleCards/interfaces.tsx
-
-import { Lang } from "@/main/lib/dictionaries/types";
+// /frontend/src/main/components/ArticleCards/interfaces.ts
+import { Lang } from "@/main/lib/dictionaries/dictionariesTypes";
 import { ArticleCardType } from "@/main/lib/directus";
-import { Theme, CardThemeStyles } from "../ThemeSwitcher/themeTypes";
 
-interface GridStyles {
-  outer: string;
-  inner: string;
-  promotedWrapper: string;
+interface ImageProps {
+  src: string;
+  alt: string;
+  aspectRatio: number;
 }
 
-export interface CardStyles {
-  common: CardThemeStyles;
-  themeSensitive?: Record<Theme, CardThemeStyles>;
-}
-
-export interface HeroStyles {
-  grid: {
-    common: GridStyles;
-    themeSensitive: Record<Theme, GridStyles>;
-  };
-  cards: CardStyles;
+interface BaseArticleCardProps {
+  article: ArticleCardType;
+  articleLink: string;
+  dict: { common: { readMore: string } };
 }
 
 export interface ArticleCardProps {
@@ -29,41 +20,24 @@ export interface ArticleCardProps {
   authorSlug?: string;
   rubricSlug?: string;
   layout?: ArticleCardType['layout'];
-  cardStyles: CardStyles;
-  theme: Theme;
 }
 
-interface ImageProps {
-  src: string;
-  alt: string;
-  aspectRatio: number;
-}
-
-interface BaseArticleCard {
-  article: ArticleCardType;
-  articleLink: string;
-  lang: string;
-  dict: { common: { readMore: string } };
-}
-
-export interface ArticleCardVariantProps extends BaseArticleCard {
+export interface ArticleCardVariantProps extends BaseArticleCardProps {
   formattedDate: string;
-  cardStyles: CardStyles;
   imageProps: ImageProps | null;
   layout: ArticleCardType['layout'];
+  lang: string;
 }
 
-export interface NewsCardProps extends BaseArticleCard {
+export interface NewsCardProps extends BaseArticleCardProps {
   formattedDate: string;
-  themeClasses: CardThemeStyles;
 }
 
-export interface AdvertisingCardProps extends BaseArticleCard {
-  themeClasses: CardThemeStyles;
-}
+export interface AdvertisingCardProps extends BaseArticleCardProps {}
 
-export interface StandardCardProps extends BaseArticleCard {
+export interface StandardCardProps extends BaseArticleCardProps {
   formattedDate: string;
-  themeClasses: CardThemeStyles;
   imageProps: ImageProps | null;
+  layout: 'regular' | 'latest' | 'promoted';
+  lang: string;
 }

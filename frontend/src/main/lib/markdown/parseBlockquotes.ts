@@ -1,6 +1,6 @@
 // src/main/lib/markdown/parseBlockquotes.ts
 
-import { BlockquoteProps, ContentChunk, EpigraphBlockquote, HighlightBlockquote, ProfileBlockquote, QuoteBlockquote } from './types';
+import { BlockquoteProps, ContentChunk, EpigraphBlockquote, HighlightBlockquote, ProfileBlockquote, QuoteBlockquote } from './markdownTypes';
 
 function parseHighlight(content: string): HighlightBlockquote | null {
   const paragraphs = content.trim().split('\n');

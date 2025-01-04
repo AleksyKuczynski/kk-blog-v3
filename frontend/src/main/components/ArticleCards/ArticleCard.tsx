@@ -7,7 +7,7 @@ import { getDictionary } from '@/main/lib/dictionaries';
 import { ArticleCardProps } from './interfaces';
 import { DIRECTUS_URL } from '@/main/lib/directus';
 import { getTheme } from '../ThemeSwitcher';
-import { IMAGE_RATIO } from '../constants';
+import { IMAGE_RATIO } from '../mainConstants';
 
 
 export default async function ArticleCard({ 

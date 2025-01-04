@@ -1,5 +1,5 @@
 // src/main/lib/markdown/extractImagesAndCaptions.ts
-import { ContentChunk, ImageAttributes } from './types';
+import { ContentChunk, ImageAttributes } from './markdownTypes';
 import { extractCaption } from './captionUtils';
 import { fetchAssetMetadata } from '../directus';
 import { parseMarkdownImage } from '../utils';

@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import NavLinks from '../Navigation/NavLinks';
-import { Lang, NavigationTranslations } from '@/main/lib/dictionaries/types';
+import { Lang, NavigationTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
 
 interface QuickLinksSectionProps {
   lang: Lang;

@@ -4,7 +4,7 @@
 import { usePathname } from 'next/navigation'
 import DesktopNavigation from './DesktopNav'
 import MobileNavigation from './MobileNav'
-import { ColorsTranslations, Lang, NavigationTranslations, SearchTranslations, ThemesTranslations } from "@/main/lib/dictionaries/types";
+import { ColorsTranslations, Lang, NavigationTranslations, SearchTranslations, ThemesTranslations } from "@/main/lib/dictionaries/dictionariesTypes";
 
 interface NavigationProps {
     lang: Lang

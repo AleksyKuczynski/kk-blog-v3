@@ -4,7 +4,7 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/main/components/ThemeSwitcher/ThemeContext';
-import { Lang, NavigationTranslations } from '@/main/lib/dictionaries/types';
+import { Lang, NavigationTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
 
 interface NavLinksClientProps {
   lang: Lang;

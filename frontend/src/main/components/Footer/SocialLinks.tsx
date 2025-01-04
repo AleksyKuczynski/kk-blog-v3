@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { socialLinks, SocialLink } from './socialLinksData';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 interface SocialLinksProps {
     lang: Lang;

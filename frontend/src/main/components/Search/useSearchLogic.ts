@@ -1,7 +1,7 @@
 // src/main/components/Search/useSearchLogic.ts
 import { useReducer, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { SearchTranslations, Lang } from '@/main/lib/dictionaries/types';
+import { SearchTranslations, Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { useOutsideClick } from '@/main/lib/hooks';
 import { searchReducer, getInitialState } from './searchReducer';
 import { handleSearchScenario } from './searchScenarios';

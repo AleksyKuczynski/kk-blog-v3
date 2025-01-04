@@ -1,7 +1,7 @@
 // src/main/lib/directus/fetchCategoriesForArticle.ts
 
 import { Category, DIRECTUS_URL } from "./index";
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 export async function fetchCategoriesForArticle(slug: string, lang: Lang): Promise<Category[]> {
     try {

@@ -1,5 +1,5 @@
 // src/main/components/Footer/socialLinksData.ts
-import { FooterTranslations } from '@/main/lib/dictionaries/types';
+import { FooterTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
 import { FacebookIcon, TwitterIcon, InstagramIcon, VKIcon, TelegramIcon, WhatsAppIcon } from './SocialIcons';
 
 export type SocialLinkName = keyof FooterTranslations['socialLinks'];

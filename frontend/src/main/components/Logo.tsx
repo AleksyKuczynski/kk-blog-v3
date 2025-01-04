@@ -1,6 +1,6 @@
 // /frontend/src/main/components/Logo.tsx
 import Link from 'next/link'
-import { Lang } from '@/main/lib/dictionaries/types'
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes'
 
 interface LogoProps {
   lang: Lang

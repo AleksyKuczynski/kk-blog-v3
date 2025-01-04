@@ -1,6 +1,6 @@
 // src/main/lib/themeTypes.ts
 
-import { ColorsTranslations, ThemesTranslations } from "@/main/lib/dictionaries/types";
+import { ColorsTranslations, ThemesTranslations } from "@/main/lib/dictionaries/dictionariesTypes";
 
 export type Theme = 'default' | 'rounded' | 'sharp';
 export type ColorMode = 'light' | 'dark';

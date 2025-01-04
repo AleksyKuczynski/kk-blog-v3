@@ -1,7 +1,7 @@
 // src/main/lib/markdown/parseCarousels.ts
 
 import { convertSimpleMarkdownToHtml } from './markdownToHtml';
-import { ContentChunk, CarouselItem, ImageAttributes } from './types';
+import { ContentChunk, CarouselItem, ImageAttributes } from './markdownTypes';
 import { fetchAssetMetadata } from '../directus';
 import { parseMarkdownImage } from './parseMarkdownImage';
 import { analyzeImageSet } from '@/main/components/Article/Carousel/utils/analyzeImageSet';

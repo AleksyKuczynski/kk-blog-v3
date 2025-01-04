@@ -1,6 +1,6 @@
 // src/main/components/Article/Carousel/utils/analyzeImageSet.ts
 
-import { ImageAttributes } from "@/main/lib/markdown/types";
+import { ImageAttributes } from "@/main/lib/markdown/markdownTypes";
 import { AspectRatioOrientation, AspectRatioStats, DominanceLevel, ImageSetAnalysis } from "../carouselTypes";
 
 const RATIO_THRESHOLDS = {

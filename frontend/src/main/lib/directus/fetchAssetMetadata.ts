@@ -1,6 +1,6 @@
 // src/main/lib/directus/fetchAssetMetadata.ts
-import { DIRECTUS_URL } from "./constants";
-import { Asset } from "./interfaces";
+import { DIRECTUS_URL } from "./directusConstants";
+import { Asset } from "./directusInterfaces";
 
 export async function fetchAssetMetadata(assetId: string): Promise<Asset | null> {
   try {

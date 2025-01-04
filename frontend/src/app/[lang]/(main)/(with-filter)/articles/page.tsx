@@ -2,9 +2,9 @@
 
 import { Suspense } from 'react';
 import { getDictionary } from '@/main/lib/dictionaries';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { fetchHeroSlugs, fetchArticleSlugs } from '@/main/lib/directus/index';
-import { ArticleSlugInfo } from '@/main/lib/directus/interfaces';
+import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import HeroArticles from '@/main/components/Main/HeroArticles';

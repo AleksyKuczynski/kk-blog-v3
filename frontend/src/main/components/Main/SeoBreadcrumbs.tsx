@@ -1,5 +1,5 @@
 // src/main/components/Main/SeoBreadcrumbs.tsx
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { headers } from 'next/headers'
 
 interface SeoBreadcrumbsProps {

@@ -3,7 +3,7 @@
 import { parseBlockquotes } from './parseBlockquotes';
 import { parseCarousels } from './parseCarousels';
 import { generateToc } from './generateToc';
-import { ProcessedContent, ContentChunk } from './types';
+import { ProcessedContent, ContentChunk } from './markdownTypes';
 import { extractImagesAndCaptions } from './extractImagesAndCaptions';
 import { convertMarkdownToHtmlSync } from './markdownToHtml';
 import { createAddHeadingIds } from './addHeadingIds';

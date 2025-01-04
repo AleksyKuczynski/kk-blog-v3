@@ -1,6 +1,6 @@
 // src/main/lib/markdown/generateToc.ts
 
-import { TocItem } from './types';
+import { TocItem } from './markdownTypes';
 
 export function generateToc(content: string): TocItem[] {
   const headings = content.match(/<h2 id="(heading-\d+)".*?>(.*?)<\/h2>/g);

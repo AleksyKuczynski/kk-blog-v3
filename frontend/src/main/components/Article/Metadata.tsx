@@ -1,7 +1,7 @@
 // src/main/components/Article/Metadata.tsx
 import Link from 'next/link';
-import { Category } from '@/main/lib/directus/interfaces';
-import { Lang } from '@/main/lib/dictionaries/types';
+import { Category } from '@/main/lib/directus/directusInterfaces';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { twMerge } from 'tailwind-merge';
 
 interface MetadataProps {

@@ -1,7 +1,7 @@
 // src/main/lib/directus/index.ts
 
-export * from '@/main/lib/directus/constants';
-export * from '@/main/lib/directus/interfaces';
+export * from '@/main/lib/directus/directusConstants';
+export * from '@/main/lib/directus/directusInterfaces';
 export { fetchAllAuthors } from '@/main/lib/directus/fetchAllAuthors';
 export { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
 export { fetchArticleCard } from '@/main/lib/directus/fetchArticleCard';

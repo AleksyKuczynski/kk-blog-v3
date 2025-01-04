@@ -1,6 +1,6 @@
 // src/main/components/Article/Carousel/useCarousel.ts
 import { useReducer, useCallback } from 'react';
-import { CarouselItem } from "@/main/lib/markdown/types";
+import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions } from '../carouselTypes';
 import { carouselReducer } from '../carouselReducer';
 

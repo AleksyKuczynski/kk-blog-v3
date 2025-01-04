@@ -1,67 +1,43 @@
-// src/main/components/ArticleCards/ArticleCardVariant.tsx
-'use client';
+// /frontend/src/main/components/ArticleCards/ArticleCardVariant.tsx
 
 import { ArticleCardVariantProps } from './interfaces';
 import { NewsCard } from './NewsCard';
 import { AdvertisingCard } from './AdvertisingCard';
 import { StandardCard } from './StandardCard';
-import { promotedCardStyles } from './promotedCardStyles';
-import { latestCardStyles } from './latestCardStyles';
-import { regularCardStyles } from './regularCardStyles';
-import { CardThemeStyles } from '../ThemeSwitcher/themeTypes';
-import { useTheme } from '../ThemeSwitcher';
 
-// Helper function to merge classes
-const mergeClasses = (...classes: (string | undefined)[]) => {
-  return classes.filter(Boolean).join(' ');
-};
-
-export function ArticleCardVariant(props: ArticleCardVariantProps) {
-  const { cardStyles, layout } = props;
-  const { currentTheme } = useTheme();
-  
-
+export function ArticleCardVariant({
+  article,
+  articleLink,
+  formattedDate,
+  imageProps,
+  layout = 'regular',
+  lang,
+  dict
+}: ArticleCardVariantProps) {
+  // Choose component based on layout
   const getCardComponent = () => {
-    let layoutStyles: Record<string, CardThemeStyles>;
-
-    switch (layout) {
-      case 'promoted':
-        layoutStyles = promotedCardStyles;
-        break;
-      case 'latest':
-        layoutStyles = latestCardStyles;
-        break;
-      default:
-        layoutStyles = regularCardStyles;
-    }
-
-    // Helper function to merge styles for a single property
-const mergeStylesForProp = (prop: keyof CardThemeStyles) => 
-  mergeClasses(
-    cardStyles.common[prop],
-    cardStyles.themeSensitive[currentTheme][prop],
-    layoutStyles[currentTheme][prop]
-  );
-
-// Merge the styles
-const mergedStyles: CardThemeStyles = (Object.keys(cardStyles.common) as Array<keyof CardThemeStyles>)
-  .reduce((acc, prop) => {
-    acc[prop] = mergeStylesForProp(prop);
-    return acc;
-  }, {} as CardThemeStyles);
-
     const commonProps = {
-      ...props,
-      themeClasses: mergedStyles,
+      article,
+      articleLink,
+      dict
     };
 
     switch (layout) {
       case 'news':
-        return <NewsCard {...commonProps} />;
+        return <NewsCard 
+          {...commonProps}
+          formattedDate={formattedDate}
+        />;
       case 'advertising':
         return <AdvertisingCard {...commonProps} />;
       default:
-        return <StandardCard {...commonProps} />;
+        return <StandardCard
+          {...commonProps}
+          formattedDate={formattedDate}
+          imageProps={imageProps}
+          layout={layout}
+          lang={lang}
+        />;
     }
   };
 

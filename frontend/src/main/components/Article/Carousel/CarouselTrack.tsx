@@ -1,5 +1,5 @@
 // src/main/components/Article/Carousel/CarouselTrack.tsx
-import { CarouselItem } from "@/main/lib/markdown/types";
+import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions } from "./carouselTypes";
 import { twMerge } from 'tailwind-merge';
 import { CarouselSlide } from "./CarouselSlide";

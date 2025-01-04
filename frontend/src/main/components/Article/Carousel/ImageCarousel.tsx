@@ -2,7 +2,7 @@
 'use client'
 
 import React, { memo } from 'react';
-import { CarouselItem } from "@/main/lib/markdown/types";
+import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions, ImageSetAnalysis } from "./carouselTypes";
 import { CarouselTrack } from './CarouselTrack';
 import { CarouselNavigation } from './CarouselNavigation';

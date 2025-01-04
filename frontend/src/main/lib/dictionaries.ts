@@ -1,6 +1,6 @@
 // src/main/lib/dictionaries.ts
 import 'server-only'
-import { Dictionary, Lang } from './dictionaries/types';
+import { Dictionary, Lang } from './dictionaries/dictionariesTypes';
 
 const dictionaries = {
   ru: () => import('./dictionaries/ru.json').then((module) => module.default as Dictionary),

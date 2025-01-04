@@ -2,8 +2,8 @@
 'use client';
 
 import React from 'react';
-import { Category } from '@/main/lib/directus/interfaces';
-import { SortingTranslations, CategoryTranslations, Lang } from '@/main/lib/dictionaries/types';
+import { Category } from '@/main/lib/directus/directusInterfaces';
+import { SortingTranslations, CategoryTranslations, Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { ChevronDownIcon } from '../Interface/Icons';
 import SortingControl from './SortingControl';
 import { useFilterGroup } from './useFilterGroup';

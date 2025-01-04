@@ -1,6 +1,6 @@
 // src/main/components/Search/ExpandableSearch.tsx
 import React from 'react';
-import { SearchTranslations, Lang } from '@/main/lib/dictionaries/types';
+import { SearchTranslations, Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { SearchIcon, NavButton, CloseIcon } from '../Interface';
 import { useTheme } from '../ThemeSwitcher';
 import { cn } from '@/main/lib/utils/utils';
