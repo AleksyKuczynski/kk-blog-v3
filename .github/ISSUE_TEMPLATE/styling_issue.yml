@@ -1,0 +1,83 @@
+name: 🎨 Styling Issue
+description: Report styling, theme, or visual inconsistency issues
+title: "[STYLING] "
+labels: ["styling", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report styling issues, theme inconsistencies, or visual problems.
+
+  - type: dropdown
+    id: styling_category
+    attributes:
+      label: Styling Category
+      description: What type of styling issue is this?
+      options:
+        - Theme inconsistency between variants
+        - Mobile responsiveness
+        - Typography/font issues
+        - Color scheme problems
+        - Layout/spacing issues
+        - Animation/transition issues
+        - Cross-browser compatibility
+        - Performance (CSS-related)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: affected_themes
+    attributes:
+      label: Affected Geometric Themes
+      description: Which themes show this issue? (Check all that apply)
+      options:
+        - label: default
+        - label: rounded
+        - label: sharp
+
+  - type: dropdown
+    id: color_mode
+    attributes:
+      label: Color Mode
+      description: Which color mode(s) are affected?
+      options:
+        - Light mode only
+        - Dark mode only
+        - Both light and dark
+        - Browser default detection issue
+    validations:
+      required: true
+
+  - type: input
+    id: component_path
+    attributes:
+      label: Component File
+      description: Which component file contains the styling issue?
+      placeholder: "e.g., Article/Blockquote/Type3Blockquote.tsx"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current_styling
+    attributes:
+      label: Current Styling Behavior
+      description: What does the styling currently look like?
+      placeholder: "Describe current appearance..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_styling
+    attributes:
+      label: Expected Styling Behavior
+      description: How should it look instead?
+      placeholder: "Describe expected appearance..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: css_classes
+    attributes:
+      label: Relevant CSS Classes
+      description: List the Tailwind classes or CSS involved
+      placeholder: "theme-default:text-lg theme-rounded:font-serif..."

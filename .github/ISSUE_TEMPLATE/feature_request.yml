@@ -1,0 +1,71 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement
+title: "[FEATURE] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Please describe your idea below.
+
+  - type: dropdown
+    id: feature_type
+    attributes:
+      label: Feature Type
+      description: What type of feature is this?
+      options:
+        - New Component
+        - Styling Enhancement
+        - Performance Improvement
+        - Developer Experience
+        - User Experience
+        - Architecture Improvement
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem_description
+    attributes:
+      label: Problem Description
+      description: What problem does this feature solve?
+      placeholder: "Is your feature request related to a problem? Please describe..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like
+      placeholder: "A clear and concise description of what you want to happen..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative solutions you've considered
+      placeholder: "A clear and concise description of any alternative solutions..."
+
+  - type: dropdown
+    id: affects_themes
+    attributes:
+      label: Theme Impact
+      description: Will this feature affect the geometric theme system?
+      options:
+        - No theme impact
+        - All themes need updates
+        - Theme-specific feature
+        - New theme variant
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Add any other context, mockups, or examples
+      placeholder: "Screenshots, mockups, examples from other sites..."

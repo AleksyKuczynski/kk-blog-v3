@@ -1,0 +1,57 @@
+name: ⚡ Performance Issue
+description: Report performance problems or optimization opportunities
+title: "[PERFORMANCE] "
+labels: ["performance", "needs-investigation"]
+body:
+  - type: dropdown
+    id: performance_type
+    attributes:
+      label: Performance Issue Type
+      description: What type of performance issue is this?
+      options:
+        - Slow page load
+        - Bundle size concern
+        - Memory usage
+        - Rendering lag
+        - Theme switching delay
+        - Search performance
+        - Image loading
+        - Build time
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: performance_description
+    attributes:
+      label: Performance Issue Description
+      description: Describe the performance problem
+      placeholder: "What performance issue are you experiencing?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to Reproduce Performance Issue
+      description: How can we reproduce this performance problem?
+      placeholder: |
+        1. Navigate to...
+        2. Perform action...
+        3. Notice slowdown...
+    validations:
+      required: true
+
+  - type: textarea
+    id: metrics
+    attributes:
+      label: Performance Metrics
+      description: Any measurements, Lighthouse scores, or specific numbers
+      placeholder: "Bundle size, load times, Lighthouse scores..."
+
+  - type: input
+    id: suspected_component
+    attributes:
+      label: Suspected Component/Feature
+      description: Which component or feature might be causing the issue?
+      placeholder: "e.g., ImageCarousel, theme switching, markdown processing"
