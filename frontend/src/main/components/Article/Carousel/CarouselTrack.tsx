@@ -39,12 +39,13 @@ export function CarouselTrack({
       <div 
         style={containerStyles}
         className={twMerge(
-          'Carousel_carouselContainer__SjVtW relative w-full overflow-hidden h-full',
+          'Carousel_carouselContainer__SjVtW relative w-full overflow-hidden',
           navigationLayout === 'horizontal' ? 'pb-16' : 'px-12',
           'sm:pb-12 sm:px-8'
         )}
       >
-        <div className="relative h-full w-full">
+        {/* Inner container needs to maintain height relationship with aspect-ratio container */}
+        <div className="relative w-full max-w-full min-h-[var(--fallback-height)]">
           {visibleIndexes.map((index, i) => {
             const position = (i - 1) as SlidePosition;
             return (

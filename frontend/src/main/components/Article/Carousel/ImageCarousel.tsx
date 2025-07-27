@@ -39,7 +39,7 @@ const ImageCarousel = memo(function ImageCarousel({
   return (
     <div 
       className={twMerge(
-        "relative mx-auto mb-24 outline-none",
+        "relative mx-auto mb-24 outline-none max-w-4xl",
         "theme-default:focus:ring-2 theme-default:focus:ring-pr-fix/50",
         "theme-rounded:shadow-xl theme-rounded:rounded-2xl",
         "theme-sharp:border theme-sharp:border-ol"

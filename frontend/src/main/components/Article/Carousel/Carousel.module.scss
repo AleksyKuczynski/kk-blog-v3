@@ -4,38 +4,47 @@
   --transition-duration: 300ms;
   position: relative;
   overflow: hidden;
-
-  // Default aspect ratio
-  aspect-ratio: var(--desktop-landscape-ratio);
   
-  // Mobile Portrait
-  @media (max-width: 767px) and (orientation: portrait) {
-    aspect-ratio: var(--mobile-portrait-ratio);
-  }
+  // Fallback for browsers that don't support aspect-ratio
+  min-height: var(--fallback-height, 400px);
   
-  // Mobile Landscape
-  @media (max-width: 767px) and (orientation: landscape) {
-    aspect-ratio: var(--mobile-landscape-ratio);
-  }
-  
-  // Tablet Portrait
-  @media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
-    aspect-ratio: var(--tablet-portrait-ratio);
-  }
-  
-  // Tablet Landscape
-  @media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
-    aspect-ratio: var(--tablet-landscape-ratio);
-  }
-  
-  // Desktop Portrait
-  @media (min-width: 1024px) and (orientation: portrait) {
-    aspect-ratio: var(--desktop-portrait-ratio);
-  }
-  
-  // Desktop Landscape
-  @media (min-width: 1024px) and (orientation: landscape) {
+  // Modern browsers with aspect-ratio support
+  @supports (aspect-ratio: 1) {
+    // Reset min-height when aspect-ratio is supported
+    min-height: unset;
+    
+    // Default aspect ratio
     aspect-ratio: var(--desktop-landscape-ratio);
+    
+    // Mobile Portrait
+    @media (max-width: 767px) and (orientation: portrait) {
+      aspect-ratio: var(--mobile-portrait-ratio);
+    }
+    
+    // Mobile Landscape
+    @media (max-width: 767px) and (orientation: landscape) {
+      aspect-ratio: var(--mobile-landscape-ratio);
+    }
+    
+    // Tablet Portrait
+    @media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
+      aspect-ratio: var(--tablet-portrait-ratio);
+    }
+    
+    // Tablet Landscape
+    @media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+      aspect-ratio: var(--tablet-landscape-ratio);
+    }
+    
+    // Desktop Portrait
+    @media (min-width: 1024px) and (orientation: portrait) {
+      aspect-ratio: var(--desktop-portrait-ratio);
+    }
+    
+    // Desktop Landscape
+    @media (min-width: 1024px) and (orientation: landscape) {
+      aspect-ratio: var(--desktop-landscape-ratio);
+    }
   }
 }
 
