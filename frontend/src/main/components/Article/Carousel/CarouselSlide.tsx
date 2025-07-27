@@ -27,7 +27,8 @@ export const CarouselSlide = memo(function CarouselSlide({
   
   // Caption visibility logic for 2-slide carousel
   const shouldShowCaption = (): boolean => {
-    if (!image.processedCaption) return false;
+    // ✅ processedCaption is now guaranteed to be a string, just check if it's not empty
+    if (image.processedCaption.trim() === '') return false;
     
     // In 2-slide carousel, only show caption on center position to avoid duplicates
     if (is2SlideCarousel) {
@@ -56,7 +57,7 @@ export const CarouselSlide = memo(function CarouselSlide({
       
       {shouldShowCaption() && (
         <CarouselCaption
-          content={image.processedCaption}
+          content={image.processedCaption} // ✅ Now guaranteed to be a string, TypeScript will be happy!
           expanded={image.expandedCaption}
           onClick={onCaptionClick}
           navigationLayout={navigationLayout}

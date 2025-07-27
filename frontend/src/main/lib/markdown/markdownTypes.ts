@@ -1,4 +1,4 @@
-// src/main/lib/markdown/types.ts
+// src/main/lib/markdown/markdownTypes.ts
 
 import { CarouselDimensions, ImageSetAnalysis } from "@/main/components/Article/Carousel/carouselTypes";
 
@@ -37,7 +37,7 @@ export interface CarouselItem {
   type: 'image' | 'figure';
   imageAttributes: ImageAttributes;
   caption?: string;
-  processedCaption?: string;
+  processedCaption: string; // ✅ FIXED: Now required, always a string (empty if no caption)
   expandedCaption: boolean;
 }
 
@@ -47,28 +47,28 @@ export interface BlockquoteBase {
 }
 
 export interface HighlightBlockquote extends BlockquoteBase {
-type: '1';
+  type: '1';
 }
 
 export interface QuoteBlockquote extends BlockquoteBase {
-type: '2';
-author: string;
+  type: '2';
+  author: string;
 }
 
 export interface EpigraphBlockquote extends BlockquoteBase {
-type: '3';
-source: string;
-author: string;
+  type: '3';
+  source: string;
+  author: string;
 }
 
 export interface ProfileBlockquote extends BlockquoteBase {
-type: '4';
-author: string;
-avatarUrl: string;
+  type: '4';
+  author: string;
+  avatarUrl: string;
 }
 
 export type BlockquoteProps = 
-| HighlightBlockquote 
-| QuoteBlockquote 
-| EpigraphBlockquote 
-| ProfileBlockquote;
+  | HighlightBlockquote 
+  | QuoteBlockquote 
+  | EpigraphBlockquote 
+  | ProfileBlockquote;

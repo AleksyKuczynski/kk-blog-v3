@@ -5,7 +5,7 @@ import { ContentChunk, CarouselItem, ImageAttributes } from './markdownTypes';
 import { fetchAssetMetadata } from '../directus';
 import { parseMarkdownImage } from './parseMarkdownImage';
 import { analyzeImageSet } from '@/main/components/Article/Carousel/utils/analyzeImageSet';
-import { calculateBreakpointDimensions } from '@/main/components/Article/Carousel/utils/calculateBreakpointDimensions';
+import { calculateCarouselDimensions } from '@/main/components/Article/Carousel/utils/calculateCarouselDimensions';
 
 export async function parseCarousels(chunks: ContentChunk[]): Promise<ContentChunk[]> {
   const processedChunks: ContentChunk[] = [];
@@ -40,10 +40,17 @@ export async function parseCarousels(chunks: ContentChunk[]): Promise<ContentChu
       for (const chunk of imageBuffer) {
         try {
           const enrichedAttributes = await enrichImageAttributes(chunk.content || '');
+          
+          // ✅ FIXED: Always assign a string to processedCaption, never undefined
+          const processedCaption = (chunk.type === 'figure' && chunk.caption) 
+            ? convertSimpleMarkdownToHtml(chunk.caption)
+            : ''; // Empty string if no caption
+          
           carouselItems.push({
             type: chunk.type as 'image' | 'figure',
             imageAttributes: enrichedAttributes,
             caption: chunk.type === 'figure' ? chunk.caption : undefined,
+            processedCaption, // Now always a string - TypeScript will be happy!
             expandedCaption: false
           });
         } catch (error) {
@@ -56,16 +63,18 @@ export async function parseCarousels(chunks: ContentChunk[]): Promise<ContentChu
         const mediaRatios = carouselItems.map(item => 
           (item.imageAttributes.width || 1200) / (item.imageAttributes.height || 800)
         );
-        const dimensions = calculateBreakpointDimensions(imageSetAnalysis, mediaRatios);
+        
+        // Use enhanced calculation function
+        const dimensions = calculateCarouselDimensions({
+          analysis: imageSetAnalysis,
+          viewportWidth: typeof window !== 'undefined' ? window.innerWidth : 1200,
+          viewportHeight: typeof window !== 'undefined' ? window.innerHeight : 800,
+          mediaRatios
+        });
 
         processedChunks.push({
           type: 'carousel',
-          images: carouselItems.map(item => ({
-            ...item,
-            processedCaption: item.caption 
-              ? convertSimpleMarkdownToHtml(item.caption) 
-              : undefined
-          })),
+          images: carouselItems, // All items now have processedCaption as string
           imageSetAnalysis,
           dimensions
         });
