@@ -1,13 +1,9 @@
 // src/main/components/Article/Carousel/CarouselTrack.tsx
-
-// EXISTING IMPORTS - Keep these as they are
 import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions } from "./carouselTypes";
 import { twMerge } from 'tailwind-merge';
 import { CarouselSlide } from "./CarouselSlide";
 import { getVisibleIndexes } from './utils/getVisibleIndexes';
-
-// 🔄 ADD THIS NEW IMPORT
 import { getViewportBreakpoint } from './utils/viewportUtils';
 
 interface CarouselTrackProps {
@@ -15,6 +11,10 @@ interface CarouselTrackProps {
   currentIndex: number;
   dimensions: CarouselDimensions;
   navigationLayout: 'horizontal' | 'vertical';
+  // 🔄 ADD: Animation state props
+  direction?: 'next' | 'prev' | null;
+  isTransitioning?: boolean;
+  previousIndex?: number;
   handlers: {
     handleCaptionClick: (index: number) => void;
   };
@@ -27,10 +27,11 @@ export function CarouselTrack({
     currentIndex,
     dimensions,
     navigationLayout,
+    direction = null,
+    isTransitioning = false,
+    previousIndex = 0,
     handlers
   }: CarouselTrackProps) {
-    
-    // 🔄 REPLACE YOUR EXISTING containerStyles WITH THIS:
     
     // Get current viewport dimensions for fallback height calculation
     const currentViewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
@@ -54,7 +55,7 @@ export function CarouselTrack({
     const validateRatio = (ratio: number): number => {
       if (!ratio || isNaN(ratio) || ratio <= 0) {
         console.warn('Invalid carousel ratio detected:', ratio, 'using fallback 1.5');
-        return 1.5; // reasonable default
+        return 1.5;
       }
       return ratio;
     };
@@ -66,21 +67,14 @@ export function CarouselTrack({
       '--tablet-landscape-ratio': validateRatio(dimensions.breakpointDimensions[3].ratio),
       '--desktop-portrait-ratio': validateRatio(dimensions.breakpointDimensions[4].ratio),
       '--desktop-landscape-ratio': validateRatio(dimensions.breakpointDimensions[5].ratio),
-      // 🔴 CRITICAL FIX: Add these two missing CSS variables
       '--fallback-height': `${fallbackHeight}px`,
       '--carousel-max-height': `${fallbackHeight}px`
     } as React.CSSProperties;
-
-    // 🔄 ADD THIS DEBUG LOGGING (optional, for development)
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Carousel height debug:', {
-        fallbackHeight,
-        breakpoint: currentBreakpoint,
-        calculatedRatios: dimensions.breakpointDimensions.map(d => d.ratio)
-      });
-    }
   
     const visibleIndexes = getVisibleIndexes(currentIndex, images.length);
+    
+    // 🔄 ADD: Calculate caption max height based on carousel dimensions
+    const captionMaxHeight = Math.min(120, fallbackHeight * 0.25); // Max 25% of carousel height or 120px
   
     return (
       <div 
@@ -88,24 +82,35 @@ export function CarouselTrack({
         className={twMerge(
           'Carousel_carouselContainer__SjVtW relative w-full overflow-hidden',
           navigationLayout === 'horizontal' ? 'pb-16' : 'px-12',
-          'sm:pb-12 sm:px-8'
-          // 🔄 ADD THIS CLASS for additional safety:
-          , 'max-h-[var(--carousel-max-height)]'
+          'sm:pb-12 sm:px-8',
+          'max-h-[var(--carousel-max-height)]'
         )}
       >
-        {/* EXISTING CONTENT - Keep the rest as is */}
-        <div className="relative w-full max-w-full min-h-[var(--fallback-height)]">
+        {/* 🔄 FIXED: Maintain strict height bounds for fixed-height requirement */}
+        <div className="relative w-full max-w-full min-h-[var(--fallback-height)] max-h-[var(--carousel-max-height)] overflow-hidden">
           {visibleIndexes.map((index, i) => {
             const position = (i - 1) as SlidePosition;
+            
+            // 🔄 ADD: Determine if this slide is involved in current animation
+            const isCurrentSlide = index === currentIndex;
+            const isPreviousSlide = index === previousIndex;
+            const isInvolvedInTransition = isTransitioning && (isCurrentSlide || isPreviousSlide);
+            
             return (
               <CarouselSlide
                 key={`slide-${index}`}
                 image={images[index]}
-                isActive={index === currentIndex}
+                isActive={isCurrentSlide}
                 position={position}
-                dimensions={dimensions}
+                dimensions={{
+                  ...dimensions,
+                  maxHeight: fallbackHeight // Pass calculated height to slide
+                }}
                 navigationLayout={navigationLayout}
                 onCaptionClick={() => handlers.handleCaptionClick(index)}
+                // 🔄 ADD: Pass animation props
+                animationDirection={direction}
+                isTransitioning={isInvolvedInTransition}
               />
             );
           })}

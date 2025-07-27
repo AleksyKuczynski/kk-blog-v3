@@ -10,6 +10,8 @@ interface CarouselNavigationProps {
   onPrevious: () => void;
   onNext: () => void;
   onSlideSelect: (index: number) => void;
+  // 🔄 ADD: Disable navigation during transitions
+  disabled?: boolean;
 }
 
 export const CarouselNavigation = memo(function CarouselNavigation({
@@ -18,7 +20,8 @@ export const CarouselNavigation = memo(function CarouselNavigation({
   currentSlide,
   onPrevious,
   onNext,
-  onSlideSelect
+  onSlideSelect,
+  disabled = false
 }: CarouselNavigationProps) {
   const navigationButtonStyles = twMerge(
     "flex items-center justify-center transition-colors duration-200",
@@ -33,7 +36,9 @@ export const CarouselNavigation = memo(function CarouselNavigation({
       "theme-default:rounded-lg theme-default:bg-sf-hi/80 theme-default:hover:bg-sf-hst",  
       "theme-rounded:rounded-xl theme-rounded:bg-sf-hi/80 theme-rounded:hover:bg-sf-hst",
       "theme-sharp:border theme-sharp:border-pr-cont"
-    ].join(' ')
+    ].join(' '),
+    // 🔄 ADD: Disabled state styling
+    disabled && "opacity-50 cursor-not-allowed"
   );
 
   return (
@@ -45,6 +50,7 @@ export const CarouselNavigation = memo(function CarouselNavigation({
     )}>
       <button
         onClick={onPrevious}
+        disabled={disabled} // 🔄 ADD: Disable during transitions
         className={navigationButtonStyles}
         aria-label="Previous slide"
       >
@@ -64,6 +70,7 @@ export const CarouselNavigation = memo(function CarouselNavigation({
           <button
             key={idx}
             onClick={() => onSlideSelect(idx)}
+            disabled={disabled} // 🔄 ADD: Disable during transitions
             className={twMerge(
               "transition-all pointer-events-auto",
               idx === currentSlide 
@@ -80,7 +87,9 @@ export const CarouselNavigation = memo(function CarouselNavigation({
               "theme-default:h-1.5 theme-default:rounded-full",
               "theme-rounded:h-3 theme-rounded:rounded-sm",
               "theme-sharp:h-2.5 theme-sharp:border-2",
-              "hover:bg-pr-fix"
+              "hover:bg-pr-fix",
+              // 🔄 ADD: Disabled state for indicators
+              disabled && "opacity-50 cursor-not-allowed"
             )}
             aria-label={`Go to slide ${idx + 1}`}
             aria-current={idx === currentSlide}
@@ -90,6 +99,7 @@ export const CarouselNavigation = memo(function CarouselNavigation({
 
       <button
         onClick={onNext}
+        disabled={disabled} // 🔄 ADD: Disable during transitions
         className={navigationButtonStyles}
         aria-label="Next slide"
       >
