@@ -8,7 +8,7 @@ import { CarouselCaption } from "./CarouselCaption";
 interface CarouselSlideProps {
   image: CarouselItem;
   isActive: boolean;
-  position: -1 | 0 | 1;  // Static position in the strip: prev(-1), current(0), next(1)
+  position: -1 | 0 | 1;  // For compatibility (left, center, right)
   dimensions: CarouselDimensions;
   navigationLayout: 'horizontal' | 'vertical';
   onCaptionClick: () => void;
@@ -31,7 +31,7 @@ export const CarouselSlide = memo(function CarouselSlide({
     
     // In 2-slide carousel, only show caption on center position to avoid duplicates
     if (is2SlideCarousel) {
-      return position === 0;
+      return position === 0; // Center position
     }
     
     // In multi-slide carousel, show caption when slide is active
@@ -40,10 +40,9 @@ export const CarouselSlide = memo(function CarouselSlide({
   
   return (
     <div 
-      className="absolute inset-0 w-full h-full"
+      className="relative w-full h-full"
       style={{
-        // Static positioning only - no individual animation
-        transform: `translateX(${position * 100}%)`,
+        // 🔴 REMOVED: No translateX positioning - slides are positioned by parent strip container
         zIndex: isActive ? 10 : 0,
       }}
     >
@@ -51,7 +50,7 @@ export const CarouselSlide = memo(function CarouselSlide({
         src={image.imageAttributes.src}
         alt={image.imageAttributes.alt}
         title={image.imageAttributes.title}
-        priority={isActive && position === 0} // Only prioritize center slide in 2-slide scenario
+        priority={isActive} // Prioritize active slide
         displayMode={dimensions.imageDisplayMode}
       />
       

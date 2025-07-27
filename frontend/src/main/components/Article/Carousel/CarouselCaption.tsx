@@ -8,7 +8,6 @@ interface CarouselCaptionProps {
   onClick: () => void;
   navigationLayout: 'horizontal' | 'vertical';
   isActive: boolean;
-  // 🔄 ADD: Maximum height constraint to prevent layout impact
   maxHeight?: number;
 }
 
@@ -21,9 +20,9 @@ export const CarouselCaption = memo(function CarouselCaption({
   maxHeight = 120 // Default to 120px max height
 }: CarouselCaptionProps) {
   
-  // 🔄 CONSTRAINED: Calculate safe heights that don't break carousel layout
+  // Constrained heights that don't break carousel layout
   const collapsedHeight = 40; // Fixed collapsed height
-  const expandedHeight = Math.min(maxHeight, 200); // Constrained expanded height
+  const expandedHeight = Math.min(maxHeight, 150); // Constrained expanded height
   
   return (
     <div 
@@ -35,7 +34,7 @@ export const CarouselCaption = memo(function CarouselCaption({
         isActive ? 'opacity-100' : 'opacity-0'
       )}
       style={{
-        // 🔄 FIXED: Constrained height that doesn't affect carousel dimensions
+        // FIXED: Constrained height that doesn't affect carousel dimensions
         height: expanded ? `${expandedHeight}px` : `${collapsedHeight}px`,
         transitionDelay: isActive ? '150ms' : '0ms'
       }}
@@ -57,14 +56,14 @@ export const CarouselCaption = memo(function CarouselCaption({
             'px-4 py-2 h-full',
             'prose-sm text-on-sf max-w-none',
             'transition-all duration-300',
-            // 🔄 FIXED: Always maintain internal scrolling, never break container bounds
+            // Always maintain internal scrolling, never break container bounds
             'overflow-y-auto overflow-x-hidden',
             !expanded && 'line-clamp-2' // Show 2 lines when collapsed
           )}
           dangerouslySetInnerHTML={{ __html: content }}
         />
         
-        {/* 🔄 ADD: Visual indicator for expandable captions */}
+        {/* Visual indicator for expandable captions */}
         {content.length > 100 && (
           <div className={twMerge(
             'absolute bottom-1 right-1',

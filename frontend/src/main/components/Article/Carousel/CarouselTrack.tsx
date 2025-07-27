@@ -18,8 +18,6 @@ interface CarouselTrackProps {
   };
 }
 
-type SlidePosition = -1 | 0 | 1;
-
 export function CarouselTrack({
     images,
     currentIndex,
@@ -71,27 +69,29 @@ export function CarouselTrack({
     const visibleIndexes = getVisibleIndexes(currentIndex, images.length);
     const is2SlideCarousel = images.length === 2;
     
-    // Container transform for strip animation
-    const getContainerTransform = (): string => {
+    // 🔴 CRITICAL FIX: Calculate strip transform to show center slide in viewport
+    const getStripTransform = (): string => {
       if (!isTransitioning || !direction) {
-        return 'translateX(0%)'; // No animation - neutral position
+        // Default: center slide (position 1 in 3-slide strip) is visible
+        return 'translateX(-100%)'; // Show center slide (100% position) in viewport
       }
       
+      // During animation: move to show left or right slide
       return direction === 'next' 
-        ? 'translateX(-100%)' // Going right: shift strip left
-        : 'translateX(100%)';  // Going left: shift strip right
+        ? 'translateX(-200%)' // Show right slide (200% position) in viewport
+        : 'translateX(0%)';   // Show left slide (0% position) in viewport
     };
 
     // Debug logging for development
     if (process.env.NODE_ENV === 'development') {
-      console.log('Carousel Track Animation:', {
+      console.log('Carousel Strip Animation:', {
         is2SlideCarousel,
         direction,
         isTransitioning,
-        containerTransform: getContainerTransform(),
+        stripTransform: getStripTransform(),
         visibleIndexes,
         currentIndex,
-        totalSlides: images.length
+        layout: `[${visibleIndexes[0]}][${visibleIndexes[1]}][${visibleIndexes[2]}]`
       });
     }
   
@@ -105,40 +105,56 @@ export function CarouselTrack({
           'max-h-[var(--carousel-max-height)]'
         )}
       >
-        {/* Animated slide container - this moves as a strip */}
+        {/* 🔴 VIEWPORT: Fixed frame that shows only center portion */}
         <div 
           className="relative w-full max-w-full min-h-[var(--fallback-height)] max-h-[var(--carousel-max-height)] overflow-hidden"
-          style={{
-            transform: getContainerTransform(),
-            transition: isTransitioning 
-              ? 'transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1)' 
-              : 'none'
-          }}
         >
-          {visibleIndexes.map((index, i) => {
-            const position = (i - 1) as SlidePosition;
-            
-            // Special key generation for 2-slide carousel to handle duplicates
-            const slideKey = is2SlideCarousel 
-              ? `slide-${index}-pos-${position}` // Include position to make duplicates unique
-              : `slide-${index}`;
-            
-            return (
-              <CarouselSlide
-                key={slideKey}
-                image={images[index]}
-                isActive={index === currentIndex && position === 0} // Only center position is truly active
-                position={position}
-                dimensions={{
-                  ...dimensions,
-                  maxHeight: fallbackHeight
-                }}
-                navigationLayout={navigationLayout}
-                onCaptionClick={() => handlers.handleCaptionClick(index)}
-                is2SlideCarousel={is2SlideCarousel}
-              />
-            );
-          })}
+          {/* 🔴 STRIP: 3x width container with slides laid out side by side */}
+          <div 
+            className="absolute top-0 left-0 h-full"
+            style={{
+              width: '300%', // 3x viewport width to hold 3 slides
+              transform: getStripTransform(),
+              transition: isTransitioning 
+                ? 'transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1)' 
+                : 'none'
+            }}
+          >
+            {visibleIndexes.map((index, i) => {
+              // 🔴 FIXED: Position slides absolutely within the strip
+              const slidePositions = ['0%', '100%', '200%']; // Left, Center, Right
+              const slidePosition = slidePositions[i];
+              
+              // Special key generation for 2-slide carousel to handle duplicates
+              const slideKey = is2SlideCarousel 
+                ? `slide-${index}-pos-${i}` 
+                : `slide-${index}`;
+              
+              return (
+                <div
+                  key={slideKey}
+                  className="absolute top-0 h-full"
+                  style={{
+                    left: slidePosition,
+                    width: '33.333%', // Each slide takes 1/3 of strip width (= 100% of viewport)
+                  }}
+                >
+                  <CarouselSlide
+                    image={images[index]}
+                    isActive={index === currentIndex && i === 1} // Only center slide (i===1) is active
+                    position={(i - 1) as -1 | 0 | 1} // For compatibility with existing logic
+                    dimensions={{
+                      ...dimensions,
+                      maxHeight: fallbackHeight
+                    }}
+                    navigationLayout={navigationLayout}
+                    onCaptionClick={() => handlers.handleCaptionClick(index)}
+                    is2SlideCarousel={is2SlideCarousel}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     );
