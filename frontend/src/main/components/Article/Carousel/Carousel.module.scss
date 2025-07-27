@@ -5,49 +5,65 @@
   position: relative;
   overflow: hidden;
   
-  // Fallback for browsers that don't support aspect-ratio
+  // 🔄 KEEP THIS - Fallback for browsers that don't support aspect-ratio
   min-height: var(--fallback-height, 400px);
+  
+  // 🔄 ADD THIS - Safety constraint to prevent oversized carousels
+  max-height: var(--carousel-max-height, 800px);
   
   // Modern browsers with aspect-ratio support
   @supports (aspect-ratio: 1) {
-    // Reset min-height when aspect-ratio is supported
-    min-height: unset;
+    // 🔄 COMMENT OUT OR REMOVE THIS LINE:
+    // min-height: unset;  // DON'T unset - keep as safety net
     
-    // Default aspect ratio
-    aspect-ratio: var(--desktop-landscape-ratio);
+    // 🔄 ADD FALLBACK VALUES to these aspect-ratio declarations:
+    aspect-ratio: var(--desktop-landscape-ratio, 1.5);
     
     // Mobile Portrait
     @media (max-width: 767px) and (orientation: portrait) {
-      aspect-ratio: var(--mobile-portrait-ratio);
+      aspect-ratio: var(--mobile-portrait-ratio, 0.8);
+      // 🔄 ADD THIS - Prevent mobile overflow
+      max-height: calc(100vh - 200px);
     }
     
     // Mobile Landscape
     @media (max-width: 767px) and (orientation: landscape) {
-      aspect-ratio: var(--mobile-landscape-ratio);
+      aspect-ratio: var(--mobile-landscape-ratio, 1.33);
+      // 🔄 ADD THIS - Prevent mobile landscape overflow
+      max-height: calc(100vh - 150px);
     }
     
     // Tablet Portrait
     @media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
-      aspect-ratio: var(--tablet-portrait-ratio);
+      aspect-ratio: var(--tablet-portrait-ratio, 1);
+      // 🔄 ADD THIS
+      max-height: calc(100vh - 250px);
     }
     
     // Tablet Landscape
     @media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
-      aspect-ratio: var(--tablet-landscape-ratio);
+      aspect-ratio: var(--tablet-landscape-ratio, 1.33);
+      // 🔄 ADD THIS
+      max-height: calc(100vh - 200px);
     }
     
     // Desktop Portrait
     @media (min-width: 1024px) and (orientation: portrait) {
-      aspect-ratio: var(--desktop-portrait-ratio);
+      aspect-ratio: var(--desktop-portrait-ratio, 1);
+      // 🔄 ADD THIS
+      max-height: calc(100vh - 300px);
     }
     
     // Desktop Landscape
     @media (min-width: 1024px) and (orientation: landscape) {
-      aspect-ratio: var(--desktop-landscape-ratio);
+      aspect-ratio: var(--desktop-landscape-ratio, 1.5);
+      // 🔄 ADD THIS
+      max-height: calc(100vh - 250px);
     }
   }
 }
 
+// KEEP THE REST OF YOUR EXISTING STYLES:
 .slide {
   transition: opacity var(--transition-duration) ease-in-out;
 }
