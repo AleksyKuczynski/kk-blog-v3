@@ -1,4 +1,4 @@
-// src/main/components/Article/Content.tsx
+// SIMPLEST FIX: Content.tsx - Remove prose classes since components manage their own styling
 import React from 'react';
 import { CustomRenderer } from './CustomRenderer';
 import { ContentChunk, TocItem } from '@/main/lib/markdown/markdownTypes';
@@ -24,7 +24,7 @@ export function Content({ chunks, toc, title, author, datePublished }: ContentPr
   } : null;
 
   return (
-    <article className="prose-lg dark:prose-invert pb-12">
+    <article className="pb-12">
       {structuredData && (
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}

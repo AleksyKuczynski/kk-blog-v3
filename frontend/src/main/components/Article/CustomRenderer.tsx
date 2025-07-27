@@ -1,5 +1,4 @@
-// src/main/components/Article/CustomRenderer.tsx
-
+// FIXED: CustomRenderer.tsx - Exclude carousel from prose styling
 import React from 'react';
 import { MarkdownContent } from './MarkdownContent';
 import { CustomBlockquote } from './Blockquote/CustomBlockquote';
@@ -18,38 +17,47 @@ export const CustomRenderer: React.FC<{ chunks: ContentChunk[] }> = ({ chunks })
               
             case 'blockquote':
               return chunk.blockquoteProps ? (
-                <CustomBlockquote key={index} {...chunk.blockquoteProps} />
+                // Blockquotes also need to escape prose styling for proper theme control
+                <div key={index} className="not-prose">
+                  <CustomBlockquote {...chunk.blockquoteProps} />
+                </div>
               ) : null;
 
             case 'carousel':
               if (chunk.images && chunk.images.length > 0 && chunk.dimensions && chunk.imageSetAnalysis) {
                 return (
-                  <ImageCarousel 
-                    key={index} 
-                    images={chunk.images}
-                    dimensions={chunk.dimensions}
-                    initialAnalysis={chunk.imageSetAnalysis}
-                  />
+                  // CRITICAL FIX: Use not-prose to exclude carousel from Tailwind Typography
+                  <div key={index} className="not-prose my-8">
+                    <ImageCarousel 
+                      images={chunk.images}
+                      dimensions={chunk.dimensions}
+                      initialAnalysis={chunk.imageSetAnalysis}
+                    />
+                  </div>
                 );
               }
               return null;
 
             case 'image':
               return chunk.imageAttributes ? (
-                <ArticleImage
-                  key={index}
-                  {...chunk.imageAttributes}
-                />
+                // Single images also excluded for component-level styling control
+                <div key={index} className="not-prose">
+                  <ArticleImage
+                    {...chunk.imageAttributes}
+                  />
+                </div>
               ) : null;
 
             case 'figure':
               return chunk.imageAttributes ? (
-                <figure key={index}>
-                  <ArticleImage
-                    {...chunk.imageAttributes}
-                    caption={chunk.caption}
-                  />
-                </figure>
+                <div key={index} className="not-prose">
+                  <figure>
+                    <ArticleImage
+                      {...chunk.imageAttributes}
+                      caption={chunk.caption}
+                    />
+                  </figure>
+                </div>
               ) : null;
               
             default:
