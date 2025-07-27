@@ -6,9 +6,7 @@ interface CarouselState {
   direction: 'next' | 'prev' | null;
   touchStart?: number;
   images: CarouselItem[];
-  // 🔄 ADD: Animation state management
   isTransitioning: boolean;
-  previousIndex: number;
 }
 
 type CarouselAction =
@@ -18,8 +16,6 @@ type CarouselAction =
   | { type: 'TOUCH_START'; x: number }
   | { type: 'TOUCH_END'; endX: number }
   | { type: 'TOGGLE_CAPTION'; index: number }
-  // 🔄 ADD: Animation control actions
-  | { type: 'TRANSITION_START' }
   | { type: 'TRANSITION_END' };
 
 const SWIPE_THRESHOLD = 50;
@@ -29,39 +25,49 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
 
   switch (action.type) {
     case 'NEXT_SLIDE':
+      // Don't change currentIndex immediately - wait for animation
+      if (state.isTransitioning) return state; // Prevent multiple transitions
+      
       return {
         ...state,
-        previousIndex: state.currentIndex,
-        currentIndex: (state.currentIndex + 1) % totalSlides,
         direction: 'next',
-        isTransitioning: true // 🔄 ADD: Start transition
+        isTransitioning: true
       };
 
     case 'PREV_SLIDE':
+      // Don't change currentIndex immediately - wait for animation
+      if (state.isTransitioning) return state; // Prevent multiple transitions
+      
       return {
         ...state,
-        previousIndex: state.currentIndex,
-        currentIndex: (state.currentIndex - 1 + totalSlides) % totalSlides,
         direction: 'prev',
-        isTransitioning: true // 🔄 ADD: Start transition
+        isTransitioning: true
       };
 
     case 'SET_SLIDE':
-      // 🔄 ENHANCED: Better direction detection for direct slide selection
-      const newDirection = action.index === (state.currentIndex + 1) % totalSlides 
-        ? 'next' 
-        : action.index === (state.currentIndex - 1 + totalSlides) % totalSlides
-          ? 'prev'
-          : action.index > state.currentIndex 
-            ? 'next' 
-            : 'prev';
-            
+      if (state.isTransitioning || action.index === state.currentIndex) return state;
+      
+      // Better direction detection for indicator clicks
+      let direction: 'next' | 'prev';
+      
+      if (totalSlides === 2) {
+        // For 2 slides, any change is just a toggle
+        direction = 'next'; // Default to next for consistency
+      } else {
+        // For 3+ slides, calculate shortest path considering infinite scroll
+        const currentIndex = state.currentIndex;
+        const targetIndex = action.index;
+        
+        const forwardDistance = (targetIndex - currentIndex + totalSlides) % totalSlides;
+        const backwardDistance = (currentIndex - targetIndex + totalSlides) % totalSlides;
+        
+        direction = forwardDistance <= backwardDistance ? 'next' : 'prev';
+      }
+      
       return {
         ...state,
-        previousIndex: state.currentIndex,
-        currentIndex: action.index,
-        direction: newDirection,
-        isTransitioning: true // 🔄 ADD: Start transition
+        direction,
+        isTransitioning: true
       };
 
     case 'TOUCH_START':
@@ -72,7 +78,7 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
       };
 
     case 'TOUCH_END': {
-      if (typeof state.touchStart === 'undefined') {
+      if (typeof state.touchStart === 'undefined' || state.isTransitioning) {
         return state;
       }
 
@@ -84,18 +90,13 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
         };
       }
 
-      const newDirection = diff > 0 ? 'prev' : 'next';
-      const newIndex = diff > 0 
-        ? (state.currentIndex - 1 + totalSlides) % totalSlides
-        : (state.currentIndex + 1) % totalSlides;
+      const direction = diff > 0 ? 'prev' : 'next';
 
       return {
         ...state,
-        previousIndex: state.currentIndex,
-        currentIndex: newIndex,
-        direction: newDirection,
+        direction,
         touchStart: undefined,
-        isTransitioning: true // 🔄 ADD: Start transition
+        isTransitioning: true
       };
     }
 
@@ -110,18 +111,19 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
       };
     }
 
-    // 🔄 ADD: Animation state control
-    case 'TRANSITION_START':
-      return {
-        ...state,
-        isTransitioning: true
-      };
-
     case 'TRANSITION_END':
+      // Update currentIndex AFTER animation completes
+      if (!state.isTransitioning || !state.direction) return state;
+      
+      const newCurrentIndex = state.direction === 'next'
+        ? (state.currentIndex + 1) % totalSlides
+        : (state.currentIndex - 1 + totalSlides) % totalSlides;
+      
       return {
         ...state,
-        isTransitioning: false,
-        direction: null // Clear direction after transition
+        currentIndex: newCurrentIndex,
+        direction: null,
+        isTransitioning: false
       };
 
     default:

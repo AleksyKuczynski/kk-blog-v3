@@ -10,7 +10,6 @@ interface CarouselNavigationProps {
   onPrevious: () => void;
   onNext: () => void;
   onSlideSelect: (index: number) => void;
-  // 🔄 ADD: Disable navigation during transitions
   disabled?: boolean;
 }
 
@@ -37,7 +36,7 @@ export const CarouselNavigation = memo(function CarouselNavigation({
       "theme-rounded:rounded-xl theme-rounded:bg-sf-hi/80 theme-rounded:hover:bg-sf-hst",
       "theme-sharp:border theme-sharp:border-pr-cont"
     ].join(' '),
-    // 🔄 ADD: Disabled state styling
+    // Disabled state styling
     disabled && "opacity-50 cursor-not-allowed"
   );
 
@@ -50,7 +49,7 @@ export const CarouselNavigation = memo(function CarouselNavigation({
     )}>
       <button
         onClick={onPrevious}
-        disabled={disabled} // 🔄 ADD: Disable during transitions
+        disabled={disabled}
         className={navigationButtonStyles}
         aria-label="Previous slide"
       >
@@ -70,7 +69,7 @@ export const CarouselNavigation = memo(function CarouselNavigation({
           <button
             key={idx}
             onClick={() => onSlideSelect(idx)}
-            disabled={disabled} // 🔄 ADD: Disable during transitions
+            disabled={disabled}
             className={twMerge(
               "transition-all pointer-events-auto",
               idx === currentSlide 
@@ -88,7 +87,7 @@ export const CarouselNavigation = memo(function CarouselNavigation({
               "theme-rounded:h-3 theme-rounded:rounded-sm",
               "theme-sharp:h-2.5 theme-sharp:border-2",
               "hover:bg-pr-fix",
-              // 🔄 ADD: Disabled state for indicators
+              // Disabled state for indicators
               disabled && "opacity-50 cursor-not-allowed"
             )}
             aria-label={`Go to slide ${idx + 1}`}
@@ -99,7 +98,7 @@ export const CarouselNavigation = memo(function CarouselNavigation({
 
       <button
         onClick={onNext}
-        disabled={disabled} // 🔄 ADD: Disable during transitions
+        disabled={disabled}
         className={navigationButtonStyles}
         aria-label="Next slide"
       >

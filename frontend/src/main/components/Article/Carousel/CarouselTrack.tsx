@@ -11,10 +11,8 @@ interface CarouselTrackProps {
   currentIndex: number;
   dimensions: CarouselDimensions;
   navigationLayout: 'horizontal' | 'vertical';
-  // 🔄 ADD: Animation state props
   direction?: 'next' | 'prev' | null;
   isTransitioning?: boolean;
-  previousIndex?: number;
   handlers: {
     handleCaptionClick: (index: number) => void;
   };
@@ -29,7 +27,6 @@ export function CarouselTrack({
     navigationLayout,
     direction = null,
     isTransitioning = false,
-    previousIndex = 0,
     handlers
   }: CarouselTrackProps) {
     
@@ -72,9 +69,31 @@ export function CarouselTrack({
     } as React.CSSProperties;
   
     const visibleIndexes = getVisibleIndexes(currentIndex, images.length);
+    const is2SlideCarousel = images.length === 2;
     
-    // 🔄 ADD: Calculate caption max height based on carousel dimensions
-    const captionMaxHeight = Math.min(120, fallbackHeight * 0.25); // Max 25% of carousel height or 120px
+    // Container transform for strip animation
+    const getContainerTransform = (): string => {
+      if (!isTransitioning || !direction) {
+        return 'translateX(0%)'; // No animation - neutral position
+      }
+      
+      return direction === 'next' 
+        ? 'translateX(-100%)' // Going right: shift strip left
+        : 'translateX(100%)';  // Going left: shift strip right
+    };
+
+    // Debug logging for development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Carousel Track Animation:', {
+        is2SlideCarousel,
+        direction,
+        isTransitioning,
+        containerTransform: getContainerTransform(),
+        visibleIndexes,
+        currentIndex,
+        totalSlides: images.length
+      });
+    }
   
     return (
       <div 
@@ -86,31 +105,37 @@ export function CarouselTrack({
           'max-h-[var(--carousel-max-height)]'
         )}
       >
-        {/* 🔄 FIXED: Maintain strict height bounds for fixed-height requirement */}
-        <div className="relative w-full max-w-full min-h-[var(--fallback-height)] max-h-[var(--carousel-max-height)] overflow-hidden">
+        {/* Animated slide container - this moves as a strip */}
+        <div 
+          className="relative w-full max-w-full min-h-[var(--fallback-height)] max-h-[var(--carousel-max-height)] overflow-hidden"
+          style={{
+            transform: getContainerTransform(),
+            transition: isTransitioning 
+              ? 'transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1)' 
+              : 'none'
+          }}
+        >
           {visibleIndexes.map((index, i) => {
             const position = (i - 1) as SlidePosition;
             
-            // 🔄 ADD: Determine if this slide is involved in current animation
-            const isCurrentSlide = index === currentIndex;
-            const isPreviousSlide = index === previousIndex;
-            const isInvolvedInTransition = isTransitioning && (isCurrentSlide || isPreviousSlide);
+            // Special key generation for 2-slide carousel to handle duplicates
+            const slideKey = is2SlideCarousel 
+              ? `slide-${index}-pos-${position}` // Include position to make duplicates unique
+              : `slide-${index}`;
             
             return (
               <CarouselSlide
-                key={`slide-${index}`}
+                key={slideKey}
                 image={images[index]}
-                isActive={isCurrentSlide}
+                isActive={index === currentIndex && position === 0} // Only center position is truly active
                 position={position}
                 dimensions={{
                   ...dimensions,
-                  maxHeight: fallbackHeight // Pass calculated height to slide
+                  maxHeight: fallbackHeight
                 }}
                 navigationLayout={navigationLayout}
                 onCaptionClick={() => handlers.handleCaptionClick(index)}
-                // 🔄 ADD: Pass animation props
-                animationDirection={direction}
-                isTransitioning={isInvolvedInTransition}
+                is2SlideCarousel={is2SlideCarousel}
               />
             );
           })}

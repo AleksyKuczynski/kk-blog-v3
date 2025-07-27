@@ -13,9 +13,7 @@ const initialState = {
   currentIndex: 0,
   direction: null,
   touchStart: undefined,
-  // 🔄 ADD: Animation state initialization
-  isTransitioning: false,
-  previousIndex: 0
+  isTransitioning: false
 };
 
 export function useCarousel({ 
@@ -27,77 +25,60 @@ export function useCarousel({
     images
   });
 
-  // 🔄 ADD: Auto-end transitions after animation duration
+  // Handle transition timing for strip animation
   useEffect(() => {
-    if (state.isTransitioning) {
+    if (state.isTransitioning && state.direction) {
+      // Start CSS animation immediately, then end transition after animation duration
       const timer = setTimeout(() => {
         dispatch({ type: 'TRANSITION_END' });
-      }, 300); // Match CSS transition duration
+      }, 300); // Match CSS transition duration exactly
 
       return () => clearTimeout(timer);
     }
-  }, [state.isTransitioning]);
+  }, [state.isTransitioning, state.direction]);
 
   const handlers = {
     handleNext: useCallback(() => {
-      if (!state.isTransitioning) { // Prevent rapid clicks during animation
-        dispatch({ type: 'NEXT_SLIDE' });
-      }
-    }, [state.isTransitioning]),
+      dispatch({ type: 'NEXT_SLIDE' });
+    }, []),
 
     handlePrevious: useCallback(() => {
-      if (!state.isTransitioning) { // Prevent rapid clicks during animation
-        dispatch({ type: 'PREV_SLIDE' });
-      }
-    }, [state.isTransitioning]),
+      dispatch({ type: 'PREV_SLIDE' });
+    }, []),
 
     handleKeyDown: useCallback((e: React.KeyboardEvent) => {
-      if (state.isTransitioning) return; // Ignore during transitions
-      
       if (e.key === 'ArrowLeft') {
         dispatch({ type: 'PREV_SLIDE' });
       } else if (e.key === 'ArrowRight') {
         dispatch({ type: 'NEXT_SLIDE' });
       }
-    }, [state.isTransitioning]),
+    }, []),
 
     handleTouchStart: useCallback((e: React.TouchEvent) => {
-      if (!state.isTransitioning) { // Only start touch if not transitioning
-        dispatch({ 
-          type: 'TOUCH_START', 
-          x: e.touches[0].clientX 
-        });
-      }
-    }, [state.isTransitioning]),
+      dispatch({ 
+        type: 'TOUCH_START', 
+        x: e.touches[0].clientX 
+      });
+    }, []),
 
     handleTouchEnd: useCallback((e: React.TouchEvent) => {
-      if (!state.isTransitioning && state.touchStart !== undefined) {
-        dispatch({ 
-          type: 'TOUCH_END', 
-          endX: e.changedTouches[0].clientX 
-        });
-      }
-    }, [state.isTransitioning, state.touchStart]),
+      dispatch({ 
+        type: 'TOUCH_END', 
+        endX: e.changedTouches[0].clientX 
+      });
+    }, []),
 
     handleCaptionClick: useCallback((index: number) => {
       dispatch({ type: 'TOGGLE_CAPTION', index });
     }, []),
 
     handleSlideSelect: useCallback((index: number) => {
-      if (!state.isTransitioning && index !== state.currentIndex) {
-        dispatch({ type: 'SET_SLIDE', index });
-      }
-    }, [state.isTransitioning, state.currentIndex]),
-
-    // 🔄 ADD: Manual transition control
-    handleTransitionEnd: useCallback(() => {
-      dispatch({ type: 'TRANSITION_END' });
+      dispatch({ type: 'SET_SLIDE', index });
     }, [])
   };
 
   return {
     currentIndex: state.currentIndex,
-    previousIndex: state.previousIndex,
     direction: state.direction,
     isTransitioning: state.isTransitioning,
     images: state.images,

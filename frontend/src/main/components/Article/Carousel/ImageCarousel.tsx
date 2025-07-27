@@ -23,7 +23,6 @@ const ImageCarousel = memo(function ImageCarousel({
 }: CarouselProps) {
   const { 
     currentIndex,
-    previousIndex,
     direction,
     isTransitioning,
     images: carouselImages,
@@ -39,17 +38,6 @@ const ImageCarousel = memo(function ImageCarousel({
     initialAnalysis
   );
 
-  // 🔄 ADD: Debug logging for development
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Carousel State:', {
-      currentIndex,
-      previousIndex,
-      direction,
-      isTransitioning,
-      totalImages: carouselImages.length
-    });
-  }
-
   return (
     <div 
       className={twMerge(
@@ -57,7 +45,7 @@ const ImageCarousel = memo(function ImageCarousel({
         "theme-default:focus:ring-2 theme-default:focus:ring-pr-fix/50",
         "theme-rounded:shadow-xl theme-rounded:rounded-2xl",
         "theme-sharp:border theme-sharp:border-ol",
-        // 🔄 ADD: Visual feedback during transitions
+        // Visual feedback during transitions
         isTransitioning && "cursor-wait"
       )}
       tabIndex={0}
@@ -75,10 +63,8 @@ const ImageCarousel = memo(function ImageCarousel({
         currentIndex={currentIndex}
         dimensions={dimensions}
         navigationLayout={navigationLayout}
-        // 🔄 ADD: Pass animation state
         direction={direction}
         isTransitioning={isTransitioning}
-        previousIndex={previousIndex}
         handlers={handlers}
       />
 
@@ -89,7 +75,6 @@ const ImageCarousel = memo(function ImageCarousel({
         onPrevious={handlers.handlePrevious}
         onNext={handlers.handleNext}
         onSlideSelect={handlers.handleSlideSelect}
-        // 🔄 ADD: Disable navigation during transitions
         disabled={isTransitioning}
       />
     </div>
