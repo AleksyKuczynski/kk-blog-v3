@@ -2,18 +2,20 @@
 import { useReducer, useCallback, useEffect } from 'react';
 import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions } from '../carouselTypes';
-import { carouselReducer } from '../carouselReducer';
+import { carouselReducer, CarouselState } from '../carouselReducer';
 
 interface UseCarouselProps {
   images: CarouselItem[];
   dimensions: CarouselDimensions;
 }
 
-const initialState = {
+const initialState: CarouselState = {
   currentIndex: 0,
   direction: null,
   touchStart: undefined,
-  isTransitioning: false
+  isTransitioning: false,
+  captionsVisible: true, // Start with captions visible
+  images: []
 };
 
 export function useCarousel({ 
@@ -51,6 +53,9 @@ export function useCarousel({
         dispatch({ type: 'PREV_SLIDE' });
       } else if (e.key === 'ArrowRight') {
         dispatch({ type: 'NEXT_SLIDE' });
+      } else if (e.key === 'c' || e.key === 'C') {
+        // 'C' key to toggle captions visibility
+        dispatch({ type: 'TOGGLE_CAPTIONS_VISIBILITY' });
       }
     }, []),
 
@@ -74,6 +79,22 @@ export function useCarousel({
 
     handleSlideSelect: useCallback((index: number) => {
       dispatch({ type: 'SET_SLIDE', index });
+    }, []),
+
+    // New handler for toggling caption visibility
+    handleCarouselClick: useCallback((e: React.MouseEvent) => {
+      // Only toggle if clicking on the carousel background, not on navigation or captions
+      const target = e.target as HTMLElement;
+      
+      // Check if click is on carousel background (not on buttons, images, or captions)
+      if (target.closest('button') || 
+          target.closest('[role="button"]') || 
+          target.closest('[data-caption]') ||
+          target.tagName.toLowerCase() === 'img') {
+        return;
+      }
+
+      dispatch({ type: 'TOGGLE_CAPTIONS_VISIBILITY' });
     }, [])
   };
 
@@ -81,6 +102,7 @@ export function useCarousel({
     currentIndex: state.currentIndex,
     direction: state.direction,
     isTransitioning: state.isTransitioning,
+    captionsVisible: state.captionsVisible, // New state
     images: state.images,
     handlers
   };

@@ -1,5 +1,4 @@
-// Updated CarouselSlide.tsx to pass imageHeight to caption
-
+// src/main/components/Article/Carousel/CarouselSlide.tsx
 import { memo } from 'react';
 import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions } from "./carouselTypes";
@@ -12,6 +11,7 @@ interface CarouselSlideProps {
   position: -1 | 0 | 1;
   dimensions: CarouselDimensions;
   navigationLayout: 'horizontal' | 'vertical';
+  captionsVisible: boolean; // New prop for caption visibility
   onCaptionClick: () => void;
   is2SlideCarousel?: boolean;
 }
@@ -22,17 +22,24 @@ export const CarouselSlide = memo(function CarouselSlide({
   position,
   dimensions,
   navigationLayout,
+  captionsVisible, // New visibility state
   onCaptionClick,
   is2SlideCarousel = false
 }: CarouselSlideProps) {
   
   const shouldShowCaption = (): boolean => {
+    // Don't show if captions are globally hidden
+    if (!captionsVisible) return false;
+    
+    // Don't show if no caption content
     if (image.processedCaption.trim() === '') return false;
     
+    // In 2-slide carousel, only show caption on center position
     if (is2SlideCarousel) {
       return position === 0; // Center position
     }
     
+    // In multi-slide carousel, show caption when slide is active
     return isActive;
   };
   
@@ -55,10 +62,11 @@ export const CarouselSlide = memo(function CarouselSlide({
         <CarouselCaption
           content={image.processedCaption}
           expanded={image.expandedCaption}
+          visible={captionsVisible} // Pass visibility state
           onClick={onCaptionClick}
           navigationLayout={navigationLayout}
           isActive={isActive}
-          imageHeight={dimensions.height} // Pass actual image height
+          imageHeight={dimensions.height}
         />
       )}
     </div>

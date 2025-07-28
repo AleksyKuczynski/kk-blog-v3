@@ -5,6 +5,7 @@ import { twMerge } from 'tailwind-merge';
 interface CarouselCaptionProps {
   content: string;
   expanded: boolean;
+  visible: boolean; // New prop for visibility
   onClick: () => void;
   navigationLayout: 'horizontal' | 'vertical';
   isActive: boolean;
@@ -14,6 +15,7 @@ interface CarouselCaptionProps {
 export const CarouselCaption = memo(function CarouselCaption({
   content,
   expanded,
+  visible, // New visibility state
   onClick,
   navigationLayout,
   isActive,
@@ -28,13 +30,17 @@ export const CarouselCaption = memo(function CarouselCaption({
   // Calculate line height based on theme and font size
   const getThreeLineHeight = () => {
     // Base calculation: font-size * line-height * 3 lines + padding
-    // Using CSS custom properties for theme-dependent values
     return 'calc(var(--caption-line-height) * 3 + var(--caption-padding-y) * 2)';
   };
 
   const getMaxExpandedHeight = () => {
     // Maximum expansion is 80% of image height to maintain visual hierarchy
     return Math.min(imageHeight * 0.8, 300);
+  };
+
+  // Navigation height offset calculation
+  const getNavigationOffset = () => {
+    return navigationLayout === 'horizontal' ? '4rem' : '1rem'; // 64px for horizontal, 16px for vertical
   };
 
   // Check for text overflow and measure content
@@ -49,17 +55,22 @@ export const CarouselCaption = memo(function CarouselCaption({
     }
   }, [content, expanded]);
 
+  // Don't render if not visible
+  if (!visible) return null;
+
   return (
     <div 
       ref={captionRef}
+      data-caption="true" // Mark for click detection
       className={twMerge(
-        'absolute left-0 right-0 bottom-0',
-        navigationLayout === 'horizontal' ? 'mb-16' : 'mb-4',
+        'absolute left-0 right-0',
         'transition-all duration-300 ease-out',
-        'transition-opacity duration-300',
+        'z-20', // Above navigation elements
         isActive ? 'opacity-100' : 'opacity-0'
       )}
       style={{
+        // FIXED: Position at actual bottom of carousel frame, accounting for navigation
+        bottom: getNavigationOffset(),
         height: expanded 
           ? `${Math.min(getMaxExpandedHeight(), contentHeight + 24)}px`
           : getThreeLineHeight(),
@@ -147,6 +158,26 @@ export const CarouselCaption = memo(function CarouselCaption({
           </div>
         )}
       </div>
+
+      {/* Caption visibility hint (only shown when captions are visible) */}
+      {visible && !expanded && (
+        <div 
+          className={twMerge(
+            'absolute -top-8 right-0',
+            'text-xs text-on-sf/40',
+            'pointer-events-none',
+            'transition-opacity duration-500',
+            'opacity-0 hover:opacity-100',
+            // Small visual hint for users
+            'bg-sf-cont/50 px-2 py-1 rounded-md',
+            'theme-default:rounded-md',
+            'theme-rounded:rounded-lg',
+            'theme-sharp:rounded-none'
+          )}
+        >
+          Click area to hide captions
+        </div>
+      )}
     </div>
   );
 });

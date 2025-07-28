@@ -25,6 +25,7 @@ const ImageCarousel = memo(function ImageCarousel({
     currentIndex,
     direction,
     isTransitioning,
+    captionsVisible, // New state
     images: carouselImages,
     handlers 
   } = useCarousel({ 
@@ -51,7 +52,7 @@ const ImageCarousel = memo(function ImageCarousel({
       tabIndex={0}
       role="region"
       aria-roledescription="carousel"
-      aria-label={`Image carousel with ${carouselImages.length} images`}
+      aria-label={`Image carousel with ${carouselImages.length} images${captionsVisible ? ' (captions visible)' : ' (captions hidden)'}`}
       aria-live="polite"
       aria-atomic="false"
       onKeyDown={handlers.handleKeyDown}
@@ -63,9 +64,13 @@ const ImageCarousel = memo(function ImageCarousel({
         currentIndex={currentIndex}
         dimensions={dimensions}
         navigationLayout={navigationLayout}
+        captionsVisible={captionsVisible} // Pass visibility state
         direction={direction}
         isTransitioning={isTransitioning}
-        handlers={handlers}
+        handlers={{
+          handleCaptionClick: handlers.handleCaptionClick,
+          handleCarouselClick: handlers.handleCarouselClick // New handler
+        }}
       />
 
       <CarouselNavigation
@@ -77,6 +82,19 @@ const ImageCarousel = memo(function ImageCarousel({
         onSlideSelect={handlers.handleSlideSelect}
         disabled={isTransitioning}
       />
+
+      {/* Keyboard shortcuts hint */}
+      <div 
+        className={twMerge(
+          'absolute -bottom-6 left-0 right-0',
+          'text-xs text-center text-on-sf/40',
+          'pointer-events-none',
+          'transition-opacity duration-300',
+          'hover:opacity-100 opacity-0'
+        )}
+      >
+        Press 'C' to toggle captions • Click carousel area to toggle • Click caption to expand
+      </div>
     </div>
   );
 });

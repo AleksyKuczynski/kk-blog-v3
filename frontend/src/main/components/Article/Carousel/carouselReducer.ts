@@ -1,21 +1,23 @@
 // src/main/components/Article/Carousel/carouselReducer.ts
 import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 
-interface CarouselState {
+export interface CarouselState {
   currentIndex: number;
+  images: CarouselItem[];
   direction: 'next' | 'prev' | null;
   touchStart?: number;
-  images: CarouselItem[];
   isTransitioning: boolean;
+  captionsVisible: boolean; // New state for caption visibility
 }
 
-type CarouselAction =
+type CarouselAction = 
   | { type: 'NEXT_SLIDE' }
   | { type: 'PREV_SLIDE' }
   | { type: 'SET_SLIDE'; index: number }
   | { type: 'TOUCH_START'; x: number }
   | { type: 'TOUCH_END'; endX: number }
   | { type: 'TOGGLE_CAPTION'; index: number }
+  | { type: 'TOGGLE_CAPTIONS_VISIBILITY' } // New action
   | { type: 'TRANSITION_END' };
 
 const SWIPE_THRESHOLD = 50;
@@ -25,50 +27,40 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
 
   switch (action.type) {
     case 'NEXT_SLIDE':
-      // Don't change currentIndex immediately - wait for animation
-      if (state.isTransitioning) return state; // Prevent multiple transitions
+      if (state.isTransitioning) return state;
       
       return {
         ...state,
         direction: 'next',
-        isTransitioning: true
+        isTransitioning: true,
+        captionsVisible: true // Show captions when changing slides
       };
 
     case 'PREV_SLIDE':
-      // Don't change currentIndex immediately - wait for animation
-      if (state.isTransitioning) return state; // Prevent multiple transitions
+      if (state.isTransitioning) return state;
       
       return {
         ...state,
         direction: 'prev',
-        isTransitioning: true
+        isTransitioning: true,
+        captionsVisible: true // Show captions when changing slides
       };
 
-    case 'SET_SLIDE':
-      if (state.isTransitioning || action.index === state.currentIndex) return state;
-      
-      // Better direction detection for indicator clicks
-      let direction: 'next' | 'prev';
-      
-      if (totalSlides === 2) {
-        // For 2 slides, any change is just a toggle
-        direction = 'next'; // Default to next for consistency
-      } else {
-        // For 3+ slides, calculate shortest path considering infinite scroll
-        const currentIndex = state.currentIndex;
-        const targetIndex = action.index;
-        
-        const forwardDistance = (targetIndex - currentIndex + totalSlides) % totalSlides;
-        const backwardDistance = (currentIndex - targetIndex + totalSlides) % totalSlides;
-        
-        direction = forwardDistance <= backwardDistance ? 'next' : 'prev';
+    case 'SET_SLIDE': {
+      if (action.index === state.currentIndex || state.isTransitioning) {
+        return state;
       }
+
+      const direction: 'next' | 'prev' = action.index > state.currentIndex 
+        ? 'next' : 'prev';
       
       return {
         ...state,
         direction,
-        isTransitioning: true
+        isTransitioning: true,
+        captionsVisible: true // Show captions when changing slides
       };
+    }
 
     case 'TOUCH_START':
       return {
@@ -96,11 +88,15 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
         ...state,
         direction,
         touchStart: undefined,
-        isTransitioning: true
+        isTransitioning: true,
+        captionsVisible: true // Show captions when changing slides
       };
     }
 
     case 'TOGGLE_CAPTION': {
+      // Only toggle expansion if captions are visible
+      if (!state.captionsVisible) return state;
+      
       return {
         ...state,
         images: state.images.map((img, idx) => 
@@ -108,6 +104,17 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
             ? { ...img, expandedCaption: !img.expandedCaption }
             : img
         )
+      };
+    }
+
+    case 'TOGGLE_CAPTIONS_VISIBILITY': {
+      return {
+        ...state,
+        captionsVisible: !state.captionsVisible,
+        // Collapse all captions when hiding
+        images: !state.captionsVisible 
+          ? state.images 
+          : state.images.map(img => ({ ...img, expandedCaption: false }))
       };
     }
 
