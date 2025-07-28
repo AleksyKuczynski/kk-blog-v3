@@ -73,46 +73,33 @@ export function useCarousel({
       });
     }, []),
 
-    handleCaptionClick: useCallback((index: number) => {
-      dispatch({ type: 'TOGGLE_CAPTION', index });
-    }, []),
-
     handleSlideSelect: useCallback((index: number) => {
       dispatch({ type: 'SET_SLIDE', index });
     }, []),
 
-    // FIXED: Updated handler for carousel click - toggles current slide caption expansion
+    // Direct caption click (for big captions)
+    handleCaptionClick: useCallback((index: number) => {
+      dispatch({ type: 'TOGGLE_CAPTION_DIRECT', index });
+    }, []),
+
+    // Image frame click (for frame area)
     handleCarouselClick: useCallback((e: React.MouseEvent) => {
       const target = e.target as HTMLElement;
       
-      // Debug logging
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Carousel click detected:', {
-          target: target.tagName,
-          className: target.className,
-          closestButton: !!target.closest('button'),
-          closestCaption: !!target.closest('[data-caption]'),
-          isImage: target.tagName.toLowerCase() === 'img',
-          captionsVisible: state.captionsVisible,
-          currentIndex: state.currentIndex
-        });
-      }
-      
-      // Check if click is on carousel background (not on buttons, images, or captions)
-      if (target.closest('button') || 
-          target.closest('[role="button"]') || 
-          target.closest('[data-caption]') ||
-          target.tagName.toLowerCase() === 'img') {
-        console.log('Click ignored - hit interactive element');
+      // Ignore interactive elements
+      if (
+        target.closest('button') ||
+        target.closest('[data-caption]') ||
+        target.tagName.toLowerCase() === 'svg' ||
+        target.closest('svg')
+      ) {
         return;
       }
 
-      // FIXED: If captions are visible, toggle the current slide's caption expansion
+      // Frame click behavior
       if (state.captionsVisible) {
-        console.log('Toggling caption for slide:', state.currentIndex);
-        dispatch({ type: 'TOGGLE_CAPTION', index: state.currentIndex });
+        dispatch({ type: 'TOGGLE_CAPTION_FRAME', index: state.currentIndex });
       } else {
-        console.log('Showing captions');
         dispatch({ type: 'TOGGLE_CAPTIONS_VISIBILITY' });
       }
     }, [state.captionsVisible, state.currentIndex])

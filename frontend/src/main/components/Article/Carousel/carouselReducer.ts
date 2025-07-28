@@ -16,8 +16,9 @@ type CarouselAction =
   | { type: 'SET_SLIDE'; index: number }
   | { type: 'TOUCH_START'; x: number }
   | { type: 'TOUCH_END'; endX: number }
-  | { type: 'TOGGLE_CAPTION'; index: number }
-  | { type: 'TOGGLE_CAPTIONS_VISIBILITY' } // New action
+  | { type: 'TOGGLE_CAPTION_DIRECT'; index: number } // NEW: Click on caption
+  | { type: 'TOGGLE_CAPTION_FRAME'; index: number }  // NEW: Click on frame  
+  | { type: 'TOGGLE_CAPTIONS_VISIBILITY' }
   | { type: 'TRANSITION_END' };
 
 const SWIPE_THRESHOLD = 50;
@@ -93,17 +94,40 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
       };
     }
 
-    case 'TOGGLE_CAPTION': {
-      // Only toggle expansion if captions are visible
+    case 'TOGGLE_CAPTION_DIRECT': {
       if (!state.captionsVisible) return state;
       
       return {
         ...state,
-        images: state.images.map((img, idx) => 
-          idx === action.index 
-            ? { ...img, expandedCaption: !img.expandedCaption }
-            : img
-        )
+        images: state.images.map((img, idx) => {
+          if (idx !== action.index) return img;
+          
+          // Big captions: minimized ↔ expanded (component determines if it's big)
+          if (img.captionState === 'minimized') {
+            return { ...img, captionState: 'expanded' };
+          } else if (img.captionState === 'expanded') {
+            return { ...img, captionState: 'minimized' };
+          }
+          return img;
+        })
+      };
+    }
+
+    case 'TOGGLE_CAPTION_FRAME': {
+      if (!state.captionsVisible) return state;
+      
+      return {
+        ...state,
+        images: state.images.map((img, idx) => {
+          if (idx !== action.index) return img;
+          
+          // Frame click: visible state ↔ collapsed
+          if (img.captionState === 'collapsed') {
+            return { ...img, captionState: 'minimized' }; // Restore to initial
+          } else {
+            return { ...img, captionState: 'collapsed' }; // Hide
+          }
+        })
       };
     }
 
@@ -111,10 +135,9 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
       return {
         ...state,
         captionsVisible: !state.captionsVisible,
-        // Collapse all captions when hiding
         images: !state.captionsVisible 
-          ? state.images 
-          : state.images.map(img => ({ ...img, expandedCaption: false }))
+          ? state.images.map(img => ({ ...img, captionState: 'minimized' })) // Reset to initial
+          : state.images
       };
     }
 

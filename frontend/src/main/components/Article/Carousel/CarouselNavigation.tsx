@@ -13,6 +13,7 @@ interface CarouselNavigationProps {
   disabled?: boolean;
 }
 
+// Updated CarouselNavigation.tsx with better click detection
 export const CarouselNavigation = memo(function CarouselNavigation({
   layout,
   totalSlides,
@@ -41,17 +42,21 @@ export const CarouselNavigation = memo(function CarouselNavigation({
   );
 
   return (
-    <div className={twMerge(
-      "absolute inset-y-0 w-full",
-      "flex items-center justify-between",
-      layout === 'horizontal' ? 'px-2' : 'px-4',
-      "pointer-events-none z-10"
-    )}>
+    <div 
+      className={twMerge(
+        "absolute inset-y-0 w-full",
+        "flex items-center justify-between",
+        layout === 'horizontal' ? 'px-2' : 'px-4',
+        "pointer-events-none z-10"
+      )}
+      data-carousel-navigation="true" // Add identifier for click detection
+    >
       <button
         onClick={onPrevious}
         disabled={disabled}
         className={navigationButtonStyles}
         aria-label="Previous slide"
+        data-carousel-button="previous" // Specific identifier
       >
         <ChevronUpIcon 
           className={twMerge(
@@ -61,10 +66,13 @@ export const CarouselNavigation = memo(function CarouselNavigation({
         />
       </button>
 
-      <div className={twMerge(
-        "flex gap-1.5",
-        layout === 'vertical' && "absolute bottom-4 left-1/2 -translate-x-1/2"
-      )}>
+      <div 
+        className={twMerge(
+          "flex gap-1.5",
+          layout === 'vertical' && "absolute bottom-4 left-1/2 -translate-x-1/2"
+        )}
+        data-carousel-indicators="true" // Add identifier for indicators
+      >
         {Array.from({ length: totalSlides }).map((_, idx) => (
           <button
             key={idx}
@@ -92,6 +100,8 @@ export const CarouselNavigation = memo(function CarouselNavigation({
             )}
             aria-label={`Go to slide ${idx + 1}`}
             aria-current={idx === currentSlide}
+            data-carousel-button="indicator" // Specific identifier
+            data-slide-index={idx}
           />
         ))}
       </div>
@@ -101,6 +111,7 @@ export const CarouselNavigation = memo(function CarouselNavigation({
         disabled={disabled}
         className={navigationButtonStyles}
         aria-label="Next slide"
+        data-carousel-button="next" // Specific identifier
       >
         <ChevronUpIcon 
           className={twMerge(

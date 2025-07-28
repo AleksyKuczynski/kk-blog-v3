@@ -61,12 +61,12 @@ export const CarouselSlide = memo(function CarouselSlide({
       {shouldShowCaption() && (
         <CarouselCaption
           content={image.processedCaption}
-          expanded={image.expandedCaption}
-          visible={captionsVisible} // FIXED: Pass visibility state
-          onClick={onCaptionClick}
+          captionState={image.captionState} // CHANGED from expanded={image.expandedCaption}
+          visible={captionsVisible}
+          onCaptionClick={() => handlers.handleCaptionClick(index)} // Direct caption click
           navigationLayout={navigationLayout}
           isActive={isActive}
-          imageHeight={dimensions.height} // Pass actual image height
+          imageHeight={dimensions.height}
         />
       )}
     </div>

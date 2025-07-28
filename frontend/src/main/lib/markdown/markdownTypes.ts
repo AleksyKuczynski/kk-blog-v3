@@ -33,12 +33,14 @@ export interface ImageAttributes {
   filename?: string;
 }
 
+export type CaptionState = 'expanded' | 'minimized' | 'collapsed';
+
 export interface CarouselItem {
   type: 'image' | 'figure';
   imageAttributes: ImageAttributes;
   caption?: string;
-  processedCaption: string; // ✅ FIXED: Now required, always a string (empty if no caption)
-  expandedCaption: boolean;
+  processedCaption: string;
+  captionState: CaptionState;
 }
 
 export interface BlockquoteBase {

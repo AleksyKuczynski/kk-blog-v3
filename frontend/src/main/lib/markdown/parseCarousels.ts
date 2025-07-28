@@ -50,8 +50,8 @@ export async function parseCarousels(chunks: ContentChunk[]): Promise<ContentChu
             type: chunk.type as 'image' | 'figure',
             imageAttributes: enrichedAttributes,
             caption: chunk.type === 'figure' ? chunk.caption : undefined,
-            processedCaption, // Now always a string - TypeScript will be happy!
-            expandedCaption: false
+            processedCaption,
+            captionState: 'minimized'
           });
         } catch (error) {
           console.error('Error processing image for carousel:', error);
