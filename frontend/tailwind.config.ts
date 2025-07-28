@@ -66,7 +66,25 @@ const config: Config = {
         expandWidth: 'expandWidth 300ms ease-in-out',
         collapseWidth: 'collapseWidth 300ms ease-in-out',
       },
-
+      lineClamp: {
+        3: '3',
+      },
+      
+      // Carousel caption specific utilities
+      spacing: {
+        'caption-3line': 'var(--caption-three-line-height)',
+      },
+      
+      // Theme-aware shadows for sharp theme
+      boxShadow: {
+        'sharp': '0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.12)',
+      },
+      
+      // Custom backdrop blur values
+      backdropBlur: {
+        'xs': '2px',
+      },
+      
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

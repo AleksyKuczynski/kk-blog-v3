@@ -1,4 +1,5 @@
-// src/main/components/Article/Carousel/CarouselSlide.tsx
+// Updated CarouselSlide.tsx to pass imageHeight to caption
+
 import { memo } from 'react';
 import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions } from "./carouselTypes";
@@ -8,7 +9,7 @@ import { CarouselCaption } from "./CarouselCaption";
 interface CarouselSlideProps {
   image: CarouselItem;
   isActive: boolean;
-  position: -1 | 0 | 1;  // For compatibility (left, center, right)
+  position: -1 | 0 | 1;
   dimensions: CarouselDimensions;
   navigationLayout: 'horizontal' | 'vertical';
   onCaptionClick: () => void;
@@ -25,17 +26,13 @@ export const CarouselSlide = memo(function CarouselSlide({
   is2SlideCarousel = false
 }: CarouselSlideProps) {
   
-  // Caption visibility logic for 2-slide carousel
   const shouldShowCaption = (): boolean => {
-    // ✅ processedCaption is now guaranteed to be a string, just check if it's not empty
     if (image.processedCaption.trim() === '') return false;
     
-    // In 2-slide carousel, only show caption on center position to avoid duplicates
     if (is2SlideCarousel) {
       return position === 0; // Center position
     }
     
-    // In multi-slide carousel, show caption when slide is active
     return isActive;
   };
   
@@ -43,7 +40,6 @@ export const CarouselSlide = memo(function CarouselSlide({
     <div 
       className="relative w-full h-full"
       style={{
-        // 🔴 REMOVED: No translateX positioning - slides are positioned by parent strip container
         zIndex: isActive ? 10 : 0,
       }}
     >
@@ -51,18 +47,18 @@ export const CarouselSlide = memo(function CarouselSlide({
         src={image.imageAttributes.src}
         alt={image.imageAttributes.alt}
         title={image.imageAttributes.title}
-        priority={isActive} // Prioritize active slide
+        priority={isActive}
         displayMode={dimensions.imageDisplayMode}
       />
       
       {shouldShowCaption() && (
         <CarouselCaption
-          content={image.processedCaption} // ✅ Now guaranteed to be a string, TypeScript will be happy!
+          content={image.processedCaption}
           expanded={image.expandedCaption}
           onClick={onCaptionClick}
           navigationLayout={navigationLayout}
           isActive={isActive}
-          maxHeight={dimensions.maxHeight ? Math.min(120, dimensions.maxHeight * 0.3) : 120}
+          imageHeight={dimensions.height} // Pass actual image height
         />
       )}
     </div>

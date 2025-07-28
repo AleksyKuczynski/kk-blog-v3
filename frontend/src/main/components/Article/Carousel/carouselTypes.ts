@@ -8,6 +8,7 @@ export interface BreakpointDimensions {
   
   export interface CarouselDimensions extends BreakpointDimensions {
     breakpointDimensions: BreakpointDimensions[];
+    height: number;
   }
 
   export type NavigationLayout = 'horizontal' | 'vertical';

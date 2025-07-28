@@ -24,6 +24,16 @@ html {
   --border-radius-2xl: 1rem;
   --border-radius-3xl: 1.5rem;
   --border-radius-full: 9999px;
+
+  // Caption typography constants
+  --caption-font-size: 0.875rem; // text-sm equivalent
+  --caption-line-height: 1.375rem; // 1.375 * font-size for comfortable reading
+  --caption-padding-y: 0.75rem; // py-3 equivalent
+  --caption-max-lines: 3;
+  
+  // Calculate total 3-line height
+  --caption-three-line-height: calc(var(--caption-line-height) * var(--caption-max-lines) + var(--caption-padding-y) * 2);
+
 }
 
 [data-theme="rounded"] {
@@ -36,6 +46,11 @@ html {
   --border-radius-2xl: 2rem;
   --border-radius-3xl: 3rem;
   --border-radius-full: 9999px;
+
+  --caption-font-size: 0.875rem;
+  --caption-line-height: 1.5rem; // Slightly more generous spacing
+  --caption-padding-y: 1rem; // py-4 equivalent
+
 }
 
 [data-theme="sharp"] {
@@ -48,6 +63,11 @@ html {
   --border-radius-2xl: 0;
   --border-radius-3xl: 0;
   --border-radius-full: 0;
+
+  --caption-font-size: 0.875rem;
+  --caption-line-height: 1.25rem; // Tighter spacing for sharp aesthetic
+  --caption-padding-y: 0.5rem; // py-2 equivalent
+
 }
 
 // Light mode colors
@@ -349,78 +369,14 @@ html {
   }
 }
 
-/* Swiper theme customization */
-.swiper {
-  // Navigation buttons
-  .swiper-button-next,
-  .swiper-button-prev {
-    color: var(--color-primary);
-    transition: var(--transition-duration);
-
-    &::after {
-      font-size: 1.5rem;
-    }
-
-    &:hover {
-      color: var(--color-primary-dark);
-    }
+// Add scrollbar hiding utility
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
   }
-
-  // Pagination
-  .swiper-pagination-bullet {
-    background: var(--color-text-muted);
-    opacity: 0.5;
-    transition: var(--transition-duration);
-
-    &-active {
-      background: var(--color-primary);
-      opacity: 1;
-    }
-  }
-
-  // Theme-specific styles
-  [data-theme="default"] & {
-    .swiper-button-next,
-    .swiper-button-prev {
-      background: var(--color-background-alt);
-      padding: 1.5rem;
-      border-radius: var(--border-radius-full);
-    }
-
-    .swiper-pagination-bullet {
-      border-radius: var(--border-radius-full);
-    }
-  }
-
-  [data-theme="rounded"] & {
-    .swiper-button-next,
-    .swiper-button-prev {
-      background: var(--color-background-alt);
-      padding: 2rem;
-      border-radius: var(--border-radius-xl);
-    }
-
-    .swiper-pagination-bullet {
-      border-radius: var(--border-radius-lg);
-      width: 2rem;
-      height: 0.5rem;
-    }
-  }
-
-  [data-theme="sharp"] & {
-    .swiper-button-next,
-    .swiper-button-prev {
-      background: var(--color-background-alt);
-      padding: 1.5rem;
-      border: 2px solid var(--color-primary);
-    }
-
-    .swiper-pagination-bullet {
-      border-radius: 0;
-      width: 1.5rem;
-      height: 0.5rem;
-      border: 1px solid var(--color-primary);
-    }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Safari and Chrome */
   }
 }
-
