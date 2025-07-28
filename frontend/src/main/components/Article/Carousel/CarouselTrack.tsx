@@ -34,10 +34,10 @@ export function CarouselTrack({
     // Get current viewport dimensions for fallback height calculation
     const currentViewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
     const currentViewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
-    const breakpoint = getViewportBreakpoint(currentViewportWidth);
+    const breakpoint = getViewportBreakpoint(currentViewportWidth, currentViewportHeight); // FIXED: Added height parameter
     
     // Calculate fallback height for the carousel container
-    const aspectRatio = dimensions.aspectRatio || 1.5;
+    const aspectRatio = dimensions.ratio || 1.5; // FIXED: Changed from dimensions.aspectRatio to dimensions.ratio
     const fallbackHeight = Math.min(
       currentViewportWidth / aspectRatio,
       dimensions.height || 400
@@ -56,7 +56,7 @@ export function CarouselTrack({
 
     // Handle special case of 2-slide carousel
     const is2SlideCarousel = images.length === 2;
-    const visibleIndexes = getVisibleIndexes(currentIndex, images.length, is2SlideCarousel);
+    const visibleIndexes = getVisibleIndexes(currentIndex, images.length);
 
     // Calculate strip transform based on current transition state
     const getStripTransform = (): string => {

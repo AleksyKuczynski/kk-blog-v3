@@ -95,7 +95,7 @@ const ImageCarousel = memo(function ImageCarousel({
           'hover:opacity-100 opacity-0'
         )}
       >
-        Press 'C' to toggle captions • Click carousel area to toggle • Click caption to expand
+        Press C to toggle captions • Click carousel area to toggle • Click caption to expand
       </div>
     </div>
   );

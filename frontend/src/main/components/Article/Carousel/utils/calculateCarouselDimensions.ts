@@ -186,6 +186,7 @@ export function calculateCarouselDimensions({
   return {
     ratio: optimalRatio,
     maxHeight,
+    height: maxHeight,
     imageDisplayMode,
     breakpointDimensions
   };
