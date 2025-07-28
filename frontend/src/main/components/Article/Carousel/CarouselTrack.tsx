@@ -11,12 +11,12 @@ interface CarouselTrackProps {
   currentIndex: number;
   dimensions: CarouselDimensions;
   navigationLayout: 'horizontal' | 'vertical';
-  captionsVisible: boolean; // Added back
+  captionsVisible: boolean;
   direction?: 'next' | 'prev' | null;
   isTransitioning?: boolean;
   handlers: {
     handleCaptionClick: (index: number) => void;
-    handleCarouselClick: (e: React.MouseEvent) => void; // Added back
+    // FIXED: Removed handleCarouselClick since it's now on the main container
   };
 }
 
@@ -25,7 +25,7 @@ export function CarouselTrack({
     currentIndex,
     dimensions,
     navigationLayout,
-    captionsVisible, // Added back
+    captionsVisible,
     direction = null,
     isTransitioning = false,
     handlers
@@ -34,53 +34,45 @@ export function CarouselTrack({
     // Get current viewport dimensions for fallback height calculation
     const currentViewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
     const currentViewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+    const breakpoint = getViewportBreakpoint(currentViewportWidth);
     
-    // Get current breakpoint to determine which maxHeight to use
-    const currentBreakpoint = getViewportBreakpoint(currentViewportWidth, currentViewportHeight);
-    const breakpointIndex = {
-      'mobile-portrait': 0,
-      'mobile-landscape': 1,
-      'tablet-portrait': 2,
-      'tablet-landscape': 3,
-      'desktop-portrait': 4,
-      'desktop-landscape': 5
-    }[currentBreakpoint];
+    // Calculate fallback height for the carousel container
+    const aspectRatio = dimensions.aspectRatio || 1.5;
+    const fallbackHeight = Math.min(
+      currentViewportWidth / aspectRatio,
+      dimensions.height || 400
+    );
     
-    // Get the current breakpoint's maxHeight for fallback
-    const fallbackHeight = dimensions.breakpointDimensions[breakpointIndex]?.maxHeight || dimensions.maxHeight || 400;
-    
-    // Validate ratios to prevent NaN/invalid values
-    const validateRatio = (ratio: number): number => {
-      if (!ratio || isNaN(ratio) || ratio <= 0) {
-        console.warn('Invalid carousel ratio detected:', ratio, 'using fallback 1.5');
-        return 1.5;
-      }
-      return ratio;
-    };
-
-    // FIXED: Use correct CSS variable names that exist in the system
     const containerStyles = {
-      '--mobile-portrait-ratio': validateRatio(dimensions.breakpointDimensions[0]?.ratio || 1.5),
-      '--mobile-landscape-ratio': validateRatio(dimensions.breakpointDimensions[1]?.ratio || 1.5),
-      '--tablet-portrait-ratio': validateRatio(dimensions.breakpointDimensions[2]?.ratio || 1.5),
-      '--tablet-landscape-ratio': validateRatio(dimensions.breakpointDimensions[3]?.ratio || 1.5),
-      '--desktop-portrait-ratio': validateRatio(dimensions.breakpointDimensions[4]?.ratio || 1.5),
-      '--desktop-landscape-ratio': validateRatio(dimensions.breakpointDimensions[5]?.ratio || 1.5),
+      '--mobile-portrait-ratio': aspectRatio.toString(),
+      '--mobile-landscape-ratio': '1',
+      '--tablet-portrait-ratio': aspectRatio.toString(),
+      '--tablet-landscape-ratio': '1',
+      '--desktop-portrait-ratio': aspectRatio.toString(),
+      '--desktop-landscape-ratio': '1',
       '--fallback-height': `${fallbackHeight}px`,
-      '--carousel-max-height': `${fallbackHeight}px` // FIXED: This is the correct variable name
+      '--carousel-max-height': `${dimensions.maxHeight || 420}px`
     } as React.CSSProperties;
-  
-    const visibleIndexes = getVisibleIndexes(currentIndex, images.length);
+
+    // Handle special case of 2-slide carousel
     const is2SlideCarousel = images.length === 2;
-    
-    // Calculate strip transform to show center slide in viewport
+    const visibleIndexes = getVisibleIndexes(currentIndex, images.length, is2SlideCarousel);
+
+    // Calculate strip transform based on current transition state
     const getStripTransform = (): string => {
       if (!isTransitioning || !direction) {
-        // Default: center slide (position 1 in 3-slide strip) is visible
-        return 'translateX(-100%)'; // Show center slide (100% position) in viewport
+        return 'translateX(-100%)'; // Default: center slide visible
       }
-      
-      // During animation: move to show left or right slide
+
+      // During transition, move strip to show the target slide
+      if (is2SlideCarousel) {
+        // In 2-slide carousel, alternate between two positions
+        return direction === 'next' 
+          ? 'translateX(-200%)' // Show right slide (200% position) in viewport
+          : 'translateX(0%)';   // Show left slide (0% position) in viewport
+      }
+
+      // In multi-slide carousel, standard transitions
       return direction === 'next' 
         ? 'translateX(-200%)' // Show right slide (200% position) in viewport
         : 'translateX(0%)';   // Show left slide (0% position) in viewport
@@ -105,12 +97,13 @@ export function CarouselTrack({
       <div 
         style={containerStyles}
         className={twMerge(
-          'Carousel_carouselContainer__SjVtW relative w-full overflow-hidden cursor-pointer',
+          'Carousel_carouselContainer__SjVtW relative w-full overflow-hidden',
+          // FIXED: Removed cursor-pointer since click handling is now on main container
           navigationLayout === 'horizontal' ? 'pb-16' : 'px-12',
           'sm:pb-12 sm:px-8',
           'max-h-[var(--carousel-max-height)]'
         )}
-        onClick={handlers.handleCarouselClick} // FIXED: Add click handler back
+        // FIXED: Removed onClick handler - it's now on the main ImageCarousel container
       >
         {/* Viewport: Fixed frame that shows only center portion */}
         <div 
@@ -155,10 +148,10 @@ export function CarouselTrack({
                     position={relativePosition}
                     dimensions={{
                       ...dimensions,
-                      height: fallbackHeight // FIXED: Use calculated fallback height
+                      height: fallbackHeight
                     }}
                     navigationLayout={navigationLayout}
-                    captionsVisible={captionsVisible} // FIXED: Pass visibility state
+                    captionsVisible={captionsVisible}
                     onCaptionClick={() => handlers.handleCaptionClick(index)}
                     is2SlideCarousel={is2SlideCarousel}
                   />

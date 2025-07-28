@@ -25,7 +25,7 @@ const ImageCarousel = memo(function ImageCarousel({
     currentIndex,
     direction,
     isTransitioning,
-    captionsVisible, // FIXED: Get caption visibility state
+    captionsVisible,
     images: carouselImages,
     handlers 
   } = useCarousel({ 
@@ -42,8 +42,8 @@ const ImageCarousel = memo(function ImageCarousel({
   return (
     <div 
       className={twMerge(
-        "relative mx-auto mb-24 outline-none max-w-4xl",
-        "theme-default:focus:ring-2 theme-default:focus:ring-pr-fix/50",
+        "relative mx-auto mb-24 outline-none max-w-4xl cursor-pointer",
+        "theme-default:focus-visible:ring-2 theme-default:focus-visible:ring-pr-fix/50",
         "theme-rounded:shadow-xl theme-rounded:rounded-2xl",
         "theme-sharp:border theme-sharp:border-ol",
         // Visual feedback during transitions
@@ -58,18 +58,20 @@ const ImageCarousel = memo(function ImageCarousel({
       onKeyDown={handlers.handleKeyDown}
       onTouchStart={handlers.handleTouchStart}
       onTouchEnd={handlers.handleTouchEnd}
+      onClick={handlers.handleCarouselClick} // FIXED: Move click handler to main container
+      style={{ pointerEvents: 'auto' }} // FIXED: Ensure pointer events work
     >
       <CarouselTrack
         images={carouselImages}
         currentIndex={currentIndex}
         dimensions={dimensions}
         navigationLayout={navigationLayout}
-        captionsVisible={captionsVisible} // FIXED: Pass visibility state
+        captionsVisible={captionsVisible}
         direction={direction}
         isTransitioning={isTransitioning}
         handlers={{
-          handleCaptionClick: handlers.handleCaptionClick,
-          handleCarouselClick: handlers.handleCarouselClick // FIXED: Pass carousel click handler
+          handleCaptionClick: handlers.handleCaptionClick
+          // FIXED: Remove handleCarouselClick from here since it's now on the main container
         }}
       />
 

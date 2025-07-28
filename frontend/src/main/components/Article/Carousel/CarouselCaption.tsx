@@ -38,9 +38,10 @@ export const CarouselCaption = memo(function CarouselCaption({
     return Math.min(imageHeight * 0.8, 300);
   };
 
-  // Navigation height offset calculation
+  // FIXED: Navigation height offset calculation - align to bottom of image frame
   const getNavigationOffset = () => {
-    return navigationLayout === 'horizontal' ? '4rem' : '1rem'; // 64px for horizontal, 16px for vertical
+    // Align captions to the bottom of the image frame, not above navigation
+    return '0px'; // Changed from 4rem/1rem to 0px for bottom alignment
   };
 
   // Check for text overflow and measure content
@@ -54,6 +55,14 @@ export const CarouselCaption = memo(function CarouselCaption({
       setContentHeight(scrollHeight);
     }
   }, [content, expanded]);
+
+  // FIXED: Handle click only if there's overflow to expand
+  const handleCaptionClick = () => {
+    if (hasOverflow) {
+      onClick();
+    }
+    // If no overflow, do nothing - caption cannot expand
+  };
 
   // Don't render if not visible
   if (!visible) return null;
@@ -69,7 +78,7 @@ export const CarouselCaption = memo(function CarouselCaption({
         isActive ? 'opacity-100' : 'opacity-0'
       )}
       style={{
-        // FIXED: Position at actual bottom of carousel frame, accounting for navigation
+        // FIXED: Position at actual bottom of carousel frame
         bottom: getNavigationOffset(),
         height: expanded 
           ? `${Math.min(getMaxExpandedHeight(), contentHeight + 24)}px`
@@ -93,15 +102,18 @@ export const CarouselCaption = memo(function CarouselCaption({
           'theme-sharp:shadow-sharp'
         )}
       >
-        {/* Clickable content area */}
+        {/* FIXED: Conditionally clickable content area */}
         <button
-          onClick={onClick}
+          onClick={handleCaptionClick}
+          disabled={!hasOverflow} // FIXED: Disable click when no overflow
           className={twMerge(
-            'w-full h-full text-left cursor-pointer',
-            'focus:outline-none focus:ring-2 focus:ring-pr-fix/50',
-            'theme-default:focus:ring-offset-2 theme-default:focus:ring-offset-sf-cont',
-            'theme-rounded:focus:ring-offset-4 theme-rounded:focus:ring-offset-sf-cont',
-            'theme-sharp:focus:ring-offset-0'
+            'w-full h-full text-left',
+            // FIXED: Only show cursor pointer and focus states when expandable
+            hasOverflow ? 'cursor-pointer' : 'cursor-default',
+            hasOverflow && 'focus:outline-none focus:ring-2 focus:ring-pr-fix/50',
+            hasOverflow && 'theme-default:focus:ring-offset-2 theme-default:focus:ring-offset-sf-cont',
+            hasOverflow && 'theme-rounded:focus:ring-offset-4 theme-rounded:focus:ring-offset-sf-cont',
+            hasOverflow && 'theme-sharp:focus:ring-offset-0'
           )}
         >
           <div 
@@ -140,7 +152,7 @@ export const CarouselCaption = memo(function CarouselCaption({
           />
         )}
         
-        {/* Expansion indicator */}
+        {/* FIXED: Only show expansion indicator when there's actually overflow */}
         {hasOverflow && (
           <div 
             className={twMerge(
@@ -159,7 +171,7 @@ export const CarouselCaption = memo(function CarouselCaption({
         )}
       </div>
 
-      {/* Caption visibility hint (only shown when captions are visible) */}
+      {/* FIXED: Updated caption visibility hint text */}
       {visible && !expanded && (
         <div 
           className={twMerge(
@@ -175,7 +187,8 @@ export const CarouselCaption = memo(function CarouselCaption({
             'theme-sharp:rounded-none'
           )}
         >
-          Click area to hide captions
+          {/* FIXED: Show different text based on expandability */}
+          {hasOverflow ? 'Click to expand caption' : 'Click area to hide captions'}
         </div>
       )}
     </div>

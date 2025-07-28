@@ -81,28 +81,48 @@ export function useCarousel({
       dispatch({ type: 'SET_SLIDE', index });
     }, []),
 
-    // New handler for toggling caption visibility
+    // FIXED: Updated handler for carousel click - toggles current slide caption expansion
     handleCarouselClick: useCallback((e: React.MouseEvent) => {
-      // Only toggle if clicking on the carousel background, not on navigation or captions
       const target = e.target as HTMLElement;
+      
+      // Debug logging
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Carousel click detected:', {
+          target: target.tagName,
+          className: target.className,
+          closestButton: !!target.closest('button'),
+          closestCaption: !!target.closest('[data-caption]'),
+          isImage: target.tagName.toLowerCase() === 'img',
+          captionsVisible: state.captionsVisible,
+          currentIndex: state.currentIndex
+        });
+      }
       
       // Check if click is on carousel background (not on buttons, images, or captions)
       if (target.closest('button') || 
           target.closest('[role="button"]') || 
           target.closest('[data-caption]') ||
           target.tagName.toLowerCase() === 'img') {
+        console.log('Click ignored - hit interactive element');
         return;
       }
 
-      dispatch({ type: 'TOGGLE_CAPTIONS_VISIBILITY' });
-    }, [])
+      // FIXED: If captions are visible, toggle the current slide's caption expansion
+      if (state.captionsVisible) {
+        console.log('Toggling caption for slide:', state.currentIndex);
+        dispatch({ type: 'TOGGLE_CAPTION', index: state.currentIndex });
+      } else {
+        console.log('Showing captions');
+        dispatch({ type: 'TOGGLE_CAPTIONS_VISIBILITY' });
+      }
+    }, [state.captionsVisible, state.currentIndex])
   };
 
   return {
     currentIndex: state.currentIndex,
     direction: state.direction,
     isTransitioning: state.isTransitioning,
-    captionsVisible: state.captionsVisible, // New state
+    captionsVisible: state.captionsVisible,
     images: state.images,
     handlers
   };
