@@ -25,7 +25,7 @@ const ImageCarousel = memo(function ImageCarousel({
     currentIndex,
     direction,
     isTransitioning,
-    captionsVisible, // New state
+    captionsVisible, // FIXED: Get caption visibility state
     images: carouselImages,
     handlers 
   } = useCarousel({ 
@@ -64,12 +64,12 @@ const ImageCarousel = memo(function ImageCarousel({
         currentIndex={currentIndex}
         dimensions={dimensions}
         navigationLayout={navigationLayout}
-        captionsVisible={captionsVisible} // Pass visibility state
+        captionsVisible={captionsVisible} // FIXED: Pass visibility state
         direction={direction}
         isTransitioning={isTransitioning}
         handlers={{
           handleCaptionClick: handlers.handleCaptionClick,
-          handleCarouselClick: handlers.handleCarouselClick // New handler
+          handleCarouselClick: handlers.handleCarouselClick // FIXED: Pass carousel click handler
         }}
       />
 

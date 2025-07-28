@@ -11,7 +11,7 @@ interface CarouselSlideProps {
   position: -1 | 0 | 1;
   dimensions: CarouselDimensions;
   navigationLayout: 'horizontal' | 'vertical';
-  captionsVisible: boolean; // New prop for caption visibility
+  captionsVisible: boolean; // FIXED: Added missing prop
   onCaptionClick: () => void;
   is2SlideCarousel?: boolean;
 }
@@ -22,13 +22,13 @@ export const CarouselSlide = memo(function CarouselSlide({
   position,
   dimensions,
   navigationLayout,
-  captionsVisible, // New visibility state
+  captionsVisible, // FIXED: Added missing prop
   onCaptionClick,
   is2SlideCarousel = false
 }: CarouselSlideProps) {
   
   const shouldShowCaption = (): boolean => {
-    // Don't show if captions are globally hidden
+    // FIXED: Don't show if captions are globally hidden
     if (!captionsVisible) return false;
     
     // Don't show if no caption content
@@ -62,11 +62,11 @@ export const CarouselSlide = memo(function CarouselSlide({
         <CarouselCaption
           content={image.processedCaption}
           expanded={image.expandedCaption}
-          visible={captionsVisible} // Pass visibility state
+          visible={captionsVisible} // FIXED: Pass visibility state
           onClick={onCaptionClick}
           navigationLayout={navigationLayout}
           isActive={isActive}
-          imageHeight={dimensions.height}
+          imageHeight={dimensions.height} // Pass actual image height
         />
       )}
     </div>
