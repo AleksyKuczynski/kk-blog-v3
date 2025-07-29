@@ -1,13 +1,13 @@
 // src/main/components/Article/Carousel/carouselReducer.ts
-import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
+import { CarouselItemWithBehavior, CaptionMode, CaptionState, getInitialStateForMode } from './captionTypes';
 
 export interface CarouselState {
   currentIndex: number;
-  images: CarouselItem[];
+  images: CarouselItemWithBehavior[];
   direction: 'next' | 'prev' | null;
   touchStart?: number;
   isTransitioning: boolean;
-  captionsVisible: boolean; // New state for caption visibility
+  captionsVisible: boolean;
 }
 
 type CarouselAction = 
@@ -16,8 +16,9 @@ type CarouselAction =
   | { type: 'SET_SLIDE'; index: number }
   | { type: 'TOUCH_START'; x: number }
   | { type: 'TOUCH_END'; endX: number }
-  | { type: 'TOGGLE_CAPTION_DIRECT'; index: number } // NEW: Click on caption
-  | { type: 'TOGGLE_CAPTION_FRAME'; index: number }  // NEW: Click on frame  
+  | { type: 'TOGGLE_CAPTION_DIRECT'; index: number } // Click on expandable caption
+  | { type: 'TOGGLE_CAPTION_FRAME'; index: number }  // Click on frame
+  | { type: 'UPDATE_CAPTION_MODE'; index: number; mode: CaptionMode } // Mode detection
   | { type: 'TOGGLE_CAPTIONS_VISIBILITY' }
   | { type: 'TRANSITION_END' };
 
@@ -34,7 +35,7 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
         ...state,
         direction: 'next',
         isTransitioning: true,
-        captionsVisible: true // Show captions when changing slides
+        captionsVisible: true
       };
 
     case 'PREV_SLIDE':
@@ -44,7 +45,7 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
         ...state,
         direction: 'prev',
         isTransitioning: true,
-        captionsVisible: true // Show captions when changing slides
+        captionsVisible: true
       };
 
     case 'SET_SLIDE': {
@@ -59,7 +60,7 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
         ...state,
         direction,
         isTransitioning: true,
-        captionsVisible: true // Show captions when changing slides
+        captionsVisible: true
       };
     }
 
@@ -90,7 +91,28 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
         direction,
         touchStart: undefined,
         isTransitioning: true,
-        captionsVisible: true // Show captions when changing slides
+        captionsVisible: true
+      };
+    }
+
+    case 'UPDATE_CAPTION_MODE': {
+      return {
+        ...state,
+        images: state.images.map((img, idx) => {
+          if (idx !== action.index) return img;
+          
+          const newMode = action.mode;
+          const newState = getInitialStateForMode(newMode, img.captionBehavior.hasContent);
+          
+          return {
+            ...img,
+            captionBehavior: {
+              ...img.captionBehavior,
+              mode: newMode,
+              state: newState
+            }
+          };
+        })
       };
     }
 
@@ -102,13 +124,28 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
         images: state.images.map((img, idx) => {
           if (idx !== action.index) return img;
           
-          // Big captions: minimized ↔ expanded (component determines if it's big)
-          if (img.captionState === 'minimized') {
-            return { ...img, captionState: 'expanded' };
-          } else if (img.captionState === 'expanded') {
-            return { ...img, captionState: 'minimized' };
+          const { mode, state: currentState } = img.captionBehavior;
+          
+          // Only expandable captions respond to direct clicks
+          if (mode !== 'expandable') return img;
+          
+          // Expandable captions: minimized ↔ expanded
+          let newState: CaptionState;
+          if (currentState === 'minimized') {
+            newState = 'expanded';
+          } else if (currentState === 'expanded') {
+            newState = 'minimized';
+          } else {
+            newState = currentState; // No change for collapsed
           }
-          return img;
+          
+          return {
+            ...img,
+            captionBehavior: {
+              ...img.captionBehavior,
+              state: newState
+            }
+          };
         })
       };
     }
@@ -121,12 +158,26 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
         images: state.images.map((img, idx) => {
           if (idx !== action.index) return img;
           
-          // Frame click: visible state ↔ collapsed
-          if (img.captionState === 'collapsed') {
-            return { ...img, captionState: 'minimized' }; // Restore to initial
+          const { mode, state: currentState } = img.captionBehavior;
+          
+          // Frame click behavior depends on mode
+          let newState: CaptionState;
+          
+          if (currentState === 'collapsed') {
+            // Restore to initial state based on mode
+            newState = getInitialStateForMode(mode, img.captionBehavior.hasContent);
           } else {
-            return { ...img, captionState: 'collapsed' }; // Hide
+            // Collapse caption
+            newState = 'collapsed';
           }
+          
+          return {
+            ...img,
+            captionBehavior: {
+              ...img.captionBehavior,
+              state: newState
+            }
+          };
         })
       };
     }
@@ -136,13 +187,18 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
         ...state,
         captionsVisible: !state.captionsVisible,
         images: !state.captionsVisible 
-          ? state.images.map(img => ({ ...img, captionState: 'minimized' })) // Reset to initial
+          ? state.images.map(img => ({
+              ...img,
+              captionBehavior: {
+                ...img.captionBehavior,
+                state: getInitialStateForMode(img.captionBehavior.mode, img.captionBehavior.hasContent)
+              }
+            }))
           : state.images
       };
     }
 
     case 'TRANSITION_END':
-      // Update currentIndex AFTER animation completes
       if (!state.isTransitioning || !state.direction) return state;
       
       const newCurrentIndex = state.direction === 'next'

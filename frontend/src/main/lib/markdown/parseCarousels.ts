@@ -41,17 +41,18 @@ export async function parseCarousels(chunks: ContentChunk[]): Promise<ContentChu
         try {
           const enrichedAttributes = await enrichImageAttributes(chunk.content || '');
           
-          // ✅ FIXED: Always assign a string to processedCaption, never undefined
-          const processedCaption = (chunk.type === 'figure' && chunk.caption) 
-            ? convertSimpleMarkdownToHtml(chunk.caption)
+          // SIMPLIFIED: Only detect caption presence/absence at markdown time
+          const hasCaption = chunk.type === 'figure' && chunk.caption && chunk.caption.trim() !== '';
+          const processedCaption = hasCaption 
+            ? convertSimpleMarkdownToHtml(chunk.caption!)
             : ''; // Empty string if no caption
           
           carouselItems.push({
             type: chunk.type as 'image' | 'figure',
             imageAttributes: enrichedAttributes,
-            caption: chunk.type === 'figure' ? chunk.caption : undefined,
-            processedCaption,
-            captionState: 'minimized'
+            caption: hasCaption ? chunk.caption : undefined,
+            processedCaption
+            // Removed: captionState - this is now handled client-side
           });
         } catch (error) {
           console.error('Error processing image for carousel:', error);
@@ -64,7 +65,6 @@ export async function parseCarousels(chunks: ContentChunk[]): Promise<ContentChu
           (item.imageAttributes.width || 1200) / (item.imageAttributes.height || 800)
         );
         
-        // Use enhanced calculation function
         const dimensions = calculateCarouselDimensions({
           analysis: imageSetAnalysis,
           viewportWidth: typeof window !== 'undefined' ? window.innerWidth : 1200,
@@ -74,26 +74,19 @@ export async function parseCarousels(chunks: ContentChunk[]): Promise<ContentChu
 
         processedChunks.push({
           type: 'carousel',
-          images: carouselItems, // All items now have processedCaption as string
+          images: carouselItems,
           imageSetAnalysis,
           dimensions
         });
       }
     }
-    
+
     imageBuffer = [];
   }
 
-  for (let i = 0; i < chunks.length; i++) {
-    const chunk = chunks[i];
-    const nextChunk = i < chunks.length - 1 ? chunks[i + 1] : null;
-
+  for (const chunk of chunks) {
     if (chunk.type === 'image' || chunk.type === 'figure') {
       imageBuffer.push(chunk);
-
-      if (!nextChunk || (nextChunk.type !== 'image' && nextChunk.type !== 'figure')) {
-        await processImageBuffer();
-      }
     } else {
       await processImageBuffer();
       processedChunks.push(chunk);
@@ -101,6 +94,5 @@ export async function parseCarousels(chunks: ContentChunk[]): Promise<ContentChu
   }
 
   await processImageBuffer();
-
   return processedChunks;
 }

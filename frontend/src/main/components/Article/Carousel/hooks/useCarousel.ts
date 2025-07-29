@@ -2,7 +2,9 @@
 import { useReducer, useCallback, useEffect } from 'react';
 import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions } from '../carouselTypes';
+import { CaptionMode } from '../captionTypes';
 import { carouselReducer, CarouselState } from '../carouselReducer';
+import { adaptCarouselItemsWithBehavior } from '../utils/captionBehaviorAdapter';
 
 interface UseCarouselProps {
   images: CarouselItem[];
@@ -14,7 +16,7 @@ const initialState: CarouselState = {
   direction: null,
   touchStart: undefined,
   isTransitioning: false,
-  captionsVisible: true, // Start with captions visible
+  captionsVisible: true,
   images: []
 };
 
@@ -22,18 +24,18 @@ export function useCarousel({
   images, 
   dimensions 
 }: UseCarouselProps) {
+  // Convert simplified markdown items to client-side behavior items
   const [state, dispatch] = useReducer(carouselReducer, {
     ...initialState,
-    images
+    images: adaptCarouselItemsWithBehavior(images)
   });
 
   // Handle transition timing for strip animation
   useEffect(() => {
     if (state.isTransitioning && state.direction) {
-      // Start CSS animation immediately, then end transition after animation duration
       const timer = setTimeout(() => {
         dispatch({ type: 'TRANSITION_END' });
-      }, 300); // Match CSS transition duration exactly
+      }, 300);
 
       return () => clearTimeout(timer);
     }
@@ -54,7 +56,6 @@ export function useCarousel({
       } else if (e.key === 'ArrowRight') {
         dispatch({ type: 'NEXT_SLIDE' });
       } else if (e.key === 'c' || e.key === 'C') {
-        // 'C' key to toggle captions visibility
         dispatch({ type: 'TOGGLE_CAPTIONS_VISIBILITY' });
       }
     }, []),
@@ -77,12 +78,17 @@ export function useCarousel({
       dispatch({ type: 'SET_SLIDE', index });
     }, []),
 
-    // Direct caption click (for big captions)
+    // Direct caption click (for expandable captions)
     handleCaptionClick: useCallback((index: number) => {
       dispatch({ type: 'TOGGLE_CAPTION_DIRECT', index });
     }, []),
 
-    // Image frame click (for frame area)
+    // Caption mode change (called by ResizeObserver)
+    handleCaptionModeChange: useCallback((index: number, mode: CaptionMode) => {
+      dispatch({ type: 'UPDATE_CAPTION_MODE', index, mode });
+    }, []),
+
+    // Image frame click
     handleCarouselClick: useCallback((e: React.MouseEvent) => {
       const target = e.target as HTMLElement;
       
@@ -110,7 +116,7 @@ export function useCarousel({
     direction: state.direction,
     isTransitioning: state.isTransitioning,
     captionsVisible: state.captionsVisible,
-    images: state.images,
+    images: state.images, // Now includes caption behavior
     handlers
   };
 }

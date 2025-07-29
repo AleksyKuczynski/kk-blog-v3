@@ -1,13 +1,15 @@
 // src/main/components/Article/Carousel/CarouselCaption.tsx
-import { CaptionState } from '@/main/lib/markdown/markdownTypes';
-import { memo, useRef, useLayoutEffect, useState, useCallback } from 'react';
+import { memo, useRef, useState, useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
+import { CaptionBehavior, CaptionMode, CaptionState } from './captionTypes';
+import { useResizeObserver } from './hooks/useResizeObserver';
 
 interface CarouselCaptionProps {
   content: string;
-  captionState: CaptionState;
+  behavior: CaptionBehavior;
   visible: boolean;
-  onCaptionClick: () => void;
+  onCaptionClick: () => void; // Direct caption click (expandable only)
+  onModeChange: (mode: CaptionMode) => void; // Callback when mode changes
   navigationLayout: 'horizontal' | 'vertical';
   isActive: boolean;
   imageHeight?: number;
@@ -15,146 +17,130 @@ interface CarouselCaptionProps {
 
 export const CarouselCaption = memo(function CarouselCaption({
   content,
-  captionState,
+  behavior,
   visible,
   onCaptionClick,
+  onModeChange,
   navigationLayout,
   isActive,
   imageHeight = 400
 }: CarouselCaptionProps) {
   
   const captionRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
-  const [hasOverflow, setHasOverflow] = useState(false);
-  const [contentHeight, setContentHeight] = useState(0);
+  const [measuredHeight, setMeasuredHeight] = useState(0);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Type guards for caption states
-  const isCollapsedState = (state: CaptionState): state is 'collapsed' => state === 'collapsed';
-  const isExpandedState = (state: CaptionState): state is 'expanded' => state === 'expanded';
-
-  // Measure content to determine if it's small or big caption
-  const measureContent = useCallback(() => {
-    if (!measureRef.current || !visible || isCollapsedState(captionState)) return;
-
-    const measureElement = measureRef.current;
+  // Detect caption mode using @tailwindcss/line-clamp
+  const detectCaptionMode = useCallback((element: HTMLElement): CaptionMode => {
+    // Create a test element with line-clamp-3 to measure 3-line height
+    const testElement = element.cloneNode(true) as HTMLElement;
+    testElement.classList.add('line-clamp-3');
+    testElement.style.position = 'absolute';
+    testElement.style.visibility = 'hidden';
+    testElement.style.width = element.offsetWidth + 'px';
     
-    // Get the actual computed line height from CSS variables
-    const computedStyle = getComputedStyle(measureElement);
-    const lineHeight = parseFloat(computedStyle.getPropertyValue('--caption-line-height')) || 22; // fallback to 22px
-    const paddingY = parseFloat(computedStyle.getPropertyValue('--caption-padding-y')) || 12; // fallback to 12px
+    element.parentElement?.appendChild(testElement);
+    const threeLineHeight = testElement.offsetHeight;
+    element.parentElement?.removeChild(testElement);
     
-    // Calculate 3-line height using actual CSS values
-    const threeLineHeight = (lineHeight * 3) + (paddingY * 2);
+    // Remove line-clamp to measure natural height
+    element.classList.remove('line-clamp-3');
+    const naturalHeight = element.scrollHeight;
     
-    // Measure actual content height
-    const actualHeight = measureElement.scrollHeight;
+    // If natural height significantly exceeds 3-line height, it's expandable
+    const threshold = threeLineHeight * 1.1; // 10% buffer
+    return naturalHeight > threshold ? 'expandable' : 'static';
+  }, []);
+
+  // Handle caption measurement and mode detection
+  const handleMeasurement = useCallback((entries: ResizeObserverEntry[]) => {
+    const entry = entries[0];
+    if (!entry || !measureRef.current) return;
+
+    const element = measureRef.current;
+    const newMode = detectCaptionMode(element);
+    const newHeight = element.scrollHeight;
     
-    // Content-based fallback: if content is very long, assume it's big
-    const contentLength = content.replace(/<[^>]*>/g, '').trim().length;
-    const isLongContent = contentLength > 200; // characters
+    setMeasuredHeight(newHeight);
     
-    // Determine if caption has overflow (is "big")
-    const hasOverflowValue = actualHeight > threeLineHeight * 1.1 || isLongContent;
+    // Notify parent if mode changed
+    if (newMode !== behavior.mode) {
+      onModeChange(newMode);
+    }
     
-    setHasOverflow(hasOverflowValue);
-    setContentHeight(actualHeight);
-    setIsInitialized(true);
+    if (!isInitialized) {
+      setIsInitialized(true);
+    }
+  }, [behavior.mode, onModeChange, detectCaptionMode, isInitialized]);
 
-  }, [content, visible, captionState]);
+  // Set up ResizeObserver for frame size changes
+  useResizeObserver(measureRef, handleMeasurement);
 
-  // Measure on mount and when dependencies change
-  useLayoutEffect(() => {
-    measureContent();
-  }, [measureContent]);
+  // Don't render if no content or globally hidden or collapsed
+  if (!behavior.hasContent || !visible || behavior.state === 'collapsed') {
+    return null;
+  }
 
-  // Re-measure on window resize to handle responsive changes
-  useLayoutEffect(() => {
-    if (!isInitialized) return;
-
-    const handleResize = () => {
-      // Debounce resize measurements
-      const timer = setTimeout(measureContent, 100);
-      return () => clearTimeout(timer);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [measureContent, isInitialized]);
-
-  // Don't render if globally not visible or in collapsed state
-  if (!visible) return null;
-  if (isCollapsedState(captionState)) return null;
-
-  // Always render the measuring element (hidden) for accurate measurements
-  const measureElement = (
-    <div 
-      ref={measureRef}
-      className={twMerge(
-        'absolute opacity-0 pointer-events-none z-[-1]',
-        'prose-sm text-on-sf max-w-none',
-        'theme-default:px-4 theme-default:py-3',
-        'theme-rounded:px-6 theme-rounded:py-4', 
-        'theme-sharp:px-4 theme-sharp:py-2',
-        // Use same container width as real caption
-        'left-0 right-0'
-      )}
-      style={{
-        height: 'auto',
-        maxHeight: 'none',
-        lineHeight: 'var(--caption-line-height)',
-        paddingTop: 'var(--caption-padding-y)',
-        paddingBottom: 'var(--caption-padding-y)'
-      }}
-      dangerouslySetInnerHTML={{ __html: content }}
-    />
-  );
-
-  // If not initialized, show measuring element only
+  // Show measuring element until initialized
   if (!isInitialized) {
     return (
-      <div className="absolute left-0 right-0 bottom-0">
-        {measureElement}
+      <div className="absolute left-0 right-0 bottom-0 opacity-0 pointer-events-none">
+        <div 
+          ref={measureRef}
+          className={twMerge(
+            'prose-sm text-on-sf max-w-none',
+            'theme-default:px-4 theme-default:py-3',
+            'theme-rounded:px-6 theme-rounded:py-4',
+            'theme-sharp:px-4 theme-sharp:py-2'
+          )}
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
       </div>
     );
   }
 
-  // Now we have measurements, proceed with normal rendering
-  const isSmallCaption = !hasOverflow;
-  const isBigCaption = hasOverflow;
+  const { mode, state } = behavior;
+  const isExpanded = state === 'expanded';
+  const isMinimized = state === 'minimized';
   
-  // Small captions: only 'expanded' is meaningful (they show at natural size)
-  // Big captions: 'minimized' (3 lines) or 'expanded' (up to 80% height)
-  const effectiveState = isSmallCaption ? 'expanded' : captionState;
-  const isExpanded = isExpandedState(effectiveState);
-
-  // Handle caption click - only big captions are clickable
+  // Handle caption click - only expandable captions are clickable
   const handleCaptionClick = () => {
-    if (isBigCaption && onCaptionClick) {
+    if (mode === 'expandable' && onCaptionClick) {
       onCaptionClick();
     }
   };
 
-  // Calculate height based on state
+  // Calculate height based on mode and state
   const getHeight = () => {
-    if (isSmallCaption) {
-      // Small captions: show at natural height, limited to 40% of image
-      return `${Math.min(contentHeight + 20, imageHeight * 0.4)}px`;
+    if (mode === 'static') {
+      // Static captions: always show at natural height (when expanded)
+      return `${Math.min(measuredHeight, imageHeight * 0.4)}px`;
     } else {
-      // Big captions: minimized vs expanded
-      return isExpanded 
-        ? `${Math.min(imageHeight * 0.8, contentHeight + 20)}px`
-        : 'var(--caption-three-line-height)';
+      // Expandable captions: minimized (3 lines) vs expanded (up to 80%)
+      if (isMinimized) {
+        return 'var(--caption-three-line-height)';
+      } else {
+        return `${Math.min(imageHeight * 0.8, measuredHeight)}px`;
+      }
     }
   };
 
   return (
     <>
       {/* Always present measuring element */}
-      {measureElement}
+      <div className="absolute left-0 right-0 bottom-0 opacity-0 pointer-events-none z-[-1]">
+        <div 
+          ref={measureRef}
+          className={twMerge(
+            'prose-sm text-on-sf max-w-none',
+            'theme-default:px-4 theme-default:py-3',
+            'theme-rounded:px-6 theme-rounded:py-4',
+            'theme-sharp:px-4 theme-sharp:py-2'
+          )}
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+      </div>
       
       {/* Actual caption */}
       <div 
@@ -181,44 +167,47 @@ export const CarouselCaption = memo(function CarouselCaption({
             'theme-sharp:bg-sf-cont theme-sharp:border-t theme-sharp:border-ol theme-sharp:shadow-sharp'
           )}
         >
-          {/* Caption content - clickable only for big captions */}
+          {/* Caption content */}
           <div
             onClick={handleCaptionClick}
             className={twMerge(
               'w-full h-full text-left',
-              // Styling based on caption type
-              isBigCaption ? 'cursor-pointer' : 'cursor-default',
-              isBigCaption && 'hover:bg-sf-cont/5',
-              // Focus states only for big captions
-              isBigCaption && 'focus:outline-none focus:ring-2 focus:ring-pr-fix/50'
+              // Styling based on mode
+              mode === 'expandable' ? 'cursor-pointer' : 'cursor-default',
+              mode === 'expandable' && 'hover:bg-sf-cont/5',
+              // Focus states only for expandable captions
+              mode === 'expandable' && 'focus:outline-none focus:ring-2 focus:ring-pr-fix/50'
             )}
-            tabIndex={isBigCaption ? 0 : -1}
-            role={isBigCaption ? 'button' : undefined}
-            aria-label={isBigCaption ? (isExpanded ? 'Minimize caption' : 'Expand caption') : undefined}
+            tabIndex={mode === 'expandable' ? 0 : -1}
+            role={mode === 'expandable' ? 'button' : undefined}
+            aria-label={
+              mode === 'expandable' 
+                ? (isExpanded ? 'Minimize caption' : 'Expand caption') 
+                : undefined
+            }
           >
             <div 
-              ref={contentRef}
               className={twMerge(
                 'h-full prose-sm text-on-sf max-w-none transition-all duration-300',
                 'theme-default:px-4 theme-default:py-3',
                 'theme-rounded:px-6 theme-rounded:py-4',
                 'theme-sharp:px-4 theme-sharp:py-2',
-                // Scrolling for big expanded captions if needed
-                isBigCaption && isExpanded && contentHeight > imageHeight * 0.8 
+                // Scrolling for expandable expanded captions if needed
+                mode === 'expandable' && isExpanded && measuredHeight > imageHeight * 0.8 
                   ? 'overflow-y-auto overflow-x-hidden scrollbar-hide' 
                   : 'overflow-hidden',
-                // Line clamping for big minimized captions
-                isBigCaption && !isExpanded && 'line-clamp-3'
+                // Line clamping for expandable minimized captions
+                mode === 'expandable' && isMinimized && 'line-clamp-3'
               )}
               dangerouslySetInnerHTML={{ __html: content }}
             />
           </div>
           
-          {/* Visual indicators only for big captions */}
-          {isBigCaption && (
+          {/* Visual indicators only for expandable captions */}
+          {mode === 'expandable' && (
             <>
               {/* Gradient overlay when minimized */}
-              {!isExpanded && (
+              {isMinimized && (
                 <div 
                   className={twMerge(
                     'absolute bottom-0 left-0 right-0 h-6 pointer-events-none',
@@ -256,7 +245,7 @@ export const CarouselCaption = memo(function CarouselCaption({
               'theme-default:rounded-md theme-rounded:rounded-lg theme-sharp:rounded-none'
             )}
           >
-            {isBigCaption 
+            {mode === 'expandable' 
               ? (isExpanded ? 'Click to minimize • Click image to hide' : 'Click to expand • Click image to hide')
               : 'Click image to hide captions'
             }
