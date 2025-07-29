@@ -1,18 +1,19 @@
 // src/main/components/Article/Carousel/CarouselSlide.tsx
 import { memo } from 'react';
-import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions } from "./carouselTypes";
+import { CarouselItemWithBehavior, CaptionMode } from "./captionTypes";
 import { CarouselImage } from "./CarouselImage";
 import { CarouselCaption } from "./CarouselCaption";
 
 interface CarouselSlideProps {
-  image: CarouselItem;
+  image: CarouselItemWithBehavior; // UPDATED: Use new type with behavior
   isActive: boolean;
   position: -1 | 0 | 1;
   dimensions: CarouselDimensions;
   navigationLayout: 'horizontal' | 'vertical';
-  captionsVisible: boolean; // FIXED: Added missing prop
+  captionsVisible: boolean;
   onCaptionClick: () => void;
+  onCaptionModeChange: (mode: CaptionMode) => void; // NEW: Handler for mode changes
   is2SlideCarousel?: boolean;
 }
 
@@ -22,17 +23,18 @@ export const CarouselSlide = memo(function CarouselSlide({
   position,
   dimensions,
   navigationLayout,
-  captionsVisible, // FIXED: Added missing prop
+  captionsVisible,
   onCaptionClick,
+  onCaptionModeChange, // NEW: Mode change handler
   is2SlideCarousel = false
 }: CarouselSlideProps) {
   
   const shouldShowCaption = (): boolean => {
-    // FIXED: Don't show if captions are globally hidden
+    // Don't show if captions are globally hidden
     if (!captionsVisible) return false;
     
     // Don't show if no caption content
-    if (image.processedCaption.trim() === '') return false;
+    if (!image.captionBehavior.hasContent) return false;
     
     // In 2-slide carousel, only show caption on center position
     if (is2SlideCarousel) {
@@ -61,9 +63,10 @@ export const CarouselSlide = memo(function CarouselSlide({
       {shouldShowCaption() && (
         <CarouselCaption
           content={image.processedCaption}
-          captionState={image.captionState} // CHANGED from expanded={image.expandedCaption}
+          behavior={image.captionBehavior} // UPDATED: Pass behavior object
           visible={captionsVisible}
           onCaptionClick={onCaptionClick}
+          onModeChange={onCaptionModeChange} // NEW: Pass mode change handler
           navigationLayout={navigationLayout}
           isActive={isActive}
           imageHeight={dimensions.height}

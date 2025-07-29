@@ -1,13 +1,13 @@
 // src/main/components/Article/Carousel/CarouselTrack.tsx
-import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions } from "./carouselTypes";
+import { CarouselItemWithBehavior, CaptionMode } from "./captionTypes";
 import { twMerge } from 'tailwind-merge';
 import { CarouselSlide } from "./CarouselSlide";
 import { getVisibleIndexes } from './utils/getVisibleIndexes';
 import { getViewportBreakpoint } from './utils/viewportUtils';
 
 interface CarouselTrackProps {
-  images: CarouselItem[];
+  images: CarouselItemWithBehavior[]; // UPDATED: Use new type with behavior
   currentIndex: number;
   dimensions: CarouselDimensions;
   navigationLayout: 'horizontal' | 'vertical';
@@ -16,7 +16,7 @@ interface CarouselTrackProps {
   isTransitioning?: boolean;
   handlers: {
     handleCaptionClick: (index: number) => void;
-    // FIXED: Removed handleCarouselClick since it's now on the main container
+    handleCaptionModeChange: (index: number, mode: CaptionMode) => void; // NEW: Mode change handler
   };
 }
 
@@ -34,10 +34,10 @@ export function CarouselTrack({
     // Get current viewport dimensions for fallback height calculation
     const currentViewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
     const currentViewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
-    const breakpoint = getViewportBreakpoint(currentViewportWidth, currentViewportHeight); // FIXED: Added height parameter
+    const breakpoint = getViewportBreakpoint(currentViewportWidth, currentViewportHeight);
     
     // Calculate fallback height for the carousel container
-    const aspectRatio = dimensions.ratio || 1.5; // FIXED: Changed from dimensions.aspectRatio to dimensions.ratio
+    const aspectRatio = dimensions.ratio || 1.5;
     const fallbackHeight = Math.min(
       currentViewportWidth / aspectRatio,
       dimensions.height || 400
@@ -68,97 +68,88 @@ export function CarouselTrack({
       if (is2SlideCarousel) {
         // In 2-slide carousel, alternate between two positions
         return direction === 'next' 
-          ? 'translateX(-200%)' // Show right slide (200% position) in viewport
-          : 'translateX(0%)';   // Show left slide (0% position) in viewport
+          ? 'translateX(-200%)' // Move to show right slide
+          : 'translateX(0%)';    // Move to show left slide
+      } else {
+        // In multi-slide carousel, standard transform
+        return direction === 'next' 
+          ? 'translateX(-200%)' // Move left to show next slide
+          : 'translateX(0%)';   // Move right to show previous slide
       }
-
-      // In multi-slide carousel, standard transitions
-      return direction === 'next' 
-        ? 'translateX(-200%)' // Show right slide (200% position) in viewport
-        : 'translateX(0%)';   // Show left slide (0% position) in viewport
     };
 
-    // Debug logging for development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Carousel Strip Animation:', {
-        is2SlideCarousel,
-        direction,
-        isTransitioning,
-        stripTransform: getStripTransform(),
-        visibleIndexes,
-        currentIndex,
-        captionsVisible,
-        fallbackHeight,
-        layout: `[${visibleIndexes[0]}][${visibleIndexes[1]}][${visibleIndexes[2]}]`
-      });
-    }
-  
+    // Debug logging
+    console.log('Carousel Strip Animation:', {
+      is2SlideCarousel,
+      direction,
+      isTransitioning,
+      stripTransform: getStripTransform(),
+      visibleIndexes,
+      currentIndex,
+      captionsVisible,
+      fallbackHeight,
+      layout: `[${visibleIndexes.join('][')}]`
+    });
+
     return (
       <div 
-        style={containerStyles}
-        className={twMerge(
-          'Carousel_carouselContainer__SjVtW relative w-full overflow-hidden',
-          // FIXED: Removed cursor-pointer since click handling is now on main container
-          navigationLayout === 'horizontal' ? 'pb-16' : 'px-12',
-          'sm:pb-12 sm:px-8',
-          'max-h-[var(--carousel-max-height)]'
-        )}
-        // FIXED: Removed onClick handler - it's now on the main ImageCarousel container
+        className="relative w-full overflow-hidden"
+        style={{
+          height: `${fallbackHeight}px`,
+          maxHeight: `${dimensions.maxHeight || 420}px`,
+          ...containerStyles
+        }}
       >
-        {/* Viewport: Fixed frame that shows only center portion */}
+        {/* The sliding strip containing all visible slides */}
         <div 
-          className="relative w-full max-w-full min-h-[var(--fallback-height)] max-h-[var(--carousel-max-height)] overflow-hidden"
+          className="relative h-full"
+          style={{ 
+            width: '300%', // Container for 3 slides (left, center, right)
+            transform: getStripTransform(),
+            transition: isTransitioning 
+              ? 'transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1)' 
+              : 'none'
+          }}
         >
-          {/* Strip: 3x width container with slides laid out side by side */}
-          <div 
-            className="absolute top-0 left-0 h-full"
-            style={{
-              width: '300%', // 3x viewport width to hold 3 slides
-              transform: getStripTransform(),
-              transition: isTransitioning 
-                ? 'transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1)' 
-                : 'none'
-            }}
-          >
-            {visibleIndexes.map((index, i) => {
-              // Position slides absolutely within the strip
-              const slidePositions = ['0%', '100%', '200%']; // Left, Center, Right
-              const slidePosition = slidePositions[i];
+          {visibleIndexes.map((index, i) => {
+            // Position slides absolutely within the strip
+            const slidePositions = ['0%', '100%', '200%']; // Left, Center, Right
+            const slidePosition = slidePositions[i];
+            
+            // Special key generation for 2-slide carousel to handle duplicates
+            const slideKey = is2SlideCarousel 
+              ? `slide-${index}-${i}-${direction || 'static'}-${isTransitioning}`
+              : `slide-${index}`;
               
-              // Special key generation for 2-slide carousel to handle duplicates
-              const slideKey = is2SlideCarousel 
-                ? `slide-${index}-${i}-${direction || 'static'}-${isTransitioning}`
-                : `slide-${index}`;
-                
-              // Determine position for caption behavior (-1: left, 0: center, 1: right)
-              const relativePosition = (i - 1) as -1 | 0 | 1;
-              
-              return (
-                <div
-                  key={slideKey}
-                  className="absolute top-0 h-full"
-                  style={{
-                    left: slidePosition,
-                    width: '33.333%' // Each slide takes 1/3 of strip width
+            // Determine position for caption behavior (-1: left, 0: center, 1: right)
+            const relativePosition = (i - 1) as -1 | 0 | 1;
+            
+            return (
+              <div
+                key={slideKey}
+                className="absolute top-0 h-full"
+                style={{
+                  left: slidePosition,
+                  width: '33.333%' // Each slide takes 1/3 of strip width
+                }}
+              >
+                <CarouselSlide
+                  image={images[index]}
+                  isActive={index === currentIndex}
+                  position={relativePosition}
+                  dimensions={{
+                    ...dimensions,
+                    height: fallbackHeight
                   }}
-                >
-                  <CarouselSlide
-                    image={images[index]}
-                    isActive={index === currentIndex}
-                    position={relativePosition}
-                    dimensions={{
-                      ...dimensions,
-                      height: fallbackHeight
-                    }}
-                    navigationLayout={navigationLayout}
-                    captionsVisible={captionsVisible}
-                    onCaptionClick={() => handlers.handleCaptionClick(index)}
-                    is2SlideCarousel={is2SlideCarousel}
-                  />
-                </div>
-              );
-            })}
-          </div>
+                  navigationLayout={navigationLayout}
+                  captionsVisible={captionsVisible}
+                  onCaptionClick={() => handlers.handleCaptionClick(index)}
+                  onCaptionModeChange={(mode) => handlers.handleCaptionModeChange(index, mode)} // NEW: Pass mode change handler
+                  is2SlideCarousel={is2SlideCarousel}
+                />
+              </div>
+            );
+          })}
         </div>
 
         {/* Caption visibility indicator */}

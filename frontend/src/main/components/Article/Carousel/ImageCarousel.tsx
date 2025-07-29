@@ -26,7 +26,7 @@ const ImageCarousel = memo(function ImageCarousel({
     direction,
     isTransitioning,
     captionsVisible,
-    images: carouselImages,
+    images: carouselImages, // Now CarouselItemWithBehavior[]
     handlers 
   } = useCarousel({ 
     images, 
@@ -58,11 +58,11 @@ const ImageCarousel = memo(function ImageCarousel({
       onKeyDown={handlers.handleKeyDown}
       onTouchStart={handlers.handleTouchStart}
       onTouchEnd={handlers.handleTouchEnd}
-      onClick={handlers.handleCarouselClick} // FIXED: Move click handler to main container
-      style={{ pointerEvents: 'auto' }} // FIXED: Ensure pointer events work
+      onClick={handlers.handleCarouselClick}
+      style={{ pointerEvents: 'auto' }}
     >
       <CarouselTrack
-        images={carouselImages}
+        images={carouselImages} // Now CarouselItemWithBehavior[]
         currentIndex={currentIndex}
         dimensions={dimensions}
         navigationLayout={navigationLayout}
@@ -70,8 +70,8 @@ const ImageCarousel = memo(function ImageCarousel({
         direction={direction}
         isTransitioning={isTransitioning}
         handlers={{
-          handleCaptionClick: handlers.handleCaptionClick
-          // FIXED: Remove handleCarouselClick from here since it's now on the main container
+          handleCaptionClick: handlers.handleCaptionClick,
+          handleCaptionModeChange: handlers.handleCaptionModeChange // NEW: Pass mode change handler
         }}
       />
 
