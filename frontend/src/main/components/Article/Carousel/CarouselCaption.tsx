@@ -1,15 +1,14 @@
 // src/main/components/Article/Carousel/CarouselCaption.tsx
-import { memo, useRef, useState, useCallback } from 'react';
+import { memo, useRef, useState, useLayoutEffect, useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { CaptionBehavior, CaptionMode, CaptionState } from './captionTypes';
-import { useResizeObserver } from './hooks/useResizeObserver';
+import { CaptionBehavior, CaptionMode } from './captionTypes';
 
 interface CarouselCaptionProps {
   content: string;
   behavior: CaptionBehavior;
   visible: boolean;
-  onCaptionClick: () => void; // Direct caption click (expandable only)
-  onModeChange: (mode: CaptionMode) => void; // Callback when mode changes
+  onCaptionClick: () => void;
+  onModeChange: (mode: CaptionMode) => void;
   navigationLayout: 'horizontal' | 'vertical';
   isActive: boolean;
   imageHeight?: number;
@@ -30,39 +29,43 @@ export const CarouselCaption = memo(function CarouselCaption({
   const measureRef = useRef<HTMLDivElement>(null);
   const [measuredHeight, setMeasuredHeight] = useState(0);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [lastViewportWidth, setLastViewportWidth] = useState(0);
 
-  // Detect caption mode using @tailwindcss/line-clamp
+  // Stable mode detection function
   const detectCaptionMode = useCallback((element: HTMLElement): CaptionMode => {
-    // Create a test element with line-clamp-3 to measure 3-line height
-    const testElement = element.cloneNode(true) as HTMLElement;
-    testElement.classList.add('line-clamp-3');
-    testElement.style.position = 'absolute';
-    testElement.style.visibility = 'hidden';
-    testElement.style.width = element.offsetWidth + 'px';
+    // Use both content length and actual height for robust detection
+    const textContent = content.replace(/<[^>]*>/g, '').trim();
+    const contentLength = textContent.length;
     
-    element.parentElement?.appendChild(testElement);
-    const threeLineHeight = testElement.offsetHeight;
-    element.parentElement?.removeChild(testElement);
+    // Content-based heuristic (primary)
+    if (contentLength > 250) return 'expandable';
+    if (contentLength < 120) return 'static';
     
-    // Remove line-clamp to measure natural height
-    element.classList.remove('line-clamp-3');
-    const naturalHeight = element.scrollHeight;
+    // Height-based measurement (secondary, for edge cases)
+    const actualHeight = element.scrollHeight;
+    const lineHeight = parseFloat(getComputedStyle(element).lineHeight) || 24;
+    const estimatedLines = actualHeight / lineHeight;
     
-    // If natural height significantly exceeds 3-line height, it's expandable
-    const threshold = threeLineHeight * 1.1; // 10% buffer
-    return naturalHeight > threshold ? 'expandable' : 'static';
-  }, []);
+    return estimatedLines > 3.2 ? 'expandable' : 'static';
+  }, [content]);
 
-  // Handle caption measurement and mode detection
-  const handleMeasurement = useCallback((entries: ResizeObserverEntry[]) => {
-    const entry = entries[0];
-    if (!entry || !measureRef.current) return;
+  // Throttled measurement to prevent infinite loops
+  const measureContent = useCallback(() => {
+    if (!measureRef.current || !visible || !behavior?.hasContent) return;
+
+    const currentViewportWidth = window.innerWidth;
+    
+    // Only re-measure if viewport changed significantly (>50px)
+    if (isInitialized && Math.abs(currentViewportWidth - lastViewportWidth) < 50) {
+      return;
+    }
 
     const element = measureRef.current;
     const newMode = detectCaptionMode(element);
     const newHeight = element.scrollHeight;
     
     setMeasuredHeight(newHeight);
+    setLastViewportWidth(currentViewportWidth);
     
     // Notify parent if mode changed
     if (newMode !== behavior.mode) {
@@ -72,15 +75,34 @@ export const CarouselCaption = memo(function CarouselCaption({
     if (!isInitialized) {
       setIsInitialized(true);
     }
-  }, [behavior.mode, onModeChange, detectCaptionMode, isInitialized]);
+  }, [behavior?.hasContent, behavior?.mode, visible, detectCaptionMode, onModeChange, isInitialized, lastViewportWidth]);
 
-  // Set up ResizeObserver for frame size changes
-  useResizeObserver(measureRef, handleMeasurement);
+  // Initial measurement
+  useLayoutEffect(() => {
+    measureContent();
+  }, [measureContent]);
 
-  // Don't render if no content or globally hidden or collapsed
-  if (!behavior.hasContent || !visible || behavior.state === 'collapsed') {
-    return null;
-  }
+  // Viewport change detection with throttling
+  useLayoutEffect(() => {
+    if (!isInitialized) return;
+
+    let timeoutId: NodeJS.Timeout;
+    
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(measureContent, 150); // 150ms throttle
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, [measureContent, isInitialized]);
+
+  // Don't render if no behavior or no content
+  if (!behavior?.hasContent || !visible) return null;
+  if (behavior.state === 'collapsed') return null;
 
   // Show measuring element until initialized
   if (!isInitialized) {
@@ -94,6 +116,11 @@ export const CarouselCaption = memo(function CarouselCaption({
             'theme-rounded:px-6 theme-rounded:py-4',
             'theme-sharp:px-4 theme-sharp:py-2'
           )}
+          style={{
+            lineHeight: 'var(--caption-line-height)',
+            paddingTop: 'var(--caption-padding-y)',
+            paddingBottom: 'var(--caption-padding-y)'
+          }}
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
@@ -114,14 +141,17 @@ export const CarouselCaption = memo(function CarouselCaption({
   // Calculate height based on mode and state
   const getHeight = () => {
     if (mode === 'static') {
-      // Static captions: always show at natural height (when expanded)
-      return `${Math.min(measuredHeight, imageHeight * 0.4)}px`;
+      // Static captions: show at natural height, limited to 40% of image
+      const naturalHeight = measuredHeight || 100;
+      return `${Math.min(naturalHeight, imageHeight * 0.4)}px`;
     } else {
-      // Expandable captions: minimized (3 lines) vs expanded (up to 80%)
+      // Expandable captions: minimized vs expanded
       if (isMinimized) {
         return 'var(--caption-three-line-height)';
       } else {
-        return `${Math.min(imageHeight * 0.8, measuredHeight)}px`;
+        // Expanded: up to 80% of image height
+        const naturalHeight = measuredHeight || 200;
+        return `${Math.min(imageHeight * 0.8, naturalHeight)}px`;
       }
     }
   };
@@ -138,6 +168,11 @@ export const CarouselCaption = memo(function CarouselCaption({
             'theme-rounded:px-6 theme-rounded:py-4',
             'theme-sharp:px-4 theme-sharp:py-2'
           )}
+          style={{
+            lineHeight: 'var(--caption-line-height)',
+            paddingTop: 'var(--caption-padding-y)',
+            paddingBottom: 'var(--caption-padding-y)'
+          }}
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
@@ -167,12 +202,12 @@ export const CarouselCaption = memo(function CarouselCaption({
             'theme-sharp:bg-sf-cont theme-sharp:border-t theme-sharp:border-ol theme-sharp:shadow-sharp'
           )}
         >
-          {/* Caption content */}
+          {/* Caption content - clickable only for expandable captions */}
           <div
             onClick={handleCaptionClick}
             className={twMerge(
               'w-full h-full text-left',
-              // Styling based on mode
+              // Styling based on caption type
               mode === 'expandable' ? 'cursor-pointer' : 'cursor-default',
               mode === 'expandable' && 'hover:bg-sf-cont/5',
               // Focus states only for expandable captions
@@ -180,11 +215,7 @@ export const CarouselCaption = memo(function CarouselCaption({
             )}
             tabIndex={mode === 'expandable' ? 0 : -1}
             role={mode === 'expandable' ? 'button' : undefined}
-            aria-label={
-              mode === 'expandable' 
-                ? (isExpanded ? 'Minimize caption' : 'Expand caption') 
-                : undefined
-            }
+            aria-label={mode === 'expandable' ? (isExpanded ? 'Minimize caption' : 'Expand caption') : undefined}
           >
             <div 
               className={twMerge(

@@ -1,56 +1,41 @@
 // src/main/components/Article/Carousel/hooks/useResizeObserver.ts
-import { useCallback, useRef } from 'react';
+import { useEffect } from 'react';
 
 type ResizeObserverCallback = (entries: ResizeObserverEntry[]) => void;
 
 /**
- * Custom hook that sets up ResizeObserver without useEffect
- * Uses ref callback pattern for immediate setup/cleanup
+ * Custom hook that sets up ResizeObserver
+ * Simplified approach using useEffect
  */
 export function useResizeObserver(
   targetRef: React.RefObject<Element>,
   callback: ResizeObserverCallback
 ) {
-  const observerRef = useRef<ResizeObserver | null>(null);
-  const callbackRef = useRef(callback);
   
-  // Update callback ref when callback changes
-  callbackRef.current = callback;
-
-  // Ref callback that sets up the observer immediately when element mounts
-  const setupObserver = useCallback((element: Element | null) => {
-    // Cleanup existing observer
-    if (observerRef.current) {
-      observerRef.current.disconnect();
-      observerRef.current = null;
+  useEffect(() => {
+    const element = targetRef.current;
+    if (!element || typeof ResizeObserver === 'undefined') {
+      return;
     }
 
-    // Set up new observer if element exists
-    if (element && 'ResizeObserver' in window) {
-      const resizeObserver = new ResizeObserver((entries) => {
-        // Use the latest callback
-        callbackRef.current(entries);
-      });
+    const resizeObserver = new ResizeObserver((entries) => {
+      callback(entries);
+    });
 
-      resizeObserver.observe(element);
-      observerRef.current = resizeObserver;
-    }
-  }, []);
+    // Initial measurement - trigger callback immediately
+    callback([{
+      target: element,
+      contentRect: element.getBoundingClientRect(),
+      borderBoxSize: [],
+      contentBoxSize: [],
+      devicePixelContentBoxSize: []
+    } as ResizeObserverEntry]);
 
-  // Set up observer when target element changes
-  const previousElement = useRef<Element | null>(null);
-  if (targetRef.current !== previousElement.current) {
-    setupObserver(targetRef.current);
-    previousElement.current = targetRef.current;
-  }
+    // Start observing
+    resizeObserver.observe(element);
 
-  // Cleanup function
-  const cleanup = useCallback(() => {
-    if (observerRef.current) {
-      observerRef.current.disconnect();
-      observerRef.current = null;
-    }
-  }, []);
-
-  return cleanup;
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [targetRef, callback]);
 }

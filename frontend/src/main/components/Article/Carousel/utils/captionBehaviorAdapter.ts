@@ -8,16 +8,19 @@ import { CarouselItemWithBehavior, createInitialCaptionBehavior } from '../capti
  * This adapter bridges markdown-time parsing and client-side behavior detection
  */
 export function adaptCarouselItemsWithBehavior(items: CarouselItem[]): CarouselItemWithBehavior[] {
-  return items.map(item => {
-    const hasContent = item.processedCaption.trim() !== '';
+  return items.map((item, index) => {
+    const hasContent = Boolean(item.processedCaption && item.processedCaption.trim() !== '');
+    const behavior = createInitialCaptionBehavior(hasContent);
     
-    return {
+    const result: CarouselItemWithBehavior = {
       type: item.type,
       imageAttributes: item.imageAttributes,
       caption: item.caption,
-      processedCaption: item.processedCaption,
-      captionBehavior: createInitialCaptionBehavior(hasContent)
+      processedCaption: item.processedCaption || '', // Ensure it's always a string
+      captionBehavior: behavior
     };
+    
+    return result;
   });
 }
 
@@ -25,12 +28,12 @@ export function adaptCarouselItemsWithBehavior(items: CarouselItem[]): CarouselI
  * Helper to determine if any items have captions
  */
 export function hasAnyCaptions(items: CarouselItem[]): boolean {
-  return items.some(item => item.processedCaption.trim() !== '');
+  return items.some(item => item.processedCaption && item.processedCaption.trim() !== '');
 }
 
 /**
  * Helper to count items with captions
  */
 export function getCaptionCount(items: CarouselItem[]): number {
-  return items.filter(item => item.processedCaption.trim() !== '').length;
+  return items.filter(item => item.processedCaption && item.processedCaption.trim() !== '').length;
 }

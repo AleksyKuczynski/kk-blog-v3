@@ -7,16 +7,17 @@ import { getVisibleIndexes } from './utils/getVisibleIndexes';
 import { getViewportBreakpoint } from './utils/viewportUtils';
 
 interface CarouselTrackProps {
-  images: CarouselItemWithBehavior[]; // UPDATED: Use new type with behavior
+  images: CarouselItemWithBehavior[];
   currentIndex: number;
   dimensions: CarouselDimensions;
   navigationLayout: 'horizontal' | 'vertical';
   captionsVisible: boolean;
   direction?: 'next' | 'prev' | null;
   isTransitioning?: boolean;
+  captionEvaluationTrigger?: number; // NEW: Caption re-evaluation trigger
   handlers: {
     handleCaptionClick: (index: number) => void;
-    handleCaptionModeChange: (index: number, mode: CaptionMode) => void; // NEW: Mode change handler
+    handleCaptionModeChange: (index: number, mode: CaptionMode) => void;
   };
 }
 
@@ -28,6 +29,7 @@ export function CarouselTrack({
     captionsVisible,
     direction = null,
     isTransitioning = false,
+    captionEvaluationTrigger, // NEW: Caption re-evaluation trigger
     handlers
   }: CarouselTrackProps) {
     

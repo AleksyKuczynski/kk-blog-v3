@@ -6,14 +6,15 @@ import { CarouselImage } from "./CarouselImage";
 import { CarouselCaption } from "./CarouselCaption";
 
 interface CarouselSlideProps {
-  image: CarouselItemWithBehavior; // UPDATED: Use new type with behavior
+  image: CarouselItemWithBehavior;
   isActive: boolean;
   position: -1 | 0 | 1;
   dimensions: CarouselDimensions;
   navigationLayout: 'horizontal' | 'vertical';
   captionsVisible: boolean;
   onCaptionClick: () => void;
-  onCaptionModeChange: (mode: CaptionMode) => void; // NEW: Handler for mode changes
+  onCaptionModeChange: (mode: CaptionMode) => void;
+  captionEvaluationTrigger?: number; // NEW: Forces caption re-evaluation
   is2SlideCarousel?: boolean;
 }
 

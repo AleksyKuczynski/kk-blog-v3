@@ -26,11 +26,14 @@ const ImageCarousel = memo(function ImageCarousel({
     direction,
     isTransitioning,
     captionsVisible,
-    images: carouselImages, // Now CarouselItemWithBehavior[]
+    images: carouselImages,
+    dimensions: responsiveDimensions, // NEW: Dynamic dimensions
+    captionEvaluationTrigger, // NEW: Caption re-evaluation trigger
     handlers 
   } = useCarousel({ 
     images, 
-    dimensions
+    dimensions,
+    initialAnalysis // NEW: Pass initial analysis for responsive calculations
   });
 
   const navigationLayout = determineNavigationLayout(
@@ -62,16 +65,17 @@ const ImageCarousel = memo(function ImageCarousel({
       style={{ pointerEvents: 'auto' }}
     >
       <CarouselTrack
-        images={carouselImages} // Now CarouselItemWithBehavior[]
+        images={carouselImages}
         currentIndex={currentIndex}
-        dimensions={dimensions}
+        dimensions={responsiveDimensions} // NEW: Use responsive dimensions
         navigationLayout={navigationLayout}
         captionsVisible={captionsVisible}
         direction={direction}
         isTransitioning={isTransitioning}
+        captionEvaluationTrigger={captionEvaluationTrigger} // NEW: Pass trigger
         handlers={{
           handleCaptionClick: handlers.handleCaptionClick,
-          handleCaptionModeChange: handlers.handleCaptionModeChange // NEW: Pass mode change handler
+          handleCaptionModeChange: handlers.handleCaptionModeChange
         }}
       />
 

@@ -1,14 +1,16 @@
 // src/main/components/Article/Carousel/hooks/useCarousel.ts
-import { useReducer, useCallback, useEffect } from 'react';
+import { useReducer, useCallback, useEffect, useState } from 'react';
 import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
-import { CarouselDimensions } from '../carouselTypes';
+import { CarouselDimensions, ImageSetAnalysis } from '../carouselTypes';
 import { CaptionMode } from '../captionTypes';
 import { carouselReducer, CarouselState } from '../carouselReducer';
 import { adaptCarouselItemsWithBehavior } from '../utils/captionBehaviorAdapter';
+import { useViewportChange } from './useViewportChange';
 
 interface UseCarouselProps {
   images: CarouselItem[];
   dimensions: CarouselDimensions;
+  initialAnalysis: ImageSetAnalysis;
 }
 
 const initialState: CarouselState = {
@@ -22,12 +24,35 @@ const initialState: CarouselState = {
 
 export function useCarousel({ 
   images, 
-  dimensions 
+  dimensions: initialDimensions,
+  initialAnalysis
 }: UseCarouselProps) {
+  
+  // Dynamic dimensions that can be updated by viewport changes
+  const [currentDimensions, setCurrentDimensions] = useState(initialDimensions);
+  
   // Convert simplified markdown items to client-side behavior items
   const [state, dispatch] = useReducer(carouselReducer, {
     ...initialState,
     images: adaptCarouselItemsWithBehavior(images)
+  });
+
+  // Force caption re-evaluation counter
+  const [captionEvaluationTrigger, setCaptionEvaluationTrigger] = useState(0);
+
+  // Handle viewport changes for responsive behavior
+  const { viewportState } = useViewportChange({
+    images,
+    initialAnalysis,
+    onDimensionsChange: (newDimensions) => {
+      console.log('Updating carousel dimensions:', newDimensions);
+      setCurrentDimensions(newDimensions);
+    },
+    onViewportChange: () => {
+      console.log('Triggering caption mode re-evaluation');
+      // Force all captions to re-evaluate their modes
+      setCaptionEvaluationTrigger(prev => prev + 1);
+    }
   });
 
   // Handle transition timing for strip animation
@@ -83,8 +108,9 @@ export function useCarousel({
       dispatch({ type: 'TOGGLE_CAPTION_DIRECT', index });
     }, []),
 
-    // Caption mode change (called by ResizeObserver)
+    // Caption mode change (called when caption detects its mode)
     handleCaptionModeChange: useCallback((index: number, mode: CaptionMode) => {
+      console.log(`Caption ${index} mode changed to:`, mode);
       dispatch({ type: 'UPDATE_CAPTION_MODE', index, mode });
     }, []),
 
@@ -117,6 +143,9 @@ export function useCarousel({
     isTransitioning: state.isTransitioning,
     captionsVisible: state.captionsVisible,
     images: state.images, // Now includes caption behavior
+    dimensions: currentDimensions, // Dynamic dimensions
+    viewportState,
+    captionEvaluationTrigger, // Forces caption re-evaluation
     handlers
   };
 }
