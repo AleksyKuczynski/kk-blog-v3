@@ -1,4 +1,4 @@
-// src/main/components/Article/Carousel/captionTypes.ts
+// src/main/components/Article/Captions/Caption/types.ts
 
 // Client-side caption behavior (determined by actual rendered height)
 export type CaptionMode = 'static' | 'expandable';
