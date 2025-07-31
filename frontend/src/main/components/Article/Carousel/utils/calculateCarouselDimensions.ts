@@ -22,6 +22,9 @@ interface ResponsiveCarouselConfig {
   breakpoint: ViewportBreakpoint;
 }
 
+// Cache for expensive calculations
+const calculationCache = new Map<string, CarouselDimensions>();
+
 function calculateMedianRatio(ratios: number[]): number {
   if (ratios.length === 0) return 1.5; // fallback
   
@@ -39,8 +42,12 @@ function calculateOptimalRatio({
   viewportHeight,
   breakpoint
 }: ResponsiveCarouselConfig): number {
-  const isSmallVerticalViewport = viewportHeight < 700; // Small phone screens
-  const isBigVerticalScreen = viewportWidth < viewportHeight && viewportHeight > 900; // Large tablets/desktop portrait
+  // Round viewport dimensions to reduce cache misses
+  const roundedWidth = Math.round(viewportWidth / 50) * 50;
+  const roundedHeight = Math.round(viewportHeight / 50) * 50;
+  
+  const isSmallVerticalViewport = roundedHeight < 700; // Small phone screens
+  const isBigVerticalScreen = roundedWidth < roundedHeight && roundedHeight > 900; // Large tablets/desktop portrait
   const isHorizontalMedian = medianRatio > 1.1; // Landscape-oriented content
   
   // Case 1: Small vertical viewport + horizontal median → force square
@@ -56,9 +63,9 @@ function calculateOptimalRatio({
   }
   
   // Case 3: Check if resulting height would exceed viewport
-  const carouselWidth = Math.min(viewportWidth * 0.9, 1200); // Max carousel width
+  const carouselWidth = Math.min(roundedWidth * 0.9, 1200); // Max carousel width
   const resultingHeight = carouselWidth / medianRatio;
-  const maxAllowedHeight = viewportHeight * 0.7; // 70% of viewport height
+  const maxAllowedHeight = roundedHeight * 0.7; // 70% of viewport height
   
   if (resultingHeight > maxAllowedHeight) {
     const constrainedRatio = carouselWidth / maxAllowedHeight;
@@ -120,6 +127,21 @@ function determineImageDisplayMode(
   return 'square';
 }
 
+function generateCacheKey(
+  medianRatio: number,
+  viewportWidth: number,
+  viewportHeight: number,
+  breakpoint: ViewportBreakpoint,
+  analysis: ImageSetAnalysis
+): string {
+  // Round values to reduce cache key variations
+  const roundedRatio = Math.round(medianRatio * 100) / 100;
+  const roundedWidth = Math.round(viewportWidth / 100) * 100; // Increased rounding to reduce variations
+  const roundedHeight = Math.round(viewportHeight / 100) * 100;
+  
+  return `${roundedRatio}-${roundedWidth}-${roundedHeight}-${breakpoint}-${analysis.consistency}-${analysis.dominance.level}`;
+}
+
 export function calculateCarouselDimensions({
   analysis,
   viewportWidth,
@@ -131,7 +153,17 @@ export function calculateCarouselDimensions({
   // Calculate median ratio from actual image data
   const medianRatio = calculateMedianRatio(mediaRatios);
   
-  console.log(`Carousel: Calculated median ratio: ${medianRatio.toFixed(2)} from ${mediaRatios.length} images`);
+  // Generate cache key
+  const cacheKey = generateCacheKey(medianRatio, viewportWidth, viewportHeight, breakpoint, analysis);
+  
+  // Check cache first
+  if (calculationCache.has(cacheKey)) {
+    const cached = calculationCache.get(cacheKey)!;
+    console.log('Using cached carousel dimensions:', cached);
+    return cached;
+  }
+  
+  console.log(`Carousel: Calculating new dimensions with median ratio: ${medianRatio.toFixed(2)} from ${mediaRatios.length} images`);
   
   // Calculate optimal ratio considering responsive cases
   const optimalRatio = calculateOptimalRatio({
@@ -152,25 +184,29 @@ export function calculateCarouselDimensions({
   // Determine display mode
   const imageDisplayMode = determineImageDisplayMode(optimalRatio, analysis);
   
-  // Calculate all breakpoint dimensions
+  // Calculate breakpoint dimensions more efficiently
   const allBreakpoints: ViewportBreakpoint[] = [
     'mobile-portrait', 'mobile-landscape', 
     'tablet-portrait', 'tablet-landscape',
     'desktop-portrait', 'desktop-landscape'
   ];
   
-  const breakpointDimensions = allBreakpoints.map(bp => {
+  const breakpointDimensions: BreakpointDimensions[] = allBreakpoints.map(bp => {
+    // Use simplified viewport dimensions for breakpoint calculations
+    const bpViewportWidth = bp.includes('mobile') ? 375 : bp.includes('tablet') ? 768 : 1200;
+    const bpViewportHeight = bp.includes('portrait') ? 800 : 600;
+    
     const bpRatio = calculateOptimalRatio({
       medianRatio,
-      viewportWidth: bp.includes('mobile') ? 375 : bp.includes('tablet') ? 768 : 1200,
-      viewportHeight: bp.includes('portrait') ? 800 : 600,
+      viewportWidth: bpViewportWidth,
+      viewportHeight: bpViewportHeight,
       breakpoint: bp
     });
     
     const bpMaxHeight = calculateMaxHeightForBreakpoint(
       bpRatio,
-      bp.includes('mobile') ? 375 : bp.includes('tablet') ? 768 : 1200,
-      bp.includes('portrait') ? 800 : 600,
+      bpViewportWidth,
+      bpViewportHeight,
       bp
     );
     
@@ -181,13 +217,27 @@ export function calculateCarouselDimensions({
     };
   });
   
-  console.log(`Carousel: Final ratio: ${optimalRatio.toFixed(2)}, maxHeight: ${maxHeight}px, mode: ${imageDisplayMode}`);
-  
-  return {
+  const result: CarouselDimensions = {
     ratio: optimalRatio,
     maxHeight,
     height: maxHeight,
     imageDisplayMode,
     breakpointDimensions
   };
+  
+  // Cache the result
+  calculationCache.set(cacheKey, result);
+  
+  // Limit cache size to prevent memory leaks - properly handle undefined
+  if (calculationCache.size > 50) { // Reduced cache size
+    const keys = Array.from(calculationCache.keys());
+    const firstKey = keys[0];
+    if (firstKey) {
+      calculationCache.delete(firstKey);
+    }
+  }
+  
+  console.log(`Carousel: Final ratio: ${optimalRatio.toFixed(2)}, maxHeight: ${maxHeight}px, mode: ${imageDisplayMode} (cached: ${cacheKey})`);
+  
+  return result;
 }

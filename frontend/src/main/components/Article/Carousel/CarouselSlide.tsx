@@ -14,7 +14,7 @@ interface CarouselSlideProps {
   captionsVisible: boolean;
   onCaptionClick: () => void;
   onCaptionModeChange: (mode: CaptionMode) => void;
-  captionEvaluationTrigger?: number; // NEW: Forces caption re-evaluation
+  captionEvaluationTrigger?: number; // Forces caption re-evaluation
   is2SlideCarousel?: boolean;
 }
 
@@ -26,7 +26,8 @@ export const CarouselSlide = memo(function CarouselSlide({
   navigationLayout,
   captionsVisible,
   onCaptionClick,
-  onCaptionModeChange, // NEW: Mode change handler
+  onCaptionModeChange,
+  captionEvaluationTrigger, // Now properly used
   is2SlideCarousel = false
 }: CarouselSlideProps) {
   
@@ -37,14 +38,18 @@ export const CarouselSlide = memo(function CarouselSlide({
     // Don't show if no caption content
     if (!image.captionBehavior.hasContent) return false;
     
-    // In 2-slide carousel, only show caption on center position
+    // FIXED: In 2-slide carousel, show caption on center position (position === 0)
+    // In multi-slide carousel, show caption when slide is active (isActive === true)
     if (is2SlideCarousel) {
-      return position === 0; // Center position
+      return position === 0; // Center position only
     }
     
     // In multi-slide carousel, show caption when slide is active
     return isActive;
   };
+  
+  // Debug logging for caption visibility
+  console.log(`Slide ${image.imageAttributes.src}: isActive=${isActive}, position=${position}, shouldShow=${shouldShowCaption()}, hasContent=${image.captionBehavior.hasContent}`);
   
   return (
     <div 
@@ -64,13 +69,14 @@ export const CarouselSlide = memo(function CarouselSlide({
       {shouldShowCaption() && (
         <CarouselCaption
           content={image.processedCaption}
-          behavior={image.captionBehavior} // UPDATED: Pass behavior object
+          behavior={image.captionBehavior}
           visible={captionsVisible}
           onCaptionClick={onCaptionClick}
-          onModeChange={onCaptionModeChange} // NEW: Pass mode change handler
+          onModeChange={onCaptionModeChange}
           navigationLayout={navigationLayout}
           isActive={isActive}
           imageHeight={dimensions.height}
+          captionEvaluationTrigger={captionEvaluationTrigger} // FIXED: Now passed properly
         />
       )}
     </div>

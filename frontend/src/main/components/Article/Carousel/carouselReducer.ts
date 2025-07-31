@@ -12,17 +12,15 @@ export interface CarouselState {
 
 type CarouselAction = 
   | { type: 'NEXT_SLIDE' }
-  | { type: 'PREV_SLIDE' }
+  | { type: 'PREVIOUS_SLIDE' } // Fixed: was PREV_SLIDE
   | { type: 'SET_SLIDE'; index: number }
   | { type: 'TOUCH_START'; x: number }
-  | { type: 'TOUCH_END'; endX: number }
+  | { type: 'TOUCH_END' } // Simplified - no endX needed
   | { type: 'TOGGLE_CAPTION_DIRECT'; index: number } // Click on expandable caption
   | { type: 'TOGGLE_CAPTION_FRAME'; index: number }  // Click on frame
   | { type: 'UPDATE_CAPTION_MODE'; index: number; mode: CaptionMode } // Mode detection
   | { type: 'TOGGLE_CAPTIONS_VISIBILITY' }
-  | { type: 'TRANSITION_END' };
-
-const SWIPE_THRESHOLD = 50;
+  | { type: 'SET_TRANSITIONING'; isTransitioning: boolean }; // CRITICAL: Missing action!
 
 export function carouselReducer(state: CarouselState, action: CarouselAction): CarouselState {
   const totalSlides = state.images.length;
@@ -31,18 +29,24 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
     case 'NEXT_SLIDE':
       if (state.isTransitioning) return state;
       
+      const nextIndex = (state.currentIndex + 1) % totalSlides;
+      
       return {
         ...state,
+        currentIndex: nextIndex,
         direction: 'next',
         isTransitioning: true,
         captionsVisible: true
       };
 
-    case 'PREV_SLIDE':
+    case 'PREVIOUS_SLIDE': // Fixed action name
       if (state.isTransitioning) return state;
+      
+      const prevIndex = (state.currentIndex - 1 + totalSlides) % totalSlides;
       
       return {
         ...state,
+        currentIndex: prevIndex,
         direction: 'prev',
         isTransitioning: true,
         captionsVisible: true
@@ -58,6 +62,7 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
       
       return {
         ...state,
+        currentIndex: action.index,
         direction,
         isTransitioning: true,
         captionsVisible: true
@@ -72,26 +77,17 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
       };
 
     case 'TOUCH_END': {
-      if (typeof state.touchStart === 'undefined' || state.isTransitioning) {
-        return state;
-      }
-
-      const diff = action.endX - state.touchStart;
-      if (Math.abs(diff) < SWIPE_THRESHOLD) {
-        return {
-          ...state,
-          touchStart: undefined
-        };
-      }
-
-      const direction = diff > 0 ? 'prev' : 'next';
-
       return {
         ...state,
-        direction,
-        touchStart: undefined,
-        isTransitioning: true,
-        captionsVisible: true
+        touchStart: undefined
+      };
+    }
+
+    case 'SET_TRANSITIONING': {
+      return {
+        ...state,
+        isTransitioning: action.isTransitioning,
+        direction: action.isTransitioning ? state.direction : null
       };
     }
 
@@ -187,30 +183,17 @@ export function carouselReducer(state: CarouselState, action: CarouselAction): C
         ...state,
         captionsVisible: !state.captionsVisible,
         images: !state.captionsVisible 
-          ? state.images.map(img => ({
+          ? // Showing captions - restore to initial states
+            state.images.map(img => ({
               ...img,
               captionBehavior: {
                 ...img.captionBehavior,
                 state: getInitialStateForMode(img.captionBehavior.mode, img.captionBehavior.hasContent)
               }
             }))
-          : state.images
+          : state.images // Hiding captions - keep current states
       };
     }
-
-    case 'TRANSITION_END':
-      if (!state.isTransitioning || !state.direction) return state;
-      
-      const newCurrentIndex = state.direction === 'next'
-        ? (state.currentIndex + 1) % totalSlides
-        : (state.currentIndex - 1 + totalSlides) % totalSlides;
-      
-      return {
-        ...state,
-        currentIndex: newCurrentIndex,
-        direction: null,
-        isTransitioning: false
-      };
 
     default:
       return state;

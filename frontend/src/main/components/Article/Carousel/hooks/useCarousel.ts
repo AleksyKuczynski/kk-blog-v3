@@ -1,5 +1,5 @@
 // src/main/components/Article/Carousel/hooks/useCarousel.ts
-import { useReducer, useCallback, useEffect, useState } from 'react';
+import { useReducer, useCallback, useEffect, useState, useRef } from 'react';
 import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions, ImageSetAnalysis } from '../carouselTypes';
 import { CaptionMode } from '../captionTypes';
@@ -39,72 +39,127 @@ export function useCarousel({
 
   // Force caption re-evaluation counter
   const [captionEvaluationTrigger, setCaptionEvaluationTrigger] = useState(0);
+  
+  // Track if we've done initial dimension calculation
+  const hasInitializedDimensions = useRef(false);
+  const lastDimensionsSignature = useRef<string>('');
+
+  // Stable dimension update handler with proper change detection
+  const handleDimensionsChange = useCallback((newDimensions: CarouselDimensions) => {
+    // Create signature to detect actual changes
+    const newSignature = `${newDimensions.ratio?.toFixed(2)}-${newDimensions.height}-${newDimensions.maxHeight}`;
+    
+    // Only update if dimensions actually changed or first time
+    if (newSignature !== lastDimensionsSignature.current || !hasInitializedDimensions.current) {
+      console.log('Updating carousel dimensions:', newDimensions);
+      setCurrentDimensions(newDimensions);
+      lastDimensionsSignature.current = newSignature;
+      hasInitializedDimensions.current = true;
+    }
+  }, []);
+
+  // Stable viewport change handler
+  const handleViewportChange = useCallback(() => {
+    console.log('Viewport changed - triggering caption re-evaluation');
+    setCaptionEvaluationTrigger(Date.now()); // Use timestamp to ensure uniqueness
+  }, []);
 
   // Handle viewport changes for responsive behavior
   const { viewportState } = useViewportChange({
     images,
     initialAnalysis,
-    onDimensionsChange: (newDimensions) => {
-      console.log('Updating carousel dimensions:', newDimensions);
-      setCurrentDimensions(newDimensions);
-    },
-    onViewportChange: () => {
-      console.log('Triggering caption mode re-evaluation');
-      // Force all captions to re-evaluate their modes
-      setCaptionEvaluationTrigger(prev => prev + 1);
-    }
+    onDimensionsChange: handleDimensionsChange,
+    onViewportChange: handleViewportChange
   });
 
-  // Handle transition timing for strip animation
+  // Auto-hide captions during transitions
   useEffect(() => {
-    if (state.isTransitioning && state.direction) {
+    if (state.isTransitioning) {
       const timer = setTimeout(() => {
-        dispatch({ type: 'TRANSITION_END' });
+        dispatch({ type: 'SET_TRANSITIONING', isTransitioning: false }); // Fixed action
       }, 300);
-
       return () => clearTimeout(timer);
     }
-  }, [state.isTransitioning, state.direction]);
+  }, [state.isTransitioning]);
 
+  // Stable event handlers
   const handlers = {
-    handleNext: useCallback(() => {
-      dispatch({ type: 'NEXT_SLIDE' });
-    }, []),
-
+    // Navigation with proper state management
     handlePrevious: useCallback(() => {
-      dispatch({ type: 'PREV_SLIDE' });
-    }, []),
+      if (state.isTransitioning) return;
+      console.log('Previous slide triggered, current index:', state.currentIndex);
+      dispatch({ type: 'PREVIOUS_SLIDE' }); // Fixed action name
+    }, [state.isTransitioning, state.currentIndex]),
 
+    handleNext: useCallback(() => {
+      if (state.isTransitioning) return;
+      console.log('Next slide triggered, current index:', state.currentIndex);
+      dispatch({ type: 'NEXT_SLIDE' });
+    }, [state.isTransitioning, state.currentIndex]),
+
+    // Keyboard navigation
     handleKeyDown: useCallback((e: React.KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') {
-        dispatch({ type: 'PREV_SLIDE' });
-      } else if (e.key === 'ArrowRight') {
-        dispatch({ type: 'NEXT_SLIDE' });
-      } else if (e.key === 'c' || e.key === 'C') {
-        dispatch({ type: 'TOGGLE_CAPTIONS_VISIBILITY' });
-      }
-    }, []),
+      if (state.isTransitioning) return;
 
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          console.log('Keyboard: Previous slide');
+          dispatch({ type: 'PREVIOUS_SLIDE' }); // Fixed action name
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          console.log('Keyboard: Next slide');
+          dispatch({ type: 'NEXT_SLIDE' });
+          break;
+        case 'c':
+        case 'C':
+          e.preventDefault();
+          console.log('Keyboard: Toggle captions');
+          dispatch({ type: 'TOGGLE_CAPTIONS_VISIBILITY' });
+          break;
+      }
+    }, [state.isTransitioning]),
+
+    // Touch events with better logging
     handleTouchStart: useCallback((e: React.TouchEvent) => {
-      dispatch({ 
-        type: 'TOUCH_START', 
-        x: e.touches[0].clientX 
-      });
-    }, []),
+      if (state.isTransitioning) return;
+      const touchX = e.touches[0].clientX;
+      console.log('Touch start at:', touchX);
+      dispatch({ type: 'TOUCH_START', x: touchX });
+    }, [state.isTransitioning]),
 
     handleTouchEnd: useCallback((e: React.TouchEvent) => {
-      dispatch({ 
-        type: 'TOUCH_END', 
-        endX: e.changedTouches[0].clientX 
-      });
-    }, []),
+      if (state.isTransitioning || !state.touchStart) return;
+      
+      const touchEnd = e.changedTouches[0].clientX;
+      const diff = state.touchStart - touchEnd;
+      const minSwipeDistance = 50;
 
+      console.log('Touch end:', { touchEnd, diff, minSwipeDistance });
+
+      if (Math.abs(diff) > minSwipeDistance) {
+        if (diff > 0) {
+          console.log('Touch: Next slide');
+          dispatch({ type: 'NEXT_SLIDE' });
+        } else {
+          console.log('Touch: Previous slide');
+          dispatch({ type: 'PREVIOUS_SLIDE' }); // Fixed action name
+        }
+      }
+      
+      dispatch({ type: 'TOUCH_END' }); // Simplified action
+    }, [state.isTransitioning, state.touchStart]),
+
+    // Direct slide selection
     handleSlideSelect: useCallback((index: number) => {
+      console.log('Direct slide select:', index);
       dispatch({ type: 'SET_SLIDE', index });
     }, []),
 
     // Direct caption click (for expandable captions)
     handleCaptionClick: useCallback((index: number) => {
+      console.log('Caption click for slide:', index);
       dispatch({ type: 'TOGGLE_CAPTION_DIRECT', index });
     }, []),
 
@@ -114,7 +169,7 @@ export function useCarousel({
       dispatch({ type: 'UPDATE_CAPTION_MODE', index, mode });
     }, []),
 
-    // Image frame click
+    // Image frame click with better targeting
     handleCarouselClick: useCallback((e: React.MouseEvent) => {
       const target = e.target as HTMLElement;
       
@@ -123,10 +178,13 @@ export function useCarousel({
         target.closest('button') ||
         target.closest('[data-caption]') ||
         target.tagName.toLowerCase() === 'svg' ||
-        target.closest('svg')
+        target.closest('svg') ||
+        target.closest('[role="button"]')
       ) {
         return;
       }
+
+      console.log('Carousel frame click, captions visible:', state.captionsVisible);
 
       // Frame click behavior
       if (state.captionsVisible) {
@@ -136,6 +194,17 @@ export function useCarousel({
       }
     }, [state.captionsVisible, state.currentIndex])
   };
+
+  // Debug logging for state changes
+  useEffect(() => {
+    console.log('Carousel state changed:', {
+      currentIndex: state.currentIndex,
+      direction: state.direction,
+      isTransitioning: state.isTransitioning,
+      captionsVisible: state.captionsVisible,
+      totalImages: state.images.length
+    });
+  }, [state.currentIndex, state.direction, state.isTransitioning, state.captionsVisible, state.images.length]);
 
   return {
     currentIndex: state.currentIndex,

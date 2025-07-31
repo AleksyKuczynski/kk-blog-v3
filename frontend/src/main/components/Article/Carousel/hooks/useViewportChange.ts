@@ -1,5 +1,5 @@
 // src/main/components/Article/Carousel/hooks/useViewportChange.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { CarouselDimensions } from '../carouselTypes';
 import { ImageSetAnalysis } from '../carouselTypes';
 import { calculateCarouselDimensions } from '../utils/calculateCarouselDimensions';
@@ -37,32 +37,53 @@ export function useViewportChange({
     };
   });
 
-  // Calculate new dimensions when viewport changes significantly
-  const recalculateDimensions = useCallback(() => {
-    if (!images.length) return;
+  // Track if we're currently processing to prevent overlaps
+  const isProcessingRef = useRef(false);
+  const lastCalculatedRef = useRef<string>('');
 
-    console.log('Recalculating carousel dimensions for viewport:', viewportState);
+  // Calculate dimensions with throttling and deduplication
+  const recalculateDimensions = useCallback((viewport: ViewportState) => {
+    if (!images.length || isProcessingRef.current) return;
 
-    const mediaRatios = images.map(item => 
-      (item.imageAttributes.width || 1200) / (item.imageAttributes.height || 800)
-    );
-    
-    const newDimensions = calculateCarouselDimensions({
-      analysis: initialAnalysis,
-      viewportWidth: viewportState.width,
-      viewportHeight: viewportState.height,
-      mediaRatios
-    });
+    // Create a signature to avoid duplicate calculations
+    const signature = `${viewport.width}-${viewport.height}-${images.length}`;
+    if (signature === lastCalculatedRef.current) {
+      return;
+    }
 
-    console.log('New carousel dimensions:', newDimensions);
-    onDimensionsChange(newDimensions);
-  }, [images, initialAnalysis, viewportState, onDimensionsChange]);
+    isProcessingRef.current = true;
+    lastCalculatedRef.current = signature;
 
-  // Throttled resize handler
+    console.log('Recalculating carousel dimensions for viewport:', viewport);
+
+    try {
+      const mediaRatios = images.map(item => 
+        (item.imageAttributes.width || 1200) / (item.imageAttributes.height || 800)
+      );
+      
+      const newDimensions = calculateCarouselDimensions({
+        analysis: initialAnalysis,
+        viewportWidth: viewport.width,
+        viewportHeight: viewport.height,
+        mediaRatios
+      });
+
+      console.log('New carousel dimensions:', newDimensions);
+      onDimensionsChange(newDimensions);
+    } catch (error) {
+      console.error('Error calculating carousel dimensions:', error);
+    } finally {
+      isProcessingRef.current = false;
+    }
+  }, [images, initialAnalysis, onDimensionsChange]);
+
+  // Throttled resize handler with better threshold
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     
     const handleResize = () => {
+      if (isProcessingRef.current) return;
+      
       clearTimeout(timeoutId);
       
       timeoutId = setTimeout(() => {
@@ -79,9 +100,9 @@ export function useViewportChange({
           breakpoint: newBreakpoint
         };
 
-        // Only update if significant change (>50px width or orientation change)
+        // More restrictive change detection - only update on significant changes
         const significantChange = 
-          Math.abs(newWidth - oldState.width) > 50 ||
+          Math.abs(newWidth - oldState.width) > 100 || // Increased from 50 to 100
           newIsLandscape !== oldState.isLandscape ||
           newBreakpoint !== oldState.breakpoint;
 
@@ -92,27 +113,32 @@ export function useViewportChange({
           });
           
           setViewportState(newState);
-          
-          // Trigger caption mode re-evaluation
+          recalculateDimensions(newState);
           onViewportChange();
         }
-      }, 200); // 200ms throttle
+      }, 300); // Increased throttle to 300ms
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
     return () => {
       window.removeEventListener('resize', handleResize);
       clearTimeout(timeoutId);
     };
-  }, [viewportState, onViewportChange]);
+  }, [viewportState, recalculateDimensions, onViewportChange]);
 
-  // Recalculate dimensions when viewport state changes
+  // Initial calculation on mount only
   useEffect(() => {
-    recalculateDimensions();
-  }, [recalculateDimensions]);
+    if (images.length > 0) {
+      recalculateDimensions(viewportState);
+    }
+  }, [images.length,recalculateDimensions,viewportState]); // Empty dependency array - only run once on mount
 
   return {
     viewportState,
-    recalculateDimensions
+    recalculateDimensions: useCallback(() => {
+      if (!isProcessingRef.current) {
+        recalculateDimensions(viewportState);
+      }
+    }, [recalculateDimensions, viewportState])
   };
 }

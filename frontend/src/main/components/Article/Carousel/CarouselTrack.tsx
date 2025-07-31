@@ -4,7 +4,6 @@ import { CarouselItemWithBehavior, CaptionMode } from "./captionTypes";
 import { twMerge } from 'tailwind-merge';
 import { CarouselSlide } from "./CarouselSlide";
 import { getVisibleIndexes } from './utils/getVisibleIndexes';
-import { getViewportBreakpoint } from './utils/viewportUtils';
 
 interface CarouselTrackProps {
   images: CarouselItemWithBehavior[];
@@ -14,7 +13,7 @@ interface CarouselTrackProps {
   captionsVisible: boolean;
   direction?: 'next' | 'prev' | null;
   isTransitioning?: boolean;
-  captionEvaluationTrigger?: number; // NEW: Caption re-evaluation trigger
+  captionEvaluationTrigger?: number; // Caption re-evaluation trigger
   handlers: {
     handleCaptionClick: (index: number) => void;
     handleCaptionModeChange: (index: number, mode: CaptionMode) => void;
@@ -29,31 +28,25 @@ export function CarouselTrack({
     captionsVisible,
     direction = null,
     isTransitioning = false,
-    captionEvaluationTrigger, // NEW: Caption re-evaluation trigger
+    captionEvaluationTrigger,
     handlers
   }: CarouselTrackProps) {
     
-    // Get current viewport dimensions for fallback height calculation
-    const currentViewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
-    const currentViewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
-    const breakpoint = getViewportBreakpoint(currentViewportWidth, currentViewportHeight);
+    // FIXED: Use dimensions.height directly instead of recalculating
+    const containerHeight = dimensions.height || dimensions.maxHeight || 400;
     
-    // Calculate fallback height for the carousel container
+    // Calculate aspect ratio for CSS custom properties
     const aspectRatio = dimensions.ratio || 1.5;
-    const fallbackHeight = Math.min(
-      currentViewportWidth / aspectRatio,
-      dimensions.height || 400
-    );
     
     const containerStyles = {
       '--mobile-portrait-ratio': aspectRatio.toString(),
-      '--mobile-landscape-ratio': '1',
+      '--mobile-landscape-ratio': aspectRatio.toString(),
       '--tablet-portrait-ratio': aspectRatio.toString(),
-      '--tablet-landscape-ratio': '1',
+      '--tablet-landscape-ratio': aspectRatio.toString(),
       '--desktop-portrait-ratio': aspectRatio.toString(),
-      '--desktop-landscape-ratio': '1',
-      '--fallback-height': `${fallbackHeight}px`,
-      '--carousel-max-height': `${dimensions.maxHeight || 420}px`
+      '--desktop-landscape-ratio': aspectRatio.toString(),
+      '--fallback-height': `${containerHeight}px`,
+      '--carousel-max-height': `${dimensions.maxHeight || containerHeight}px`
     } as React.CSSProperties;
 
     // Handle special case of 2-slide carousel
@@ -89,16 +82,21 @@ export function CarouselTrack({
       visibleIndexes,
       currentIndex,
       captionsVisible,
-      fallbackHeight,
+      containerHeight,
       layout: `[${visibleIndexes.join('][')}]`
     });
 
     return (
       <div 
-        className="relative w-full overflow-hidden"
+        className={twMerge(
+          "relative w-full overflow-hidden",
+          "theme-default:rounded-none",
+          "theme-rounded:rounded-2xl",
+          "theme-sharp:border theme-sharp:border-ol"
+        )}
         style={{
-          height: `${fallbackHeight}px`,
-          maxHeight: `${dimensions.maxHeight || 420}px`,
+          height: `${containerHeight}px`,
+          maxHeight: `${dimensions.maxHeight || containerHeight}px`,
           ...containerStyles
         }}
       >
@@ -141,12 +139,13 @@ export function CarouselTrack({
                   position={relativePosition}
                   dimensions={{
                     ...dimensions,
-                    height: fallbackHeight
+                    height: containerHeight // FIXED: Use consistent height
                   }}
                   navigationLayout={navigationLayout}
                   captionsVisible={captionsVisible}
                   onCaptionClick={() => handlers.handleCaptionClick(index)}
-                  onCaptionModeChange={(mode) => handlers.handleCaptionModeChange(index, mode)} // NEW: Pass mode change handler
+                  onCaptionModeChange={(mode) => handlers.handleCaptionModeChange(index, mode)}
+                  captionEvaluationTrigger={captionEvaluationTrigger} // FIXED: Now passed properly
                   is2SlideCarousel={is2SlideCarousel}
                 />
               </div>
