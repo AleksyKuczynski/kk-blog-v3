@@ -1,9 +1,9 @@
 // src/main/components/Article/Carousel/CarouselSlide.tsx
 import { memo } from 'react';
 import { CarouselDimensions } from "./carouselTypes";
-import { CarouselItemWithBehavior, CaptionMode } from "./captionTypes";
+import { CarouselItemWithBehavior, CaptionMode } from "../Captions/types";
 import { CarouselImage } from "./CarouselImage";
-import { CarouselCaption } from "./CarouselCaption";
+import { Caption } from "../Captions/Caption";
 
 interface CarouselSlideProps {
   image: CarouselItemWithBehavior;
@@ -67,7 +67,7 @@ export const CarouselSlide = memo(function CarouselSlide({
       />
       
       {shouldShowCaption() && (
-        <CarouselCaption
+        <Caption
           content={image.processedCaption}
           behavior={image.captionBehavior}
           visible={captionsVisible}

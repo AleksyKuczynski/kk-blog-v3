@@ -1,7 +1,7 @@
 // src/main/components/Article/Carousel/utils/captionBehaviorAdapter.ts
 
 import { CarouselItem } from '@/main/lib/markdown/markdownTypes';
-import { CarouselItemWithBehavior, createInitialCaptionBehavior } from '../captionTypes';
+import { CarouselItemWithBehavior, createInitialCaptionBehavior } from '../../Captions/types';
 
 /**
  * Converts simplified markdown CarouselItem to client-side CarouselItemWithBehavior

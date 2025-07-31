@@ -1,6 +1,6 @@
 // src/main/components/Article/Carousel/CarouselTrack.tsx
 import { CarouselDimensions } from "./carouselTypes";
-import { CarouselItemWithBehavior, CaptionMode } from "./captionTypes";
+import { CarouselItemWithBehavior, CaptionMode } from "../Captions/types";
 import { twMerge } from 'tailwind-merge';
 import { CarouselSlide } from "./CarouselSlide";
 import { getVisibleIndexes } from './utils/getVisibleIndexes';

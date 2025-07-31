@@ -1,7 +1,7 @@
-// src/main/components/Article/Carousel/CarouselCaption.tsx
+// src/main/components/Article/Caption/Caption.tsx
 import { useRef, useCallback, useLayoutEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { CaptionBehavior, CaptionMode } from './captionTypes';
+import { CaptionBehavior, CaptionMode } from './types';
 
 interface CarouselCaptionProps {
   content: string;
@@ -15,7 +15,7 @@ interface CarouselCaptionProps {
   captionEvaluationTrigger?: number; // External trigger for re-evaluation
 }
 
-export function CarouselCaption({
+export function Caption({
   content,
   behavior,
   visible,
