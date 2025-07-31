@@ -1,9 +1,8 @@
 // src/main/components/Article/Carousel/CarouselSlide.tsx
 import { memo } from 'react';
 import { CarouselDimensions } from "./carouselTypes";
-import { CarouselItemWithBehavior, CaptionMode } from "../Captions/types";
+import { CarouselItemWithBehavior, CaptionMode, Caption } from "../Captions";
 import { CarouselImage } from "./CarouselImage";
-import { Caption } from "../Captions/Caption";
 
 interface CarouselSlideProps {
   image: CarouselItemWithBehavior;

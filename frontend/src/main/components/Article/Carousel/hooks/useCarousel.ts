@@ -2,7 +2,7 @@
 import { useReducer, useCallback, useEffect, useState, useRef } from 'react';
 import { CarouselItem } from "@/main/lib/markdown/markdownTypes";
 import { CarouselDimensions, ImageSetAnalysis } from '../carouselTypes';
-import { CaptionMode } from '../../Captions/types';
+import { CaptionMode } from '../../Captions';
 import { carouselReducer, CarouselState } from '../carouselReducer';
 import { adaptCarouselItemsWithBehavior } from '../utils/captionBehaviorAdapter';
 import { useViewportChange } from './useViewportChange';

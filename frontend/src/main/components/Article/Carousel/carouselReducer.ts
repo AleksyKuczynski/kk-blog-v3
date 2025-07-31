@@ -1,5 +1,5 @@
 // src/main/components/Article/Carousel/carouselReducer.ts
-import { CarouselItemWithBehavior, CaptionMode, CaptionState, getInitialStateForMode } from '../Captions/types';
+import { CarouselItemWithBehavior, CaptionMode, CaptionState, getInitialStateForMode } from '../Captions';
 
 export interface CarouselState {
   currentIndex: number;
